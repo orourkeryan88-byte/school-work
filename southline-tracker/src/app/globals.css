@@ -12,7 +12,7 @@
   --card-foreground: oklch(0.145 0 0);
   --popover: oklch(1 0 0);
   --popover-foreground: oklch(0.145 0 0);
-  --primary: oklch(0.205 0 0);
+  --primary: #0b1f3a;
   --primary-foreground: oklch(0.985 0 0);
   --secondary: oklch(0.97 0 0);
   --secondary-foreground: oklch(0.205 0 0);
@@ -24,6 +24,9 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.708 0 0);
+  /* Southline brand: navy tile + teal wave */
+  --brand: #0b1f3a;
+  --brand-accent: #2dd4bf;
   /* channel colours (validated categorical pair): email = blue, SMS = orange */
   --email: #2a78d6;
   --sms: #eb6834;
@@ -50,6 +53,8 @@
   --ring: oklch(0.556 0 0);
   --email: #3987e5;
   --sms: #d95926;
+  --brand: #13315c;
+  --brand-accent: #2dd4bf;
 }
 
 @theme inline {
@@ -73,6 +78,8 @@
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+  --color-brand: var(--brand);
+  --color-brand-accent: var(--brand-accent);
   --color-email: var(--email);
   --color-sms: var(--sms);
   --radius-sm: calc(var(--radius) - 4px);

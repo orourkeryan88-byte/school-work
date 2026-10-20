@@ -26,7 +26,7 @@ npm run dev        # http://localhost:3000
 With no env vars set, the app runs in **demo mode**:
 
 - It uses mock data: 70 Irish trades leads across 4 campaigns.
-- There's no login.
+- You sign in with the demo login shown on the login page (`demo@southline.ie` / `southline`). Set `APP_USERS` in `.env.local` to use your own logins instead.
 - Reply tagging uses keyword rules instead of AI.
 
 Anything you change or import in demo mode is saved to `.data/mock-db.json`. Delete that file to reset.
@@ -52,6 +52,8 @@ Copy `.env.example` to `.env.local` locally, or add these in Vercel → Settings
 
 | Variable | Required | What it's for |
 |---|---|---|
+| `APP_USERS` | yes, unless you use Supabase logins | Built-in logins: `email-or-username:password` pairs separated by commas |
+| `AUTH_SECRET` | yes (live) | Signs the login cookie. Generate one with `openssl rand -hex 32`. |
 | `NEXT_PUBLIC_SUPABASE_URL` | yes | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | yes | Used for login only |
 | `SUPABASE_SERVICE_ROLE_KEY` | yes | Server-side database access. Never expose this to the browser. |
@@ -66,7 +68,10 @@ Copy `.env.example` to `.env.local` locally, or add these in Vercel → Settings
 | `SENDMODE_SENDER_ID` | optional | Sender name or number for texts sent from the app |
 | `INSTANTLY_API_KEY` | optional | Enables `/api/sync/instantly` |
 
-Once all three Supabase variables are set, the app switches from mock data to your database, and every page needs a login.
+**Logins:** every page is behind the login.
+
+- Without Supabase, the users in `APP_USERS` can sign in. Each login can be an email or a plain username.
+- Once all three Supabase variables are set, the app switches to your database and to Supabase Auth users. `ALLOWED_EMAILS` limits who can sign in.
 
 ### 2c. Deploy
 

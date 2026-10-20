@@ -4,12 +4,12 @@ import type { MetadataRoute } from "next";
 // full-screen with its own icon, like a native app.
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Southline Outreach",
+    name: "Southline Agency",
     short_name: "Southline",
     description: "Every cold email and SMS sent, every reply, and what happened next.",
     start_url: "/inbox",
     display: "standalone",
-    background_color: "#0a0a0a",
+    background_color: "#0b1f3a",
     theme_color: "#0a0a0a",
     icons: [
       { src: "/icon", sizes: "512x512", type: "image/png", purpose: "any" },

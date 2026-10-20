@@ -4,12 +4,15 @@
 // pages so the UI picks up the change immediately.
 
 import { revalidatePath } from "next/cache";
+import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getCredits } from "@/lib/adapters/sendmode";
 import { testGhl } from "@/lib/adapters/ghl";
 import { classifyReply, draftMessage, summariseLead } from "@/lib/ai";
 import * as repo from "@/lib/repo";
-import { getStore, isSupabaseConfigured } from "@/lib/store";
+import { authMode } from "@/lib/auth";
+import { checkLogin, createSessionToken, SESSION_COOKIE, SESSION_MAX_AGE } from "@/lib/session";
+import { getStore } from "@/lib/store";
 import type { Channel, LeadStatus, ReplyTag } from "@/lib/types";
 import { LEAD_STATUSES, REPLY_TAGS } from "@/lib/types";
 import { createAuthClient } from "@/lib/supabase/server";
@@ -90,20 +93,32 @@ export async function createLeadAction(form: FormData) {
 }
 
 export async function signInAction(form: FormData) {
-  if (!isSupabaseConfigured()) redirect("/");
-  const supabase = await createAuthClient();
-  const { error } = await supabase.auth.signInWithPassword({
-    email: String(form.get("email") ?? ""),
-    password: String(form.get("password") ?? ""),
-  });
-  if (error) redirect(`/login?error=${encodeURIComponent(error.message)}`);
-  redirect("/");
+  const email = String(form.get("email") ?? "").trim().toLowerCase();
+  const password = String(form.get("password") ?? "");
+  if (authMode() === "supabase") {
+    const supabase = await createAuthClient();
+    const { error } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) redirect(`/login?error=${encodeURIComponent(error.message)}`);
+  } else {
+    const user = checkLogin(email, password);
+    if (!user) redirect("/login?error=bad_login");
+    (await cookies()).set(SESSION_COOKIE, await createSessionToken(user.login), {
+      httpOnly: true,
+      sameSite: "lax",
+      secure: process.env.NODE_ENV === "production",
+      path: "/",
+      maxAge: SESSION_MAX_AGE,
+    });
+  }
+  redirect("/inbox");
 }
 
 export async function signOutAction() {
-  if (isSupabaseConfigured()) {
+  if (authMode() === "supabase") {
     const supabase = await createAuthClient();
     await supabase.auth.signOut();
+  } else {
+    (await cookies()).delete(SESSION_COOKIE);
   }
   redirect("/login");
 }
