@@ -106,7 +106,7 @@ function itemId(t: TimelineItem) {
 
 /** One entry on the lead timeline: a send, a reply, a note, a status change or a follow-up. */
 function TimelineEntry({ item }: { item: TimelineItem }) {
-  const dot = "absolute -left-[9px] mt-1 flex size-4 items-center justify-center rounded-full border bg-background [&_svg]:size-2.5";
+  const dot = "absolute -left-[29px] mt-0.5 flex size-4 items-center justify-center rounded-full border bg-background [&_svg]:size-2.5";
   if (item.type === "message") {
     const m = item.message;
     const inbound = m.direction === "inbound";

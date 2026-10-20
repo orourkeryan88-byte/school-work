@@ -26,6 +26,8 @@ const REPLIES: { tag: ReplyTag; text: string; next?: LeadStatus }[] = [
   { tag: "interested", text: "Yeah go on, send me some info. What does it cost?", next: "interested" },
   { tag: "interested", text: "Sounds good actually. Can you ring me Thursday after 5?", next: "interested" },
   { tag: "interested", text: "Ya I miss loads of calls. Book me in for a demo", next: "booked" },
+  { tag: "interested", text: "How much a month? Might be worth a look", next: "interested" },
+  { tag: "interested", text: "Go on so, what times are you free next week?", next: "interested" },
   { tag: "question", text: "Does it work with my existing mobile number?" },
   { tag: "question", text: "How does it know my prices?" },
   { tag: "objection", text: "Customers won't want to talk to a robot to be honest" },
@@ -133,7 +135,12 @@ export function buildMockData(): { [K in TableName]: Tables[K][] } {
     }
 
     // A few booked calls turn into wins, plus some manual notes and follow-ups.
-    if (lead.status === "booked" && r() < 0.5) {
+    if (lead.status === "interested" && created > 4 && r() < 0.45) {
+      lead.status = "booked";
+      lead.booked_at = daysAgo(created - 2, 14);
+      notes.push({ id: id("note"), lead_id: lead.id, kind: "status", body: "Status → booked", created_at: lead.booked_at });
+    }
+    if (lead.status === "booked" && created > 6 && r() < 0.5) {
       lead.status = "won";
       lead.won_at = daysAgo(Math.max(0, created - 3));
       notes.push({ id: id("note"), lead_id: lead.id, kind: "status", body: "Status → won", created_at: lead.won_at });

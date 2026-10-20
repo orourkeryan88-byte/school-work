@@ -251,7 +251,8 @@ export interface QueueItem {
  * Who needs a follow-up today:
  *  1. scheduled follow-ups due today or earlier
  *  2. auto: replied/interested leads with nothing from me in 2+ days
- *  3. auto: contacted leads with no reply after 4+ days and fewer than 3 sends
+ *  3. auto: contacted leads sent one message 4-30 days ago with no reply
+ *     (more than one send usually means a sequence tool is already nudging them)
  */
 export async function followUpQueue(today = isoDay()): Promise<QueueItem[]> {
   const store = getStore();
@@ -281,7 +282,7 @@ export async function followUpQueue(today = isoDay()): Promise<QueueItem[]> {
       reason = lead.status === "interested" ? "Interested - waiting on you" : "Replied - waiting on you";
     } else if ((lead.status === "replied" || lead.status === "interested") && daysSince >= 2) {
       reason = "No answer since your last message";
-    } else if (lead.status === "contacted" && daysSince >= 4 && msgs.filter((m) => m.direction === "outbound").length < 3) {
+    } else if (lead.status === "contacted" && daysSince >= 4 && daysSince <= 30 && msgs.filter((m) => m.direction === "outbound").length === 1) {
       reason = "No reply yet - send a nudge";
     }
     if (reason) items.push({ lead, followUp: null, reason, dueDate: today, overdue: false, lastMessage: last, messages: msgs });

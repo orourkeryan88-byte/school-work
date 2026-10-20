@@ -46,7 +46,7 @@ export function DraftBox({ leadId, channel, initial, goal, autoGenerate }: { lea
         <Button size="sm" variant="outline" type="button" onClick={generate} disabled={pending}>
           <Sparkles /> {pending ? "Drafting…" : text ? "Redraft" : "Draft with AI"}
         </Button>
-        {source && <span className="text-xs text-muted-foreground">{source === "ai" ? "Drafted by Claude" : "Template (add ANTHROPIC_API_KEY for AI)"}</span>}
+        {source && <span className="text-xs text-muted-foreground">{source === "ai" ? "Drafted by Claude" : "Template"}</span>}
       </div>
       <Textarea value={text} onChange={(e) => setText(e.target.value)} rows={ch === "sms" ? 3 : 5} placeholder="Draft appears here…" />
       {ch === "sms" && <div className="text-right text-xs text-muted-foreground">{text.length} chars</div>}

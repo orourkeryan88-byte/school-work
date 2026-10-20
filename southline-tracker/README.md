@@ -1,36 +1,227 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Southline Outreach Tracker
 
-## Getting Started
+One place to see every cold email and SMS you've sent, who it went to, whether they replied, what they said, and what happened next.
 
-First, run the development server:
+Standalone Next.js app with its own Postgres database (Supabase). It is **not** a GoHighLevel plugin. Data comes in through webhooks, CSV imports and (optionally) API sync, from any sending tool.
+
+- **Responses**: every reply in one table, filtered by channel, tag, status, trade and date. Each reply is tagged automatically. Quick actions on each row: interested, booked, note, follow-up date, AI draft, retag.
+- **Dashboard**: sent, replies, reply rate, positive replies, calls booked and deals won, with cold email and SMS side by side, for today / 7d / 30d / custom.
+- **Leads**: searchable list. Each lead has one timeline covering both channels: sends, replies, notes, status changes and follow-ups.
+- **Follow-ups**: the daily list of people waiting on you, each with a suggested message.
+- **Campaigns**: sent / replied / positive / booked / reply rate per campaign, plus A/B variant comparison.
+- **AI assist (Claude)**: tags replies, drafts responses in your tone and sums up a lead in 3 lines.
+- **Export**: every page has an *Export CSV* button that downloads exactly what you're looking at.
+- Dark mode, works on a phone.
+
+---
+
+## 1. Run it locally (2 minutes, no accounts needed)
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+cd southline-tracker
+npm install
+npm run dev        # http://localhost:3000
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+With no env vars set, the app runs in **demo mode**:
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+- It uses mock data: 70 Irish trades leads across 4 campaigns.
+- There's no login.
+- Reply tagging uses keyword rules instead of AI.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Anything you change or import in demo mode is saved to `.data/mock-db.json`. Delete that file to reset.
 
-## Learn More
+```bash
+npm test           # unit tests (matching, ingest, stats, tagging)
+npm run typecheck
+npm run lint
+```
 
-To learn more about Next.js, take a look at the following resources:
+## 2. Go live
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+### 2a. Supabase (database + login)
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Create a project at [supabase.com](https://supabase.com) (EU region, e.g. Frankfurt or Ireland).
+2. Open **SQL Editor**, paste `supabase/migrations/0001_init.sql` and run it.
+3. Go to **Authentication → Users → Add user**. Create yourself with an email and password. Turn off public sign-ups under **Authentication → Providers → Email**, since this is a one-person app.
+4. Go to **Project Settings → API** and copy the URL, the `anon` key and the `service_role` key.
 
-## Deploy on Vercel
+### 2b. Environment variables
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Copy `.env.example` to `.env.local` locally, or add these in Vercel → Settings → Environment Variables:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+| Variable | Required | What it's for |
+|---|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | yes | Supabase project URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | yes | Used for login only |
+| `SUPABASE_SERVICE_ROLE_KEY` | yes | Server-side database access. Never expose this to the browser. |
+| `ALLOWED_EMAILS` | recommended | Comma-separated list of emails allowed to log in |
+| `INGEST_SECRET` | yes (live) | Shared secret for webhooks and sync. Generate one with `openssl rand -hex 24`. |
+| `APP_URL` | optional | Your public URL, used to show the right webhook URLs on the Import page |
+| `ANTHROPIC_API_KEY` | optional | Turns on Claude for tagging, drafts and summaries. Without it you get rules and templates. |
+| `ANTHROPIC_MODEL` | optional | Defaults to `claude-opus-5-5` |
+| `INSTANTLY_API_KEY` | optional | Enables `/api/sync/instantly` |
+
+Once all three Supabase variables are set, the app switches from mock data to your database, and every page needs a login.
+
+### 2c. Deploy
+
+Push the repo to Vercel (set the root directory to `southline-tracker`), add the env vars and deploy. Any Node host that runs `next build && next start` works too.
+
+---
+
+## 3. Connect your tools
+
+All data comes in through two endpoints:
+
+```
+POST https://YOUR_APP/api/ingest/email?secret=INGEST_SECRET
+POST https://YOUR_APP/api/ingest/sms?secret=INGEST_SECRET
+```
+
+- **Secret**: put it in `?secret=`, in an `x-ingest-secret` header, or as `Authorization: Bearer <secret>`.
+- **Body**: JSON (one event, an array, or `{ "events": [...] }`), or form-encoded. GET with query params also works, for SMS gateways that forward that way.
+- **Optional defaults**: `?direction=inbound|outbound`, `?source=instantly|smartlead|ghl|sendmode` and `?campaign=Name` apply to events that don't say.
+- **Duplicates**: an event with a known `id` from the same source is skipped. So is an identical message to the same lead at the same time. Re-sending is safe.
+- **Response**: a JSON summary of what was imported, which also shows up on **Import & connect → Import log**.
+
+### Fields the app understands
+
+Field names are matched loosely: case-insensitive, with spaces and dashes treated as `_`, and nested objects like `contact.email` handled.
+
+| Meaning | Accepted names (first match wins) |
+|---|---|
+| Lead email | `email`, `lead_email`, `contact_email`, `sl_lead_email`. Inbound also checks `from_email` / `from`; outbound checks `to_email` / `to`. |
+| Lead phone | `phone`, `mobile`, `msisdn`, `phone_number`, `number`. Inbound also checks `from` / `sender` / `originator`; outbound checks `to` / `recipient`. |
+| Message text | `body`, `message`, `text`, `content`, `reply_text`, `reply_message` (or `reply_message.text`), `reply`, `email_body`, `sms` |
+| Sent or reply? | `direction`, `type`, `event`, `event_type`, `status`. Anything with *reply / inbound / received* counts as a reply; *sent / outbound / delivered* counts as a send. Otherwise `?direction=` decides, defaulting to *sent*. |
+| Name / business | `name`, `first_name` + `last_name`, `company`, `company_name`, `business` |
+| Trade / county | `trade`, `industry`, `category` / `county`, `city`, `location` |
+| Campaign / variant | `campaign`, `campaign_name`, `sequence` / `variant`, `step`, `sequence_step`, `template` |
+| Time | `sent_at`, `timestamp`, `date`, `received_at`, `replied_at`. ISO, unix seconds, or `18/10/2026 14:22`. Times with no timezone are read as Irish time. |
+| Unique id | `external_id`, `id`, `message_id`, `email_id`, `sms_id` |
+
+Quoted text is stripped from email replies ("On Mon, X wrote:" and `>` lines).
+
+### How contacts are matched
+
+Every event is matched to an existing lead by **email**, then **phone** (normalised to +353…), then **business name** (case, punctuation and "Ltd" ignored). So a lead who got a cold email and later texted back ends up on **one timeline**. New details like a phone number are added to the lead as they arrive.
+
+### What happens when a reply arrives
+
+1. It's linked to the last message you sent that lead on the same channel. That's the "Message I sent" column.
+2. It's tagged as Interested / Not interested / Question / Objection / Out of office / Unsubscribe.
+3. The lead's status moves forward automatically: Contacted → Replied → Interested. "No" or STOP sets it to Lost and marks the lead unsubscribed. Automatic changes never move a lead backwards (a new send won't undo *Booked*), and they never touch Won/Lost. You can always set the status by hand.
+
+### Cold email tools
+
+**Instantly**: Settings → Integrations → Webhooks → Add webhook
+
+- URL: `https://YOUR_APP/api/ingest/email?secret=…&source=instantly`
+- Events: *Email sent* and *Reply received*. Instantly's `event_type` values (`email_sent`, `reply_received`) are detected automatically.
+- Optional backfill: set `INSTANTLY_API_KEY` and call `POST /api/sync/instantly?secret=…` from a cron (e.g. Vercel Cron or cron-job.org, every 30 min). It pulls recent emails from Instantly's v2 API and skips anything already imported. Keep `source=instantly` on the webhook URL so webhook and sync events dedupe against each other. *This adapter couldn't be tested against a live Instantly account. If Instantly changes its field names, rows are skipped and logged rather than imported wrongly.*
+
+**Smartlead**: Campaign → Settings → Webhooks (or Settings → Webhooks for all campaigns)
+
+- URL: `https://YOUR_APP/api/ingest/email?secret=…&source=smartlead`
+- Events: `EMAIL_SENT`, `EMAIL_REPLY`. Fields like `sl_lead_email`, `reply_message.text` and `campaign_name` are understood.
+
+**GoHighLevel**: in a Workflow, add a *Webhook* action
+
+- Use one workflow triggered on *Email sent* with URL `…/api/ingest/email?secret=…&source=ghl&direction=outbound`.
+- Use another triggered on *Customer replied* (channel: email) with `direction=inbound`.
+- In *Custom data*, send `email`, `name`, `company_name`, `message` (the message body) and optionally `campaign`.
+
+**Any other tool**: send at least an email address and a message body. Or export a CSV.
+
+### SendMode (SMS)
+
+- **Replies**: in SendMode, set your inbound SMS forwarding / callback URL to
+
+  ```
+  https://YOUR_APP/api/ingest/sms?secret=…&direction=inbound&source=sendmode
+  ```
+
+  The app needs the sender's number (`from`, `sender`, `originator` or `msisdn`) and the text (`message`, `text` or `body`). It accepts JSON, form posts, or a GET with query params, so whichever format SendMode sends should work. Check **Import log** after your first test text. If a field isn't recognised, the error shows there.
+- **Sends**: after each blast, export the sent report from SendMode and import it on **Import & connect** (channel *SMS*, rows *Messages I sent*). If you send through SendMode's API from your own scripts, also post each send to `…/api/ingest/sms?secret=…&direction=outbound&source=sendmode`.
+- **API sync**: not built yet. There's no pull adapter for SendMode, so use the webhook plus the CSV export. The adapter pattern in `src/lib/adapters/instantly.ts` shows how to add one.
+
+### CSV import
+
+Go to **Import & connect → CSV import**:
+
+1. Pick the channel and whether the rows are *sends* or *replies*.
+2. Optionally pick a default campaign.
+3. Upload the file.
+
+Column names are matched with the same rules as the webhook fields above. A file can mix sends and replies if it has a `direction`/`type`/`status` column. Re-importing the same file creates no duplicates. Sample files are in `public/samples/`.
+
+Test it with curl:
+
+```bash
+curl -X POST "http://localhost:3000/api/ingest/sms?direction=inbound" \
+  -d "from=0871234567&message=Yeah go on, how much is it?"
+```
+
+---
+
+## 4. AI assist
+
+With `ANTHROPIC_API_KEY` set, Claude (`claude-opus-5-5` by default):
+
+- **Tags each reply** as it arrives (structured JSON output, so it's always one of the six tags). Use *Re-tag* to run it again, or pick the tag by hand.
+- **Drafts replies and follow-ups** in your tone: short, direct, Irish market, SMS under 300 characters. Edit the draft, copy it, send it from your normal tool, then press **Log as sent** so it lands on the timeline.
+- **Summarises a lead** in 3 lines: who they are, where the conversation stands, and the next step.
+
+Calls run at low effort to keep them quick and cheap. Server-side fallback is enabled (`fallbacks: "default"`), so if the model declines a request, the API retries on Anthropic's recommended fallback model.
+
+Without a key, tagging uses keyword rules (`src/lib/ai.ts`), drafts use templates, and summaries are built from the data. Everything still works.
+
+To change your tone of voice, edit `TONE` in `src/lib/ai.ts`.
+
+## 5. Follow-up queue rules
+
+The Follow-ups page lists:
+
+1. Follow-ups you scheduled that are due today or overdue.
+2. Leads who **replied or are interested** and are waiting on you, or who haven't answered your last message in 2+ days.
+3. In a collapsible "No reply yet" section: leads you sent exactly one message 4–30 days ago with no reply. Leads with more sends are left out, because your sequence tool is probably already nudging them.
+
+Use **Done** to clear an item, or **+2 days / +1 week** to snooze it.
+
+## 6. How the numbers are calculated
+
+- **Sent / replies**: messages in the date range.
+- **Reply rate**: unique leads who replied ÷ unique leads contacted in the range.
+- **Positive**: replies tagged *Interested*.
+- **Calls booked / deals won**: leads marked Booked/Won during the range. Each is credited to the channel the lead first replied on, so email + SMS always add up to the total.
+- **Campaign variants**: compared on first-touch messages only. Messages with "follow" in the variant name are excluded.
+
+## Project layout
+
+```
+src/
+  app/                    pages (dashboard, inbox, leads, follow-ups, campaigns, import, login)
+    actions.ts            server actions behind the quick-action buttons
+    api/ingest/[channel]  POST /api/ingest/email | /api/ingest/sms
+    api/import            CSV upload
+    api/export            CSV download for every view
+    api/sync/[source]     optional API pull (instantly)
+  components/             UI (shadcn/ui-style components in components/ui)
+  lib/
+    types.ts              data model
+    repo.ts               business logic: matching, ingest, status rules, read models
+    ingest.ts             payload/CSV field mapping (the "adapters")
+    importer.ts           shared import pipeline + import log
+    stats.ts              dashboard & campaign numbers (pure functions)
+    ai.ts                 Claude calls + rule/template fallbacks
+    store/                memory (mock) and Supabase storage behind one interface
+supabase/migrations/      database schema
+tests/                    unit tests (node:test)
+```
+
+**Data model**: Lead, Message (channel, direction, body, timestamp, campaign, variant, reply link, AI tag), Campaign, Note (manual notes and status changes, for the timeline), FollowUp, ImportLog.
+
+**Scale**: queries load whole tables and aggregate in code. That's simple and fast for a solo operator, up to tens of thousands of messages. Past that, move the aggregations in `stats.ts` into SQL views.
+
+**shadcn/ui**: the components in `src/components/ui` follow shadcn's structure and `components.json` is set up, so `npx shadcn add <component>` works for adding more.

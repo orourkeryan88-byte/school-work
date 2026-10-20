@@ -1,3 +1,5 @@
+export const dynamic = "force-dynamic";
+
 import { createLeadAction } from "@/app/actions";
 import { LeadForm } from "@/components/lead-form";
 import { PageHeader } from "@/components/page-header";
