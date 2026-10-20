@@ -2,6 +2,7 @@ import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { CommandPalette } from "@/components/command-palette";
 import { RequestChange } from "@/components/request-change";
+import { TabBar } from "@/components/tab-bar";
 import { Logo, LogoMark } from "@/components/logo";
 import { MobileNav, SideNav } from "@/components/nav";
 import { ThemeToggle } from "@/components/theme";
@@ -59,7 +60,8 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             Demo mode: showing mock data. Add Supabase keys to <code>.env.local</code> to use your real data (see README).
           </div>
         )}
-        <main className="mx-auto w-full max-w-7xl flex-1 p-4 sm:p-6">{children}</main>
+        <main className="mx-auto w-full max-w-7xl flex-1 p-4 pb-24 sm:p-6 sm:pb-24 md:pb-6">{children}</main>
+        <TabBar />
       </div>
     </div>
   );

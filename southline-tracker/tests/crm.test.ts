@@ -104,3 +104,12 @@ test("reply queue: drafts are cached, sending/dismissing clears the item, quiet 
   assert.ok(sent.ok);
   assert.ok(!(await repo.replyQueue()).some((i) => i.lead.id === smsItem.lead.id), "answered lead leaves the queue");
 });
+
+test("leads list: sort hottest first, and the Hot filter", async () => {
+  const byScore = await repo.listLeads({ sort: "score" });
+  assert.ok(byScore.every((l, i) => i === 0 || byScore[i - 1].score.score >= l.score.score));
+  const hot = await repo.listLeads({ hot: true });
+  assert.ok(hot.length > 0 && hot.every((l) => l.score.hot));
+  const byName = await repo.listLeads({ sort: "name" });
+  assert.ok((byName[0].name ?? "") <= (byName[byName.length - 1].name ?? "zzz"));
+});

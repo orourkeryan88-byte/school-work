@@ -348,9 +348,10 @@ export interface LeadRow extends Lead {
   replies: number;
   last_activity: string;
   last_reply: Message | null;
+  score: Score;
 }
 
-export async function listLeads(f: { q?: string; status?: LeadStatus | ""; channel?: Channel | ""; trade?: string } = {}): Promise<LeadRow[]> {
+export async function listLeads(f: { q?: string; status?: LeadStatus | ""; channel?: Channel | ""; trade?: string; sort?: "recent" | "score" | "name"; hot?: boolean } = {}): Promise<LeadRow[]> {
   const store = getStore();
   const [leads, messages] = await Promise.all([store.all("leads"), store.all("messages")]);
   const byLead = groupBy(messages, (m) => m.lead_id);
@@ -365,16 +366,24 @@ export async function listLeads(f: { q?: string; status?: LeadStatus | ""; chann
         replies: msgs.filter((m) => m.direction === "inbound").length,
         last_activity: msgs.at(-1)?.sent_at ?? l.updated_at,
         last_reply: msgs.filter((m) => m.direction === "inbound").at(-1) ?? null,
+        score: scoreLead(l, msgs),
       };
     })
     .filter((l) => {
       if (f.status && l.status !== f.status) return false;
       if (f.channel && !l.channels.includes(f.channel)) return false;
       if (f.trade && l.trade?.toLowerCase() !== f.trade.toLowerCase()) return false;
+      if (f.hot && !l.score.hot) return false;
       if (q && ![l.name, l.business, l.email, l.phone, l.county, l.trade].some((s) => s?.toLowerCase().includes(q))) return false;
       return true;
     })
-    .sort((a, b) => b.last_activity.localeCompare(a.last_activity));
+    .sort((a, b) =>
+      f.sort === "score"
+        ? b.score.score - a.score.score
+        : f.sort === "name"
+          ? (a.name ?? a.business ?? "").localeCompare(b.name ?? b.business ?? "")
+          : b.last_activity.localeCompare(a.last_activity),
+    );
 }
 
 export type TimelineItem =

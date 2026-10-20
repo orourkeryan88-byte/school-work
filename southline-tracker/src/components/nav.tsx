@@ -3,7 +3,7 @@
 import { BarChart3, CalendarClock, Columns3, Inbox, Megaphone, Menu, PhoneCall, Sparkles, Sun, Upload, Users, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
 
 export const NAV = [
@@ -48,16 +48,21 @@ export function SideNav() {
   return <Links />;
 }
 
-/** Hamburger menu for phones. */
+/** Hamburger menu for phones. The tab bar's "More" button opens it too (via an event). */
 export function MobileNav() {
   const [open, setOpen] = useState(false);
+  useEffect(() => {
+    const toggle = () => setOpen((o) => !o);
+    window.addEventListener("southline:menu", toggle);
+    return () => window.removeEventListener("southline:menu", toggle);
+  }, []);
   return (
     <div className="md:hidden">
       <button aria-label="Menu" className="rounded-md p-2 hover:bg-accent" onClick={() => setOpen(!open)}>
         {open ? <X className="size-5" /> : <Menu className="size-5" />}
       </button>
       {open && (
-        <div className="absolute inset-x-0 top-14 z-50 border-b bg-background p-3 shadow-lg">
+        <div className="absolute inset-x-0 top-14 z-50 max-h-[calc(100dvh-8.5rem)] overflow-y-auto border-b bg-background p-3 shadow-lg">
           <Links onClick={() => setOpen(false)} />
         </div>
       )}
