@@ -57,7 +57,7 @@ export function CommandPalette() {
     <>
       <button
         onClick={() => setOpen(true)}
-        className="flex h-8 items-center gap-2 rounded-md border bg-background px-2.5 text-sm text-muted-foreground hover:bg-accent sm:w-64"
+        className="flex size-8 items-center justify-center gap-2 rounded-md text-sm text-muted-foreground hover:bg-accent sm:h-8 sm:w-64 sm:justify-start sm:border sm:bg-background sm:px-2.5"
         aria-label="Search"
       >
         <Search className="size-4" />

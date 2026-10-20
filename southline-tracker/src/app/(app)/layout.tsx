@@ -37,11 +37,11 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <div className="flex min-w-0 flex-1 flex-col">
         <header className="sticky top-0 z-40 flex h-14 items-center gap-2 border-b bg-background/90 px-4 backdrop-blur">
           <MobileNav />
-          <Link href="/" className="flex items-center gap-2 md:hidden">
+          <Link href="/" className="flex min-w-0 items-center gap-2 md:hidden">
             <LogoMark className="size-7" />
-            <span className="font-semibold tracking-tight">Southline Agency</span>
+            <span className="truncate text-[15px] font-semibold tracking-tight whitespace-nowrap">Southline Agency</span>
           </Link>
-          <div className="ml-auto flex items-center gap-1.5">
+          <div className="ml-auto flex shrink-0 items-center gap-0.5 sm:gap-1.5">
             <CommandPalette />
             <span className="md:hidden"><RequestChange variant="icon" /></span>
             <ThemeToggle />
