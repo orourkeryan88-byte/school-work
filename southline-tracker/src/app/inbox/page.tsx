@@ -1,4 +1,5 @@
 import { ExportButton } from "@/components/export-button";
+import { sendmodeConfigured } from "@/lib/adapters/sendmode";
 import { FilterForm } from "@/components/filter-form";
 import { InboxTable } from "@/components/inbox-table";
 import { PageHeader } from "@/components/page-header";
@@ -58,7 +59,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Promis
         <RangeFields range={sp.range} from={sp.from} to={sp.to} defaultRange="all" />
       </FilterForm>
 
-      <InboxTable rows={rows} />
+      <InboxTable rows={rows} smsEnabled={sendmodeConfigured()} />
     </>
   );
 }

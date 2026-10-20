@@ -42,7 +42,7 @@ npm run lint
 ### 2a. Supabase (database + login)
 
 1. Create a project at [supabase.com](https://supabase.com) (EU region, e.g. Frankfurt or Ireland).
-2. Open **SQL Editor**, paste `supabase/migrations/0001_init.sql` and run it.
+2. Open **SQL Editor**, then paste and run `supabase/migrations/0001_init.sql`, then `0002_integrations.sql`.
 3. Go to **Authentication → Users → Add user**. Create yourself with an email and password. Turn off public sign-ups under **Authentication → Providers → Email**, since this is a one-person app.
 4. Go to **Project Settings → API** and copy the URL, the `anon` key and the `service_role` key.
 
@@ -60,13 +60,31 @@ Copy `.env.example` to `.env.local` locally, or add these in Vercel → Settings
 | `APP_URL` | optional | Your public URL, used to show the right webhook URLs on the Import page |
 | `ANTHROPIC_API_KEY` | optional | Turns on Claude for tagging, drafts and summaries. Without it you get rules and templates. |
 | `ANTHROPIC_MODEL` | optional | Defaults to `claude-opus-5-5` |
+| `GHL_API_KEY` | optional | GoHighLevel Private Integration token. Used to look up contact details for message events. |
+| `GHL_LOCATION_ID` | optional | GHL sub-account id, used by *Test connection* |
+| `SENDMODE_ACCESS_KEY` | optional | SendMode API access key. Turns on **Send SMS via SendMode** from drafts. |
+| `SENDMODE_SENDER_ID` | optional | Sender name or number for texts sent from the app |
 | `INSTANTLY_API_KEY` | optional | Enables `/api/sync/instantly` |
 
 Once all three Supabase variables are set, the app switches from mock data to your database, and every page needs a login.
 
 ### 2c. Deploy
 
-Push the repo to Vercel (set the root directory to `southline-tracker`), add the env vars and deploy. Any Node host that runs `next build && next start` works too.
+**Vercel (easiest):**
+
+1. Push this repo to GitHub.
+2. At [vercel.com/new](https://vercel.com/new), import the repo and set **Root Directory** to `southline-tracker`.
+3. Add the env vars from 2b and deploy.
+4. Set `APP_URL` to the URL Vercel gives you, then redeploy so the Import page shows the right webhook URLs.
+
+**Anywhere else:** a `Dockerfile` is included (Railway, Render, Fly.io or a VPS):
+
+```bash
+docker build -t southline-tracker .
+docker run -p 3000:3000 --env-file .env.local southline-tracker
+```
+
+Without Docker, `npm ci && npm run build && npm start` on any Node 20+ host also works.
 
 ---
 
@@ -126,25 +144,71 @@ Every event is matched to an existing lead by **email**, then **phone** (normali
 - URL: `https://YOUR_APP/api/ingest/email?secret=…&source=smartlead`
 - Events: `EMAIL_SENT`, `EMAIL_REPLY`. Fields like `sl_lead_email`, `reply_message.text` and `campaign_name` are understood.
 
-**GoHighLevel**: in a Workflow, add a *Webhook* action
-
-- Use one workflow triggered on *Email sent* with URL `…/api/ingest/email?secret=…&source=ghl&direction=outbound`.
-- Use another triggered on *Customer replied* (channel: email) with `direction=inbound`.
-- In *Custom data*, send `email`, `name`, `company_name`, `message` (the message body) and optionally `campaign`.
+**GoHighLevel**: see [GoHighLevel integration](#gohighlevel-integration) below.
 
 **Any other tool**: send at least an email address and a message body. Or export a CSV.
 
-### SendMode (SMS)
+### GoHighLevel integration
 
-- **Replies**: in SendMode, set your inbound SMS forwarding / callback URL to
+Endpoint: `POST https://YOUR_APP/api/integrations/ghl?secret=INGEST_SECRET`. It takes two kinds of GHL webhook. Use either, or both.
 
-  ```
-  https://YOUR_APP/api/ingest/sms?secret=…&direction=inbound&source=sendmode
-  ```
+**Option A: Private Integration webhooks (recommended, catches every email and SMS automatically)**
 
-  The app needs the sender's number (`from`, `sender`, `originator` or `msisdn`) and the text (`message`, `text` or `body`). It accepts JSON, form posts, or a GET with query params, so whichever format SendMode sends should work. Check **Import log** after your first test text. If a field isn't recognised, the error shows there.
-- **Sends**: after each blast, export the sent report from SendMode and import it on **Import & connect** (channel *SMS*, rows *Messages I sent*). If you send through SendMode's API from your own scripts, also post each send to `…/api/ingest/sms?secret=…&direction=outbound&source=sendmode`.
-- **API sync**: not built yet. There's no pull adapter for SendMode, so use the webhook plus the CSV export. The adapter pattern in `src/lib/adapters/instantly.ts` shows how to add one.
+1. In GHL go to **Settings → Private Integrations → Create new integration**.
+2. Give it the scopes `contacts.readonly` and `conversations/message.readonly`. Copy the token into `GHL_API_KEY`, and your sub-account id into `GHL_LOCATION_ID`.
+3. In the integration's **Webhooks** section, set the URL to `https://YOUR_APP/api/integrations/ghl?secret=…` and subscribe to **InboundMessage** and **OutboundMessage**.
+   - If your GHL plan doesn't show webhooks on Private Integrations, use a Marketplace app with the same two events, or use Option B.
+
+What happens to each event:
+- `messageType` SMS is logged as SMS, and Email as cold email. Calls, chats and other message types are ignored and still answered with 200, so GHL doesn't retry them.
+- These events carry a `contactId` but often no email address. When `GHL_API_KEY` is set, the app fetches the contact (name, email, phone, company) from the GHL API.
+- Each lead stores its GHL contact id, so later events for that contact always land on the same timeline, even without an email or phone.
+
+**Option B: Workflow webhooks (no API key needed)**
+
+Create a workflow per event, each with a **Webhook** action. The URL decides the channel and direction:
+
+| Workflow trigger | Webhook URL |
+|---|---|
+| Email sent (or your campaign's send step) | `…/api/integrations/ghl?secret=…&channel=email&direction=outbound` |
+| Customer replied, channel Email | `…/api/integrations/ghl?secret=…&channel=email&direction=inbound` |
+| SMS sent | `…/api/integrations/ghl?secret=…&channel=sms&direction=outbound` |
+| Customer replied, channel SMS | `…/api/integrations/ghl?secret=…&channel=sms&direction=inbound` |
+
+GHL sends the contact's standard fields automatically (`contact_id`, `full_name`, `email`, `phone`, `company_name`). Under **Custom Data**, add:
+
+- `message`: the message body. Use the reply-text custom value for reply triggers.
+- optionally `campaign`, `variant`, `trade` and `county`.
+
+**Test connection**: with the API key set, there's a button for it on **Import & connect**.
+
+### SendMode integration
+
+All three parts are set up in the SendMode portal under **Settings → API Settings**.
+
+1. **Replies (incoming SMS).** Set the incoming SMS forwarding URL to
+
+   ```
+   https://YOUR_APP/api/integrations/sendmode/inbound?secret=INGEST_SECRET
+   ```
+
+   It accepts GET, form posts or JSON, and needs the sender's number (`from` / `sender` / `originator` / `msisdn` / `phone`) and the text (`message` / `text` / `body`). It answers `True` when the reply is saved. If a field isn't recognised it answers `False: <reason>` with a 422, and the same reason shows in the **Import log**.
+
+2. **Delivery reports.** Set **Post Delivery Reports to URL** to
+
+   ```
+   https://YOUR_APP/api/integrations/sendmode/delivery?secret=INGEST_SECRET
+   ```
+
+   SendMode posts `EventID`, `Phonenumber`, `Status` and `CustomerID`. For texts sent from this app, the status (e.g. *delivered*) appears next to the message on the lead's timeline. The endpoint always answers `True`, as SendMode requires.
+
+3. **Send SMS from the app.** Create an API access key and set `SENDMODE_ACCESS_KEY` (plus `SENDMODE_SENDER_ID`).
+   - SMS drafts on the inbox, lead page and follow-up queue then get a **Send SMS via SendMode** button. It asks for confirmation before sending.
+   - It uses SendMode's REST API (`POST https://rest.sendmode.com/v2/send`) and logs the text on the lead's timeline.
+   - It refuses to text leads who have unsubscribed (replied STOP).
+   - **Test connection** on **Import & connect** checks the key and shows your credit balance.
+
+**Bulk blasts** still run from SendMode itself. Export the sent report after each blast and import it as CSV (channel *SMS*, rows *Messages I sent*), so the dashboard counts them.
 
 ### CSV import
 
@@ -206,6 +270,7 @@ src/
     api/ingest/[channel]  POST /api/ingest/email | /api/ingest/sms
     api/import            CSV upload
     api/export            CSV download for every view
+    api/integrations/     GoHighLevel + SendMode (inbound, delivery reports)
     api/sync/[source]     optional API pull (instantly)
   components/             UI (shadcn/ui-style components in components/ui)
   lib/
@@ -215,6 +280,7 @@ src/
     importer.ts           shared import pipeline + import log
     stats.ts              dashboard & campaign numbers (pure functions)
     ai.ts                 Claude calls + rule/template fallbacks
+    adapters/             ghl.ts, sendmode.ts, instantly.ts
     store/                memory (mock) and Supabase storage behind one interface
 supabase/migrations/      database schema
 tests/                    unit tests (node:test)

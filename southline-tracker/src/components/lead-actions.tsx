@@ -24,6 +24,7 @@ export function LeadActions({
   messageId,
   tag,
   compact,
+  smsEnabled,
 }: {
   leadId: string;
   status: LeadStatus;
@@ -31,6 +32,7 @@ export function LeadActions({
   messageId?: string;
   tag?: ReplyTag | null;
   compact?: boolean;
+  smsEnabled?: boolean;
 }) {
   const [panel, setPanel] = useState<Panel>(null);
   const [note, setNote] = useState("");
@@ -123,7 +125,7 @@ export function LeadActions({
         </form>
       )}
 
-      {panel === "draft" && <DraftBox leadId={leadId} channel={channel} autoGenerate />}
+      {panel === "draft" && <DraftBox leadId={leadId} channel={channel} autoGenerate smsEnabled={smsEnabled} />}
     </div>
   );
 }

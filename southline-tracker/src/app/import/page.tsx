@@ -1,5 +1,8 @@
 import { headers } from "next/headers";
 import { CsvImportForm } from "@/components/csv-import-form";
+import { TestConnection } from "@/components/test-connection";
+import { ghlConfigured } from "@/lib/adapters/ghl";
+import { sendmodeConfigured } from "@/lib/adapters/sendmode";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -17,20 +20,73 @@ export default async function ImportPage() {
   const q = secret ? `?secret=${secret}` : "";
   const logs = (await getStore().all("import_logs")).sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 25);
 
+  const amp = q ? "&" : "?";
+  const sendmodeOn = sendmodeConfigured();
+  const ghlOn = ghlConfigured();
+
+  const integrations = [
+    {
+      name: "GoHighLevel",
+      on: ghlOn,
+      status: ghlOn ? "API key set - contacts are looked up automatically" : "Webhooks work now. Add GHL_API_KEY + GHL_LOCATION_ID to fill in contact details.",
+      test: "ghl" as const,
+      urls: [
+        { label: "Private Integration webhook (InboundMessage + OutboundMessage)", url: `${base}/api/integrations/ghl${q}` },
+        { label: "Workflow webhook: email sent", url: `${base}/api/integrations/ghl${q}${amp}channel=email&direction=outbound` },
+        { label: "Workflow webhook: customer replied (email)", url: `${base}/api/integrations/ghl${q}${amp}channel=email&direction=inbound` },
+        { label: "Workflow webhook: SMS sent / replied", url: `${base}/api/integrations/ghl${q}${amp}channel=sms&direction=outbound  (or inbound)` },
+      ],
+    },
+    {
+      name: "SendMode",
+      on: sendmodeOn,
+      status: sendmodeOn ? "Access key set - you can send SMS from drafts" : "Replies + delivery reports work now. Add SENDMODE_ACCESS_KEY to send SMS from the app.",
+      test: "sendmode" as const,
+      urls: [
+        { label: "Incoming SMS (replies) URL", url: `${base}/api/integrations/sendmode/inbound${q}` },
+        { label: "Post Delivery Reports to URL", url: `${base}/api/integrations/sendmode/delivery${q}` },
+      ],
+    },
+  ];
+
   const hooks = [
-    { label: "Cold email: sent + replies", url: `${base}/api/ingest/email${q}`, hint: "Instantly / Smartlead / GHL webhooks. Reply events are detected automatically (event names containing \"reply\")." },
-    { label: "SendMode: inbound SMS (replies)", url: `${base}/api/ingest/sms${q}${q ? "&" : "?"}direction=inbound&source=sendmode`, hint: "Set as the inbound SMS forwarding URL. Needs the sender number and message text." },
-    { label: "SendMode: sent SMS", url: `${base}/api/ingest/sms${q}${q ? "&" : "?"}direction=outbound&source=sendmode`, hint: "Optional - or import the sent report as CSV after each blast." },
+    { label: "Instantly / Smartlead / any email tool", url: `${base}/api/ingest/email${q}`, hint: "Add &source=instantly or &source=smartlead. Reply events are detected automatically." },
+    { label: "Any SMS tool", url: `${base}/api/ingest/sms${q}${amp}direction=inbound`, hint: "Use direction=outbound for sends." },
   ];
 
   return (
     <>
       <PageHeader title="Import & connect" description="Bring sends and replies in by webhook (live) or CSV (any time)." />
 
+      <div className="mb-5 grid gap-5 lg:grid-cols-2">
+        {integrations.map((it) => (
+          <Card key={it.name}>
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2">
+                {it.name}
+                <Badge variant="outline" className={it.on ? "border-emerald-500/40 text-emerald-700 dark:text-emerald-300" : "text-muted-foreground"}>
+                  {it.on ? "Key set" : "Webhooks only"}
+                </Badge>
+              </CardTitle>
+              <CardDescription>{it.status}</CardDescription>
+            </CardHeader>
+            <CardContent className="space-y-3">
+              {it.urls.map((u) => (
+                <div key={u.label} className="space-y-1">
+                  <div className="text-xs font-medium">{u.label}</div>
+                  <code className="block overflow-x-auto rounded bg-muted px-2 py-1.5 text-xs whitespace-nowrap">{u.url}</code>
+                </div>
+              ))}
+              {it.on && <TestConnection target={it.test} />}
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
       <div className="grid gap-5 lg:grid-cols-2">
         <Card>
           <CardHeader>
-            <CardTitle>Webhooks</CardTitle>
+            <CardTitle>Other webhooks</CardTitle>
             <CardDescription>
               Point your tools at these URLs. {secret ? "Replace YOUR_INGEST_SECRET with the INGEST_SECRET from your env." : "No INGEST_SECRET set - open in demo mode only."}
             </CardDescription>

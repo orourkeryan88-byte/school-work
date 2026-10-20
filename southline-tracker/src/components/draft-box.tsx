@@ -1,8 +1,8 @@
 "use client";
 
-import { Check, Copy, Send, Sparkles } from "lucide-react";
+import { Check, Copy, MessageSquare, Send, Sparkles } from "lucide-react";
 import { useEffect, useState, useTransition } from "react";
-import { draftAction, logSentAction } from "@/app/actions";
+import { draftAction, logSentAction, sendSmsAction } from "@/app/actions";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import type { Channel } from "@/lib/types";
@@ -11,12 +11,27 @@ import type { Channel } from "@/lib/types";
  * AI draft panel: generate a reply/follow-up in Ryan's tone, edit it,
  * copy it, then "Log as sent" once it's actually been sent.
  */
-export function DraftBox({ leadId, channel, initial, goal, autoGenerate }: { leadId: string; channel: Channel; initial?: string; goal?: string; autoGenerate?: boolean }) {
+export function DraftBox({
+  leadId,
+  channel,
+  initial,
+  goal,
+  autoGenerate,
+  smsEnabled,
+}: {
+  leadId: string;
+  channel: Channel;
+  initial?: string;
+  goal?: string;
+  autoGenerate?: boolean;
+  smsEnabled?: boolean; // SendMode is configured - show "Send SMS"
+}) {
   const [text, setText] = useState(initial ?? "");
   const [source, setSource] = useState<string | null>(initial ? "template" : null);
   const [ch, setCh] = useState<Channel>(channel);
   const [copied, setCopied] = useState(false);
   const [logged, setLogged] = useState(false);
+  const [sendError, setSendError] = useState<string | null>(null);
   const [pending, start] = useTransition();
 
   const generate = () =>
@@ -77,7 +92,26 @@ export function DraftBox({ leadId, channel, initial, goal, autoGenerate }: { lea
         >
           <Send /> {logged ? "Logged" : "Log as sent"}
         </Button>
+        {smsEnabled && ch === "sms" && (
+          <Button
+            size="sm"
+            type="button"
+            variant="outline"
+            disabled={!text || pending || logged}
+            onClick={() => {
+              if (!confirm("Send this SMS now via SendMode?")) return;
+              start(async () => {
+                const res = await sendSmsAction(leadId, text);
+                setSendError(res.ok ? null : (res.error ?? "Send failed"));
+                if (res.ok) setLogged(true);
+              });
+            }}
+          >
+            <MessageSquare /> {logged ? "Sent" : "Send SMS via SendMode"}
+          </Button>
+        )}
       </div>
+      {sendError && <p className="text-xs text-destructive">{sendError}</p>}
     </div>
   );
 }

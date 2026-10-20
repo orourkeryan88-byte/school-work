@@ -10,6 +10,7 @@ import { LeadForm } from "@/components/lead-form";
 import { LeadSummary } from "@/components/lead-summary";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { sendmodeConfigured } from "@/lib/adapters/sendmode";
 import { getLeadDetail, type TimelineItem } from "@/lib/repo";
 import { formatDate, formatDateTime } from "@/lib/utils";
 
@@ -49,6 +50,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
                 channel={last?.channel ?? (lead.phone && !lead.email ? "sms" : "email")}
                 messageId={last?.direction === "inbound" ? last.id : undefined}
                 tag={last?.direction === "inbound" ? last.ai_tag : undefined}
+                smsEnabled={sendmodeConfigured()}
               />
             </CardContent>
           </Card>
@@ -119,6 +121,7 @@ function TimelineEntry({ item }: { item: TimelineItem }) {
           {inbound && <TagBadge tag={m.ai_tag} />}
           {item.campaign && <span>{item.campaign.name}{m.variant ? ` · ${m.variant}` : ""}</span>}
           <span>{formatDateTime(m.sent_at)}</span>
+          {m.delivery_status && <span title="SendMode delivery report">· {m.delivery_status}</span>}
         </div>
         {m.subject && !inbound && <div className="mt-1 text-xs font-medium">{m.subject}</div>}
         <p className={`mt-1 rounded-md p-2.5 text-sm whitespace-pre-line ${inbound ? "bg-emerald-500/10" : "bg-muted"}`}>{m.body}</p>

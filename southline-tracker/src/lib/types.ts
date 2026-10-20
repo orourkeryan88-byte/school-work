@@ -40,6 +40,7 @@ export interface Lead {
   county: string | null;
   status: LeadStatus;
   unsubscribed: boolean;
+  ghl_contact_id?: string | null; // GoHighLevel contact id, when the lead came from GHL
   booked_at: string | null;
   won_at: string | null;
   created_at: string;
@@ -69,6 +70,7 @@ export interface Message {
   ai_tag_source: "ai" | "rules" | "manual" | null;
   source: string | null;
   external_id: string | null; // id from the sending tool, used to dedupe
+  delivery_status?: string | null; // outbound SMS: delivery report from SendMode
   created_at: string;
 }
 

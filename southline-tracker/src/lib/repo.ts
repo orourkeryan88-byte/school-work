@@ -1,4 +1,5 @@
 import { classifyReply } from "@/lib/ai";
+import { sendSms } from "@/lib/adapters/sendmode";
 import { getStore } from "@/lib/store";
 import type { Campaign, Channel, Direction, FollowUp, InboxRow, Lead, LeadStatus, Message, Note, ReplyTag } from "@/lib/types";
 import { LEAD_STATUSES } from "@/lib/types";
@@ -17,17 +18,20 @@ export interface LeadInput {
   phone?: string | null;
   trade?: string | null;
   county?: string | null;
+  ghl_contact_id?: string | null;
 }
 
 /**
  * Find an existing lead for a contact, so one person has one timeline across
- * channels. Match order: email, then phone, then business name.
+ * channels. Match order: GHL contact id, email, phone, then business name.
  */
 export function matchLead(leads: Lead[], input: LeadInput): Lead | null {
   const email = normalizeEmail(input.email);
   const phone = normalizePhone(input.phone);
   const biz = businessKey(input.business);
+  const ghl = input.ghl_contact_id;
   return (
+    (ghl && leads.find((l) => l.ghl_contact_id === ghl)) ||
     (email && leads.find((l) => l.email === email)) ||
     (phone && leads.find((l) => l.phone === phone)) ||
     (biz && leads.find((l) => businessKey(l.business) === biz)) ||
@@ -69,6 +73,7 @@ export async function upsertLead(input: LeadInput, ctx?: Ctx): Promise<Lead> {
     phone: normalizePhone(input.phone),
     trade: input.trade?.trim() || null,
     county: input.county?.trim().replace(/^co\.?\s+/i, "") || null,
+    ghl_contact_id: input.ghl_contact_id?.trim() || null,
   };
   if (existing) {
     const patch: Partial<Lead> = {};
@@ -415,4 +420,37 @@ export function groupBy<T>(rows: T[], key: (r: T) => string) {
 
 export function sortByTime(messages: Message[]) {
   return [...messages].sort((a, b) => a.sent_at.localeCompare(b.sent_at));
+}
+
+// ---------- SendMode: send from the app + delivery reports ----------
+
+/**
+ * Send an SMS to a lead through SendMode and log it on their timeline.
+ * Refuses unsubscribed leads and leads without a phone number.
+ */
+export async function sendSmsToLead(leadId: string, text: string, send: typeof sendSms = sendSms) {
+  const lead = await getStore().get("leads", leadId);
+  if (!lead) return { ok: false as const, error: "Lead not found" };
+  if (lead.unsubscribed) return { ok: false as const, error: "This lead has unsubscribed - not sending." };
+  if (!lead.phone) return { ok: false as const, error: "This lead has no phone number." };
+  if (!text.trim()) return { ok: false as const, error: "Message is empty." };
+
+  // Our reference goes to SendMode as customerid and comes back on delivery reports.
+  const ref = newId().replace(/-/g, "");
+  const res = await send({ to: lead.phone, text: text.trim(), customerId: ref });
+  if (!res.ok) return { ok: false as const, error: res.error ?? "Send failed" };
+
+  const recorded = await recordMessage({ channel: "sms", direction: "outbound", body: text.trim(), phone: lead.phone, source: "sendmode", external_id: ref });
+  if (recorded.status === "created") await getStore().update("messages", recorded.message.id, { delivery_status: "sent" });
+  return { ok: true as const };
+}
+
+/** Apply a SendMode delivery report to the message it belongs to. */
+export async function applyDeliveryReport(customerId: string | null, status: string | null) {
+  if (!customerId || !status) return false;
+  const store = getStore();
+  const m = (await store.all("messages", { external_id: customerId })).find((x) => x.source === "sendmode");
+  if (!m) return false;
+  await store.update("messages", m.id, { delivery_status: status.toLowerCase() });
+  return true;
 }

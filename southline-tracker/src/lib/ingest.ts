@@ -29,6 +29,7 @@ const ALIASES = {
   direction: ["direction", "type", "event", "event_type", "status"],
   external_id: ["external_id", "id", "message_id", "messageid", "email_id", "sms_id", "uuid"],
   source: ["source", "provider", "platform"],
+  ghl_contact_id: ["ghl_contact_id"],
 };
 
 type Field = keyof typeof ALIASES;
@@ -100,8 +101,10 @@ export function normalizeEvent(input: Record<string, unknown>, channel: Channel,
   const looksLikePhone = (v: string | null) => (v && /^[\d\s+()\-]{7,}$/.test(v) ? v : null);
   const email = looksLikeEmail(pick(row, "email")) ?? looksLikeEmail(pick(row, `email${side}` as Field));
   const phone = looksLikePhone(pick(row, "phone")) ?? looksLikePhone(pick(row, `phone${side}` as Field));
-  if (channel === "email" && !email) return { ok: false, error: "missing email address" };
-  if (channel === "sms" && !phone) return { ok: false, error: "missing phone number" };
+  // A GHL contact id is enough to find the lead, even without email/phone.
+  const ghlContactId = pick(row, "ghl_contact_id");
+  if (channel === "email" && !email && !ghlContactId) return { ok: false, error: "missing email address" };
+  if (channel === "sms" && !phone && !ghlContactId) return { ok: false, error: "missing phone number" };
 
   const first = pick(row, "name");
   const last = pick(row, "last_name");
@@ -124,6 +127,7 @@ export function normalizeEvent(input: Record<string, unknown>, channel: Channel,
       variant: pick(row, "variant"),
       sent_at: pick(row, "sent_at"),
       external_id: pick(row, "external_id"),
+      ghl_contact_id: ghlContactId,
       source: (defaults.source || pick(row, "source") || (channel === "sms" ? "sendmode" : "email"))?.toLowerCase() ?? null,
     },
   };

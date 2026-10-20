@@ -6,6 +6,7 @@ import { FollowUpActions } from "@/components/followup-actions";
 import { PageHeader } from "@/components/page-header";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { sendmodeConfigured } from "@/lib/adapters/sendmode";
 import { templateDraft } from "@/lib/ai";
 import { followUpQueue } from "@/lib/repo";
 import { getStore } from "@/lib/store";
@@ -47,7 +48,7 @@ export default async function FollowUpsPage() {
           </div>
           <div>
             <div className="mb-1.5 text-xs font-medium text-muted-foreground">Suggested message</div>
-            <DraftBox leadId={lead.id} channel={last?.channel ?? "email"} initial={templateDraft(lead, last)} goal={item.reason} />
+            <DraftBox leadId={lead.id} channel={last?.channel ?? "email"} initial={templateDraft(lead, last)} goal={item.reason} smsEnabled={sendmodeConfigured()} />
           </div>
         </CardContent>
       </Card>

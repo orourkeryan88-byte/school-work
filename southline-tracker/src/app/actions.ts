@@ -5,6 +5,8 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { getCredits } from "@/lib/adapters/sendmode";
+import { testGhl } from "@/lib/adapters/ghl";
 import { classifyReply, draftMessage, summariseLead } from "@/lib/ai";
 import * as repo from "@/lib/repo";
 import { getStore, isSupabaseConfigured } from "@/lib/store";
@@ -104,4 +106,26 @@ export async function signOutAction() {
     await supabase.auth.signOut();
   }
   redirect("/login");
+}
+
+// ---------- Integrations ----------
+
+/** Send an SMS through SendMode (the button in the draft box). */
+export async function sendSmsAction(leadId: string, text: string): Promise<{ ok: boolean; error?: string }> {
+  try {
+    const res = await repo.sendSmsToLead(leadId, text);
+    if (res.ok) refresh();
+    return res;
+  } catch (e) {
+    return { ok: false, error: (e as Error).message };
+  }
+}
+
+export async function testSendmodeAction() {
+  const r = await getCredits();
+  return r.ok ? { ok: true, detail: `Connected - ${r.credits} credits` } : { ok: false, detail: r.error ?? "failed" };
+}
+
+export async function testGhlAction() {
+  return testGhl();
 }

@@ -10,7 +10,7 @@ import type { InboxRow } from "@/lib/types";
 import { formatDateTime } from "@/lib/utils";
 
 /** Responses table (desktop) / card list (mobile). Click a row to open quick actions. */
-export function InboxTable({ rows }: { rows: InboxRow[] }) {
+export function InboxTable({ rows, smsEnabled }: { rows: InboxRow[]; smsEnabled?: boolean }) {
   const [open, setOpen] = useState<string | null>(null);
   const toggle = (id: string) => setOpen(open === id ? null : id);
 
@@ -40,7 +40,7 @@ export function InboxTable({ rows }: { rows: InboxRow[] }) {
             </button>
             {open === reply.id && (
               <div className="mt-3 border-t pt-3">
-                <LeadActions leadId={lead.id} status={lead.status} channel={reply.channel} messageId={reply.id} tag={reply.ai_tag} />
+                <LeadActions leadId={lead.id} status={lead.status} channel={reply.channel} messageId={reply.id} tag={reply.ai_tag} smsEnabled={smsEnabled} />
                 <Link href={`/leads/${lead.id}`} className="mt-2 inline-block text-xs underline">Open full timeline →</Link>
               </div>
             )}
@@ -100,7 +100,7 @@ export function InboxTable({ rows }: { rows: InboxRow[] }) {
                   <TableRow className="hover:bg-transparent">
                     <TableCell />
                     <TableCell colSpan={7} className="pb-4">
-                      <LeadActions leadId={lead.id} status={lead.status} channel={reply.channel} messageId={reply.id} tag={reply.ai_tag} />
+                      <LeadActions leadId={lead.id} status={lead.status} channel={reply.channel} messageId={reply.id} tag={reply.ai_tag} smsEnabled={smsEnabled} />
                     </TableCell>
                   </TableRow>
                 )}
