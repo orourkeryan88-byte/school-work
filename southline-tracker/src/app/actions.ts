@@ -10,9 +10,11 @@ import { getCredits } from "@/lib/adapters/sendmode";
 import { testGhl } from "@/lib/adapters/ghl";
 import { classifyReply, dailyBrief, draftMessage, summariseLead } from "@/lib/ai";
 import { responseMinutes, scoreLead, speedToLead } from "@/lib/crm";
+import { webLookup } from "@/lib/lookup";
 import { addDays, isoDay } from "@/lib/utils";
 import * as repo from "@/lib/repo";
-import { authMode } from "@/lib/auth";
+import { authMode, currentUserEmail } from "@/lib/auth";
+import { createIssue, githubConfigured } from "@/lib/adapters/github";
 import { checkLogin, createSessionToken, SESSION_COOKIE, SESSION_MAX_AGE } from "@/lib/session";
 import { getStore } from "@/lib/store";
 import type { Channel, LeadStatus, ReplyTag } from "@/lib/types";
@@ -209,4 +211,32 @@ export async function briefAction(force = false) {
   const out = await dailyBrief(input);
   briefCache.__brief = { key, ...out };
   return briefCache.__brief;
+}
+
+// ---------- Check number ----------
+
+export async function crmLookupAction(number: string) {
+  return repo.crmLookup(number);
+}
+
+export async function webLookupAction(number: string, fresh = false) {
+  return webLookup(number, { fresh });
+}
+
+/** Save what Claude found as a lead (or fill in gaps on the existing lead). */
+export async function saveLookupAction(number: string, found: { name?: string | null; business?: string | null; trade?: string | null; location?: string | null }, note?: string) {
+  const lead = await repo.upsertLead({ phone: number, name: found.name, business: found.business, trade: found.trade, county: found.location });
+  if (note) await repo.addNote(lead.id, note);
+  refresh();
+  return { id: lead.id };
+}
+
+// ---------- Request a change (Claude builds it) ----------
+
+export async function requestChangeAction(kind: "feature" | "bug", text: string, page: string | null) {
+  if (!text.trim()) return { ok: false as const, error: "Describe the change first." };
+  const by = await currentUserEmail();
+  const saved = await repo.submitChangeRequest({ kind, text, page, by }, (title, body, labels) => (githubConfigured() ? createIssue(title, body, labels) : null));
+  refresh();
+  return saved.issue_url ? { ok: true as const, url: saved.issue_url, number: saved.issue_number } : { ok: false as const, error: saved.error ?? "Not sent", saved: true, issueText: repo.changeRequestIssue(kind, text, page, by).body };
 }

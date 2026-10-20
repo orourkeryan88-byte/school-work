@@ -1,6 +1,7 @@
 import { LogOut } from "lucide-react";
 import Link from "next/link";
 import { CommandPalette } from "@/components/command-palette";
+import { RequestChange } from "@/components/request-change";
 import { Logo, LogoMark } from "@/components/logo";
 import { MobileNav, SideNav } from "@/components/nav";
 import { ThemeToggle } from "@/components/theme";
@@ -24,7 +25,9 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           <Logo />
         </Link>
         <SideNav />
+        <div className="mt-4 px-1"><RequestChange /></div>
         <div className="mt-auto space-y-1 px-3 text-xs text-muted-foreground">
+          <Link href="/changes" className="block hover:underline">Change requests</Link>
           {email && <div className="truncate" title={email}>{email}</div>}
           <div>Data: {live ? "Supabase" : "Mock (demo)"}</div>
           <div>AI: {aiEnabled() ? "Claude" : "Rules (no API key)"}</div>
@@ -40,6 +43,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
           </Link>
           <div className="ml-auto flex items-center gap-1.5">
             <CommandPalette />
+            <span className="md:hidden"><RequestChange variant="icon" /></span>
             <ThemeToggle />
             <form action={signOutAction}>
               <Button variant="ghost" size="icon-sm" aria-label="Sign out" title="Sign out">

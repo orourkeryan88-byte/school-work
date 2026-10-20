@@ -1,6 +1,6 @@
 "use client";
 
-import { BarChart3, CalendarClock, Columns3, Inbox, Megaphone, Menu, Sparkles, Sun, Upload, Users, X } from "lucide-react";
+import { BarChart3, CalendarClock, Columns3, Inbox, Megaphone, Menu, PhoneCall, Sparkles, Sun, Upload, Users, X } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
@@ -9,6 +9,7 @@ import { cn } from "@/lib/utils";
 export const NAV = [
   { href: "/", label: "Today", icon: Sun },
   { href: "/queue", label: "Reply queue", icon: Sparkles },
+  { href: "/check", label: "Check number", icon: PhoneCall },
   { href: "/inbox", label: "Responses", icon: Inbox },
   { href: "/pipeline", label: "Pipeline", icon: Columns3 },
   { href: "/leads", label: "Leads", icon: Users },

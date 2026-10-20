@@ -508,3 +508,54 @@ export async function dismissReply(messageId: string, note?: string) {
   if (note) await addNote(m.lead_id, note);
   return m;
 }
+
+// ---------- Check number ----------
+
+/** Everything the CRM already knows about a phone number. */
+export async function crmLookup(raw: string) {
+  const phone = normalizePhone(raw);
+  if (!phone) return null;
+  const store = getStore();
+  const lead = (await store.all("leads", { phone }))[0] ?? null;
+  if (!lead) return { phone, lead: null, messages: [] as Message[], score: null, campaigns: [] as string[] };
+  const [messages, campaigns] = await Promise.all([store.all("messages", { lead_id: lead.id }), store.all("campaigns")]);
+  const sorted = sortByTime(messages);
+  const names = [...new Set(sorted.map((m) => campaigns.find((c) => c.id === m.campaign_id)?.name).filter(Boolean) as string[])];
+  return { phone, lead, messages: sorted.slice(-3), score: scoreLead(lead, sorted), campaigns: names };
+}
+
+// ---------- Change requests (ask Claude to build/fix something) ----------
+
+/** The GitHub issue text Claude works from. */
+export function changeRequestIssue(kind: "feature" | "bug", text: string, page: string | null, by: string | null) {
+  const firstLine = text.trim().split("\n")[0];
+  const title = `${kind === "bug" ? "Bug" : "Feature"}: ${firstLine.length > 80 ? `${firstLine.slice(0, 77)}...` : firstLine}`;
+  const body = `@claude please ${kind === "bug" ? "fix this bug" : "build this feature"} in the Southline CRM (\`southline-tracker/\`). Follow \`southline-tracker/CLAUDE.md\`.
+
+**Request${by ? ` from ${by}` : ""}:**
+${text.trim()}
+
+${page ? `**Reported on page:** \`${page}\`\n\n` : ""}When done: run \`npm test\`, \`npm run typecheck\`, \`npm run lint\` and \`npm run build\` in \`southline-tracker/\`, then open a pull request that explains the change in plain English.
+
+_Sent from the Southline app's "Request a change" button._`;
+  return { title, body };
+}
+
+export async function submitChangeRequest(
+  input: { kind: "feature" | "bug"; text: string; page: string | null; by: string | null },
+  send: (title: string, body: string, labels: string[]) => Promise<{ url: string; number: number }> | null,
+) {
+  const { title, body } = changeRequestIssue(input.kind, input.text, input.page, input.by);
+  let issue: { url: string; number: number } | null = null;
+  let error: string | null = null;
+  try {
+    issue = await (send(title, body, ["claude", input.kind === "bug" ? "bug" : "enhancement"]) ?? null);
+    if (!issue) error = "GitHub isn't connected yet (set GITHUB_TOKEN and GITHUB_REPO)";
+  } catch (e) {
+    error = (e as Error).message;
+  }
+  return getStore().insert("change_requests", {
+    id: newId(), kind: input.kind, title, body: input.text.trim(), page: input.page, created_by: input.by,
+    issue_url: issue?.url ?? null, issue_number: issue?.number ?? null, error, created_at: nowIso(),
+  });
+}

@@ -110,6 +110,20 @@ export interface ImportLog {
   created_at: string;
 }
 
+// A feature request / bug report sent from the app to Claude (via a GitHub issue).
+export interface ChangeRequest {
+  id: string;
+  kind: "feature" | "bug";
+  title: string;
+  body: string;
+  page: string | null; // where in the app it was reported
+  created_by: string | null;
+  issue_url: string | null; // set once the GitHub issue exists
+  issue_number: number | null;
+  error: string | null; // why it couldn't be sent to GitHub, if it wasn't
+  created_at: string;
+}
+
 // A row in the responses inbox: an inbound reply joined to its lead and
 // the message it was replying to.
 export interface InboxRow {

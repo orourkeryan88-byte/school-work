@@ -12,6 +12,8 @@ Standalone Next.js app with its own Postgres database (Supabase). It is **not** 
 - **Pipeline**: Kanban board with deal values (€/month). Drag a deal between stages, or use the menu on a phone. Shows open pipeline, weighted forecast, won MRR and win rate.
 - **Lead score**: 0–100 on every lead, with the reasons spelled out ("said they're interested · replied in the last 2 days · waiting on your reply").
 - **Speed to lead**: median time to answer a reply, and the % answered within an hour.
+- **Check number**: paste any number to see what the CRM knows about it. Claude also searches public business listings (Google, Golden Pages, websites, business pages) for the person's name, company, trade and area, with source links and a confidence level. Private numbers with no business listing are left alone, and **Save as lead** adds what it found.
+- **Request a change**: describe a feature or bug from any page. It becomes a GitHub issue that Claude builds, and Claude opens a pull request for you to approve (see [section 7](#7-ask-claude-to-change-the-app)).
 - **⌘K search** for any lead or page, plus one-tap Call / Text / WhatsApp / Email on every lead.
 - **Responses**: every reply in one table, filtered by channel, tag, status, trade and date. Each reply is tagged automatically. Quick actions on each row: interested, booked, note, follow-up date, AI draft, retag.
 - **Dashboard**: sent, replies, reply rate, positive replies, calls booked and deals won, with cold email and SMS side by side, for today / 7d / 30d / custom.
@@ -51,7 +53,7 @@ npm run lint
 ### 2a. Supabase (database + login)
 
 1. Create a project at [supabase.com](https://supabase.com) (EU region, e.g. Frankfurt or Ireland).
-2. Open **SQL Editor**, then paste and run the files in `supabase/migrations/` in order: `0001_init.sql`, `0002_integrations.sql`, `0003_crm.sql`.
+2. Open **SQL Editor**, then paste and run every file in `supabase/migrations/` in order (`0001` → `0004`).
 3. Go to **Authentication → Users → Add user**. Create yourself with an email and password. Turn off public sign-ups under **Authentication → Providers → Email**, since this is a one-person app.
 4. Go to **Project Settings → API** and copy the URL, the `anon` key and the `service_role` key.
 
@@ -81,6 +83,7 @@ Copy `.env.example` to `.env.local` locally, or add these in Vercel → Settings
 | `BOOKING_URL` | optional | Calendar link Claude can include when booking calls |
 | `DEFAULT_DEAL_VALUE` | optional | €/month assumed for deals with no value set (default 149) |
 | `SMS_SEND_HOURS` / `SMS_SEND_DAYS` | optional | When SMS may be sent, in Irish time. Default `09-20` and `1-6` (Mon–Sat). |
+| `GITHUB_TOKEN` / `GITHUB_REPO` | optional | Lets **Request a change** open GitHub issues for Claude (section 7) |
 | `APP_USER_NAMES` | optional | Greeting names per login, e.g. `you@x.ie:Ryan,jamie:Jamie` |
 
 **Logins:** every page is behind the login.
@@ -289,6 +292,26 @@ Use **Done** to clear an item, or **+2 days / +1 week** to snooze it.
 - **Positive**: replies tagged *Interested*.
 - **Calls booked / deals won**: leads marked Booked/Won during the range. Each is credited to the channel the lead first replied on, so email + SMS always add up to the total.
 - **Campaign variants**: compared on first-touch messages only. Messages with "follow" in the variant name are excluded.
+
+## 7. Ask Claude to change the app
+
+Press **Request a change** (bottom of the sidebar, or the wand icon on a phone), pick *New feature* or *Something's broken*, and describe it in plain English. Here's what happens:
+
+1. The app opens a GitHub issue that tags `@claude` and includes your request and the page you were on.
+2. `.github/workflows/claude.yml` wakes Claude. Claude reads `CLAUDE.md`, writes the code and tests, and opens a pull request.
+3. `.github/workflows/ci.yml` checks the pull request (typecheck, lint, tests, build).
+4. You review it on GitHub and press **Merge**. Vercel deploys it, and the change is live in a couple of minutes.
+
+To follow up, comment on the issue or pull request with `@claude …` ("@claude make the button bigger"). Every request is listed under **Change requests** in the app.
+
+**One-time setup:**
+1. Install the Claude GitHub App on the repo: https://github.com/apps/claude
+2. In the repo, go to **Settings → Secrets and variables → Actions** and add `ANTHROPIC_API_KEY`.
+3. Create a fine-grained GitHub token at **Settings → Developer settings → Fine-grained tokens**, limited to this repo with *Issues: Read and write*. Set it in Vercel as `GITHUB_TOKEN`, along with `GITHUB_REPO=orourkeryan88-byte/school-work`.
+
+Until GitHub is connected, requests are saved in the app with a **Copy** button, so you can paste them into Claude Code (claude.ai/code) instead.
+
+Only people with write access to the repo can trigger Claude, and nothing reaches the live app until you merge it.
 
 ## Project layout
 

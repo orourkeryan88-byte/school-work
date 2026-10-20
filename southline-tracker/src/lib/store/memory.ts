@@ -11,7 +11,10 @@ const FILE = process.env.MOCK_DB_FILE || path.join(process.cwd(), ".data", "mock
 
 function load(): Db {
   try {
-    return JSON.parse(fs.readFileSync(FILE, "utf8")) as Db;
+    const saved = JSON.parse(fs.readFileSync(FILE, "utf8")) as Partial<Db>;
+    // Files saved by older versions may be missing newer tables.
+    const empty = Object.fromEntries(Object.keys(buildMockData()).map((k) => [k, []])) as unknown as Db;
+    return { ...empty, ...saved };
   } catch {
     return buildMockData();
   }

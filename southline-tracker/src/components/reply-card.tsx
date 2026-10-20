@@ -80,7 +80,12 @@ export function ReplyCard({ lead, reply, recent, score, waitingMinutes, smsEnabl
               {score.hot && <Flame />} Score {score.score}
             </Badge>
           </div>
-          <div className="mt-0.5 text-xs text-muted-foreground">{[lead.business, lead.trade, lead.county].filter(Boolean).join(" · ")}</div>
+          <div className="mt-0.5 text-xs text-muted-foreground">
+            {[lead.business, lead.trade, lead.county].filter(Boolean).join(" · ")}
+            {lead.phone && !lead.business && (
+              <Link href={`/check?number=${encodeURIComponent(lead.phone)}`} className="ml-1 underline">Who is this?</Link>
+            )}
+          </div>
         </div>
         <div className={`text-xs ${waitingMinutes > 120 ? "font-medium text-amber-700 dark:text-amber-300" : "text-muted-foreground"}`}>
           Waiting {formatMinutes(waitingMinutes)}

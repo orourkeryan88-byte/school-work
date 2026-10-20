@@ -1,4 +1,4 @@
-import { ArrowDownLeft, ArrowUpRight, CalendarClock, Flame, History, Mail, MessageSquare, Phone, StickyNote } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, CalendarClock, Flame, History, Mail, MessageSquare, Phone, Search, StickyNote } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { dealValue, euro, scoreLead, type Score } from "@/lib/crm";
 import Link from "next/link";
@@ -48,6 +48,9 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
             </>
           )}
           {lead.email && <Button size="sm" variant="outline" asChild><a href={`mailto:${lead.email}`}><Mail /> Email</a></Button>}
+          {lead.phone && (
+            <Button size="sm" variant="outline" asChild><Link href={`/check?number=${encodeURIComponent(lead.phone)}`}><Search /> Check number</Link></Button>
+          )}
           <ExportButton view="timeline" params={{ lead: lead.id }} />
         </div>
       </div>
