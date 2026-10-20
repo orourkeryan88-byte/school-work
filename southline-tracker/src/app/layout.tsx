@@ -15,8 +15,17 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 export const metadata: Metadata = {
   title: "Southline Outreach",
   description: "Every cold email and SMS sent, every reply, and what happened next.",
+  // iPhone: run full-screen when opened from the home screen.
+  appleWebApp: { capable: true, title: "Southline", statusBarStyle: "default" },
 };
-export const viewport: Viewport = { width: "device-width", initialScale: 1 };
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#ffffff" },
+    { media: "(prefers-color-scheme: dark)", color: "#0a0a0a" },
+  ],
+};
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   const live = isSupabaseConfigured();

@@ -3,7 +3,7 @@ import { NextResponse, type NextRequest } from "next/server";
 
 // Auth gate. Only active when Supabase is configured - in mock mode the app is open.
 // Webhook/sync endpoints are excluded here and check INGEST_SECRET themselves.
-const PUBLIC = ["/login", "/api/ingest", "/api/integrations", "/api/sync", "/api/health"];
+const PUBLIC = ["/login", "/manifest.webmanifest", "/icon", "/apple-icon", "/api/ingest", "/api/integrations", "/api/sync", "/api/health"];
 
 export async function middleware(request: NextRequest) {
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;

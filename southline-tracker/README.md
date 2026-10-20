@@ -88,6 +88,15 @@ Without Docker, `npm ci && npm run build && npm start` on any Node 20+ host also
 
 ---
 
+### 2d. Put it on your phone
+
+The app installs to your home screen and opens full-screen with its own icon, straight into Responses. No App Store needed. Open your **live URL** (not localhost):
+
+- **iPhone (Safari):** tap Share → **Add to Home Screen** → Add.
+- **Android (Chrome):** tap ⋮ → **Install app** (or **Add to Home screen**).
+
+Sign in once and it stays signed in. Updates appear automatically every time you deploy.
+
 ## 3. Connect your tools
 
 All data comes in through two endpoints:
