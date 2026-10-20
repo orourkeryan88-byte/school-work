@@ -7,7 +7,7 @@ import { MobileNav, SideNav } from "@/components/nav";
 import { ThemeToggle } from "@/components/theme";
 import { Button } from "@/components/ui/button";
 import { aiEnabled } from "@/lib/ai";
-import { currentUserEmail } from "@/lib/auth";
+import { authMode, currentUserEmail } from "@/lib/auth";
 import { isSupabaseConfigured } from "@/lib/store";
 import { signOutAction } from "../actions";
 
@@ -45,11 +45,13 @@ export default async function AppLayout({ children }: { children: React.ReactNod
             <CommandPalette />
             <span className="md:hidden"><RequestChange variant="icon" /></span>
             <ThemeToggle />
-            <form action={signOutAction}>
-              <Button variant="ghost" size="icon-sm" aria-label="Sign out" title="Sign out">
-                <LogOut />
-              </Button>
-            </form>
+            {authMode() !== "off" && (
+              <form action={signOutAction}>
+                <Button variant="ghost" size="icon-sm" aria-label="Sign out" title="Sign out">
+                  <LogOut />
+                </Button>
+              </form>
+            )}
           </div>
         </header>
         {!live && (

@@ -103,6 +103,7 @@ export async function createLeadAction(form: FormData) {
 export async function signInAction(form: FormData) {
   const email = String(form.get("email") ?? "").trim().toLowerCase();
   const password = String(form.get("password") ?? "");
+  if (authMode() === "off") redirect("/");
   if (authMode() === "supabase") {
     const supabase = await createAuthClient();
     const { error } = await supabase.auth.signInWithPassword({ email, password });
@@ -122,6 +123,7 @@ export async function signInAction(form: FormData) {
 }
 
 export async function signOutAction() {
+  if (authMode() === "off") redirect("/");
   if (authMode() === "supabase") {
     const supabase = await createAuthClient();
     await supabase.auth.signOut();

@@ -14,7 +14,7 @@ export interface LoginUser {
  * Built-in logins, from env (never hard-code passwords in the repo):
  *   APP_USERS="you@example.com:password1,jamie:password2"   (several users)
  *   or APP_LOGIN_EMAIL + APP_PASSWORD                       (one user)
- * With neither set, a demo login is used and shown on the login page.
+ * With neither set there are no logins - see loginMode().
  */
 export function builtInUsers(): { users: LoginUser[]; isDefault: boolean } {
   const list = (process.env.APP_USERS ?? "")
@@ -25,8 +25,21 @@ export function builtInUsers(): { users: LoginUser[]; isDefault: boolean } {
     })
     .filter((u): u is LoginUser => !!u && !!u.login && !!u.password);
   if (process.env.APP_PASSWORD) list.push({ login: (process.env.APP_LOGIN_EMAIL || "admin").toLowerCase(), password: process.env.APP_PASSWORD });
-  if (list.length) return { users: list, isDefault: false };
-  return { users: [{ login: "demo@southline.ie", password: "southline" }], isDefault: true };
+  return { users: list, isDefault: list.length === 0 };
+}
+
+/**
+ * Is the app behind a login?
+ *  - "off" (default): no login screen at all - fine on your own laptop.
+ *  - "password": set APP_USERS (or APP_PASSWORD) to require the built-in login.
+ *  - "supabase": set LOGIN=supabase to use Supabase Auth users instead.
+ * Turn one on before putting the app online: otherwise anyone with the link
+ * can see your leads and send texts.
+ */
+export function loginMode(): "off" | "password" | "supabase" {
+  const supabase = process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY && process.env.SUPABASE_SERVICE_ROLE_KEY;
+  if (process.env.LOGIN === "supabase" && supabase) return "supabase";
+  return builtInUsers().isDefault ? "off" : "password";
 }
 
 /** The matching user for a login + password, or null. */

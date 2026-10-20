@@ -8,7 +8,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { authMode, currentUserEmail } from "@/lib/auth";
-import { builtInUsers } from "@/lib/session";
 
 export const metadata: Metadata = { title: "Sign in" };
 export const dynamic = "force-dynamic";
@@ -20,9 +19,8 @@ const ERRORS: Record<string, string> = {
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const { error } = await searchParams;
-  if (await currentUserEmail()) redirect("/");
   const mode = authMode();
-  const demo = mode === "password" && builtInUsers().isDefault;
+  if (mode === "off" || (await currentUserEmail())) redirect("/"); // no login needed
 
   return (
     <div className="grid min-h-dvh lg:grid-cols-2">
@@ -60,7 +58,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
           <form action={signInAction} className="space-y-4">
             <div className="space-y-1.5">
               <Label htmlFor="email">{mode === "password" ? "Email or username" : "Email"}</Label>
-              <Input id="email" name="email" type={mode === "password" ? "text" : "email"} autoComplete="username" autoCapitalize="none" required defaultValue={demo ? "demo@southline.ie" : undefined} className="h-10" />
+              <Input id="email" name="email" type={mode === "password" ? "text" : "email"} autoComplete="username" autoCapitalize="none" required className="h-10" />
             </div>
             <div className="space-y-1.5">
               <Label htmlFor="password">Password</Label>
@@ -70,11 +68,6 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
             <Button className="h-10 w-full">Sign in</Button>
           </form>
 
-          {demo && (
-            <p className="rounded-md border border-dashed px-3 py-2 text-xs text-muted-foreground">
-              Demo login: <b>demo@southline.ie</b> / <b>southline</b>. Set <code>APP_USERS</code> (or connect Supabase) to use your own logins.
-            </p>
-          )}
         </div>
       </div>
     </div>

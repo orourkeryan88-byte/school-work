@@ -1,9 +1,9 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
-import { SESSION_COOKIE, verifySessionToken } from "@/lib/session";
+import { loginMode, SESSION_COOKIE, verifySessionToken } from "@/lib/session";
 
-// Auth gate. Supabase Auth when Supabase is configured, otherwise the
-// built-in login (APP_LOGIN_EMAIL / APP_PASSWORD, see lib/session.ts).
+// Auth gate. Off by default (no login). APP_USERS turns on the built-in
+// login; LOGIN=supabase uses Supabase Auth. See loginMode() in lib/session.ts.
 // Webhook/sync endpoints are excluded here and check INGEST_SECRET themselves.
 const PUBLIC = ["/login", "/manifest.webmanifest", "/icon", "/apple-icon", "/api/ingest", "/api/integrations", "/api/sync", "/api/health"];
 
@@ -16,15 +16,18 @@ function toLogin(request: NextRequest, error?: string) {
 }
 
 export async function middleware(request: NextRequest) {
+  const mode = loginMode();
+  if (mode === "off") return NextResponse.next();
   if (PUBLIC.some((p) => request.nextUrl.pathname.startsWith(p))) return NextResponse.next();
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-  // Built-in login (no Supabase): check the signed session cookie.
-  if (!url || !anon || !process.env.SUPABASE_SERVICE_ROLE_KEY) {
+  // Built-in login: check the signed session cookie.
+  if (mode === "password") {
     const email = await verifySessionToken(request.cookies.get(SESSION_COOKIE)?.value);
     return email ? NextResponse.next() : toLogin(request);
   }
+
+  const url = process.env.NEXT_PUBLIC_SUPABASE_URL!;
+  const anon = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!;
 
   let response = NextResponse.next({ request });
   const supabase = createServerClient(url, anon, {

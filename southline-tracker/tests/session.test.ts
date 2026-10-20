@@ -31,9 +31,25 @@ test("APP_USERS: several logins, email or username, case-insensitive login", asy
     assert.equal(checkLogin("ryan@example.ie", "pw-1")?.login, "ryan@example.ie");
     assert.equal(checkLogin(" JAMIE ", "pw-2")?.login, "jamie");
     assert.equal(checkLogin("jamie", "pw-1"), null);
-    assert.equal(checkLogin("demo@southline.ie", "southline"), null); // demo login off once users are set
+    assert.equal(checkLogin("demo@southline.ie", "southline"), null); // the old demo login never works
   } finally {
     delete process.env.APP_USERS;
   }
   assert.equal(builtInUsers().isDefault, true);
+});
+
+test("login is off by default, on with APP_USERS, Supabase only when asked", async () => {
+  const { loginMode } = await import("@/lib/session");
+  assert.equal(loginMode(), "off");
+  process.env.APP_USERS = "ryan:pw";
+  assert.equal(loginMode(), "password");
+  delete process.env.APP_USERS;
+  process.env.LOGIN = "supabase";
+  assert.equal(loginMode(), "off", "LOGIN=supabase needs the Supabase keys too");
+  Object.assign(process.env, { NEXT_PUBLIC_SUPABASE_URL: "u", NEXT_PUBLIC_SUPABASE_ANON_KEY: "a", SUPABASE_SERVICE_ROLE_KEY: "s" });
+  try {
+    assert.equal(loginMode(), "supabase");
+  } finally {
+    for (const k of ["LOGIN", "NEXT_PUBLIC_SUPABASE_URL", "NEXT_PUBLIC_SUPABASE_ANON_KEY", "SUPABASE_SERVICE_ROLE_KEY"]) delete process.env[k];
+  }
 });

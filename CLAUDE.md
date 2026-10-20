@@ -4,7 +4,7 @@ A sales CRM for Southline Agency (Ireland), a one-person business selling AI rec
 
 ## Commands (run from `southline-tracker/`)
 
-- `npm run dev`: local app on mock data (log in with `demo@southline.ie` / `southline`)
+- `npm run dev`: local app on mock data (no login unless `APP_USERS` is set)
 - `npm test`: unit tests (node:test, `tests/*.test.ts`)
 - `npm run typecheck`, `npm run lint`, `npm run build`
 
