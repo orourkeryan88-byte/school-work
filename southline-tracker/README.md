@@ -1,9 +1,18 @@
 # Southline Outreach Tracker
 
-One place to see every cold email and SMS you've sent, who it went to, whether they replied, what they said, and what happened next.
+Southline Agency's sales CRM: every cold email and SMS sent, every reply, the pipeline, and what to do next. Claude drafts replies, and SendMode sends them once you approve.
 
 Standalone Next.js app with its own Postgres database (Supabase). It is **not** a GoHighLevel plugin. Data comes in through webhooks, CSV imports and (optionally) API sync, from any sending tool.
 
+- **Today**: the first screen of the day. Claude writes a brief of who's waiting, who's hot and what's due, with counts and quick links.
+- **Reply queue**: everyone waiting on an answer from you, hottest first.
+  - Claude drafts each reply. One-tap goal chips redraft it: *Book a call*, *Answer + price*, *Offer free trial*, *Handle objection*.
+  - **Approve & send SMS** sends it through SendMode.
+  - Guard rails: STOP and unsubscribed leads never appear, texts are blocked during quiet hours, and a live SMS-segment counter catches fadas that would double the cost.
+- **Pipeline**: Kanban board with deal values (€/month). Drag a deal between stages, or use the menu on a phone. Shows open pipeline, weighted forecast, won MRR and win rate.
+- **Lead score**: 0–100 on every lead, with the reasons spelled out ("said they're interested · replied in the last 2 days · waiting on your reply").
+- **Speed to lead**: median time to answer a reply, and the % answered within an hour.
+- **⌘K search** for any lead or page, plus one-tap Call / Text / WhatsApp / Email on every lead.
 - **Responses**: every reply in one table, filtered by channel, tag, status, trade and date. Each reply is tagged automatically. Quick actions on each row: interested, booked, note, follow-up date, AI draft, retag.
 - **Dashboard**: sent, replies, reply rate, positive replies, calls booked and deals won, with cold email and SMS side by side, for today / 7d / 30d / custom.
 - **Leads**: searchable list. Each lead has one timeline covering both channels: sends, replies, notes, status changes and follow-ups.
@@ -42,7 +51,7 @@ npm run lint
 ### 2a. Supabase (database + login)
 
 1. Create a project at [supabase.com](https://supabase.com) (EU region, e.g. Frankfurt or Ireland).
-2. Open **SQL Editor**, then paste and run `supabase/migrations/0001_init.sql`, then `0002_integrations.sql`.
+2. Open **SQL Editor**, then paste and run the files in `supabase/migrations/` in order: `0001_init.sql`, `0002_integrations.sql`, `0003_crm.sql`.
 3. Go to **Authentication → Users → Add user**. Create yourself with an email and password. Turn off public sign-ups under **Authentication → Providers → Email**, since this is a one-person app.
 4. Go to **Project Settings → API** and copy the URL, the `anon` key and the `service_role` key.
 
@@ -67,6 +76,12 @@ Copy `.env.example` to `.env.local` locally, or add these in Vercel → Settings
 | `SENDMODE_ACCESS_KEY` | optional | SendMode API access key. Turns on **Send SMS via SendMode** from drafts. |
 | `SENDMODE_SENDER_ID` | optional | Sender name or number for texts sent from the app |
 | `INSTANTLY_API_KEY` | optional | Enables `/api/sync/instantly` |
+| `SENDER_NAME` | optional | Name Claude signs emails with (default `Ryan`) |
+| `SOUTHLINE_OFFER` | optional | One line describing your offer, used in every draft |
+| `BOOKING_URL` | optional | Calendar link Claude can include when booking calls |
+| `DEFAULT_DEAL_VALUE` | optional | €/month assumed for deals with no value set (default 149) |
+| `SMS_SEND_HOURS` / `SMS_SEND_DAYS` | optional | When SMS may be sent, in Irish time. Default `09-20` and `1-6` (Mon–Sat). |
+| `APP_USER_NAMES` | optional | Greeting names per login, e.g. `you@x.ie:Ryan,jamie:Jamie` |
 
 **Logins:** every page is behind the login.
 

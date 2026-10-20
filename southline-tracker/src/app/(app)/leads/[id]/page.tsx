@@ -1,4 +1,6 @@
-import { ArrowDownLeft, ArrowUpRight, CalendarClock, History, StickyNote } from "lucide-react";
+import { ArrowDownLeft, ArrowUpRight, CalendarClock, Flame, History, Mail, MessageSquare, Phone, StickyNote } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { dealValue, euro, scoreLead, type Score } from "@/lib/crm";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { updateLeadAction } from "@/app/actions";
@@ -22,6 +24,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
   if (!detail) notFound();
   const { lead, messages, followUps, timeline } = detail;
   const last = messages.at(-1);
+  const score = scoreLead(lead, messages);
   const openFollowUps = followUps.filter((f) => !f.done_at).sort((a, b) => a.due_date.localeCompare(b.due_date));
 
   return (
@@ -36,8 +39,19 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
             {lead.unsubscribed && <Badge variant="destructive">Unsubscribed</Badge>}
           </div>
         </div>
-        <ExportButton view="timeline" params={{ lead: lead.id }} />
+        <div className="flex flex-wrap gap-2">
+          {lead.phone && (
+            <>
+              <Button size="sm" variant="outline" asChild><a href={`tel:${lead.phone}`}><Phone /> Call</a></Button>
+              <Button size="sm" variant="outline" asChild><a href={`sms:${lead.phone}`}><MessageSquare /> Text</a></Button>
+              <Button size="sm" variant="outline" asChild><a href={`https://wa.me/${lead.phone.replace(/\D/g, "")}`} target="_blank" rel="noreferrer">WhatsApp</a></Button>
+            </>
+          )}
+          {lead.email && <Button size="sm" variant="outline" asChild><a href={`mailto:${lead.email}`}><Mail /> Email</a></Button>}
+          <ExportButton view="timeline" params={{ lead: lead.id }} />
+        </div>
       </div>
+      <ScoreStrip score={score} value={dealValue(lead)} />
 
       <div className="grid gap-5 lg:grid-cols-[1fr_22rem]">
         <div className="space-y-5">
@@ -149,5 +163,18 @@ function TimelineEntry({ item }: { item: TimelineItem }) {
         Due {formatDate(f.due_date)}{f.reason ? ` - ${f.reason}` : ""} {f.done_at && <span className="text-muted-foreground">(done)</span>}
       </p>
     </li>
+  );
+}
+
+/** Score + value strip under the lead header: why they're hot, what they're worth. */
+function ScoreStrip({ score, value }: { score: Score; value: number }) {
+  return (
+    <div className="-mt-2 mb-5 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-muted-foreground">
+      <span className={`flex items-center gap-1 font-semibold ${score.hot ? "text-orange-600 dark:text-orange-400" : "text-foreground"}`}>
+        {score.hot && <Flame className="size-3.5" />} Score {score.score}
+      </span>
+      <span>{score.reasons.join(" · ")}</span>
+      <span className="tabular-nums">Deal: {euro(value)}/mo</span>
+    </div>
   );
 }

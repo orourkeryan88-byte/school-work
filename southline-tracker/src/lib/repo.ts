@@ -1,5 +1,7 @@
 import { classifyReply } from "@/lib/ai";
 import { sendSms } from "@/lib/adapters/sendmode";
+import { awaitingReply, scoreLead, sendWindow, type Score } from "@/lib/crm";
+import { draftMessage } from "@/lib/ai";
 import { getStore } from "@/lib/store";
 import type { Campaign, Channel, Direction, FollowUp, InboxRow, Lead, LeadStatus, Message, Note, ReplyTag } from "@/lib/types";
 import { LEAD_STATUSES } from "@/lib/types";
@@ -116,7 +118,7 @@ export async function setLeadStatus(leadId: string, status: LeadStatus, opts: { 
   return updated;
 }
 
-export async function updateLead(leadId: string, patch: LeadInput) {
+export async function updateLead(leadId: string, patch: LeadInput & { deal_value?: number | null }) {
   return getStore().update("leads", leadId, { ...patch, phone: normalizePhone(patch.phone), email: normalizeEmail(patch.email), updated_at: nowIso() });
 }
 
@@ -435,6 +437,10 @@ export async function sendSmsToLead(leadId: string, text: string, send: typeof s
   if (!lead.phone) return { ok: false as const, error: "This lead has no phone number." };
   if (!text.trim()) return { ok: false as const, error: "Message is empty." };
 
+  // Quiet hours: never text outside the allowed window (SMS_SEND_HOURS / SMS_SEND_DAYS).
+  const window = sendWindow();
+  if (!window.ok) return { ok: false as const, error: window.reason ?? "Outside sending hours" };
+
   // Our reference goes to SendMode as customerid and comes back on delivery reports.
   const ref = newId().replace(/-/g, "");
   const res = await send({ to: lead.phone, text: text.trim(), customerId: ref });
@@ -453,4 +459,52 @@ export async function applyDeliveryReport(customerId: string | null, status: str
   if (!m) return false;
   await store.update("messages", m.id, { delivery_status: status.toLowerCase() });
   return true;
+}
+
+// ---------- Reply queue (Claude drafts, you approve) ----------
+
+export interface ReplyQueueItem {
+  lead: Lead;
+  reply: Message; // their message I haven't answered
+  messages: Message[];
+  score: Score;
+  waitingMinutes: number;
+}
+
+/** Everyone waiting on an answer from me, hottest first. */
+export async function replyQueue(now = Date.now()): Promise<ReplyQueueItem[]> {
+  const store = getStore();
+  const [leads, messages] = await Promise.all([store.all("leads"), store.all("messages")]);
+  const byLead = groupBy(messages, (m) => m.lead_id);
+  const items: ReplyQueueItem[] = [];
+  for (const lead of leads) {
+    const msgs = sortByTime(byLead.get(lead.id) ?? []);
+    const reply = awaitingReply(lead, msgs);
+    if (!reply) continue;
+    items.push({ lead, reply, messages: msgs, score: scoreLead(lead, msgs, now), waitingMinutes: (now - Date.parse(reply.sent_at)) / 60000 });
+  }
+  return items.sort((a, b) => b.score.score - a.score.score || b.waitingMinutes - a.waitingMinutes);
+}
+
+/**
+ * Claude's draft answer to a reply. Drafts are cached on the reply so the
+ * queue opens instantly and you only pay for each draft once.
+ */
+export async function draftForReply(messageId: string, opts: { regenerate?: boolean; goal?: string } = {}) {
+  const store = getStore();
+  const reply = await store.get("messages", messageId);
+  if (!reply) throw new Error("reply not found");
+  if (reply.ai_draft && !opts.regenerate) return { text: reply.ai_draft, source: reply.ai_draft_source ?? "ai" };
+  const detail = await getLeadDetail(reply.lead_id);
+  if (!detail) throw new Error("lead not found");
+  const draft = await draftMessage(detail.lead, detail.messages, reply.channel, opts.goal);
+  await store.update("messages", messageId, { ai_draft: draft.text, ai_draft_source: draft.source });
+  return draft;
+}
+
+/** Take a reply out of the queue without answering in the app (e.g. you rang them). */
+export async function dismissReply(messageId: string, note?: string) {
+  const m = await getStore().update("messages", messageId, { reply_handled_at: nowIso() });
+  if (note) await addNote(m.lead_id, note);
+  return m;
 }

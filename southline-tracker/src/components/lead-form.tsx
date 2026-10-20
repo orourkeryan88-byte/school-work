@@ -22,6 +22,12 @@ export function LeadForm({ lead, action, submit }: { lead?: Lead; action: (form:
           <Input id={key} name={key} defaultValue={lead?.[key] ?? ""} type={key === "email" ? "email" : "text"} />
         </div>
       ))}
+      {lead && (
+        <div className="space-y-1.5">
+          <Label htmlFor="deal_value">Deal value (€/month)</Label>
+          <Input id="deal_value" name="deal_value" type="number" min="0" step="1" defaultValue={lead.deal_value ?? ""} placeholder="Default" />
+        </div>
+      )}
       <div className="sm:col-span-2">
         <Button size="sm">{submit}</Button>
       </div>

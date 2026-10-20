@@ -20,7 +20,7 @@ const ERRORS: Record<string, string> = {
 
 export default async function LoginPage({ searchParams }: { searchParams: Promise<{ error?: string }> }) {
   const { error } = await searchParams;
-  if (await currentUserEmail()) redirect("/inbox");
+  if (await currentUserEmail()) redirect("/");
   const mode = authMode();
   const demo = mode === "password" && builtInUsers().isDefault;
 

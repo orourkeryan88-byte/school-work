@@ -18,11 +18,21 @@ function claude() {
   return client;
 }
 
-const TONE = `You write for Ryan at Southline Agency in Ireland. Southline sells AI receptionists
-to tradesmen and local service businesses (plumbers, electricians, roofers...): it answers
-every call 24/7, books jobs and texts the owner the details.
-Tone: short, direct, friendly, plain Irish English. No hype, no exclamation marks, no emojis,
-no "I hope this finds you well". Sign off "Ryan" on email only. SMS must be under 300 characters.`;
+// Southline's offer and voice. Override the offer / booking link with env vars.
+const OFFER = process.env.SOUTHLINE_OFFER || "an AI receptionist that answers every call 24/7, books the job in and texts the owner the details, with a free 7-day trial";
+const BOOKING = process.env.BOOKING_URL ? `When suggesting a call, you can include this booking link: ${process.env.BOOKING_URL}` : "When suggesting a call, offer two specific times (e.g. tomorrow 11am or Thursday 4pm).";
+const SENDER = process.env.SENDER_NAME || "Ryan";
+
+const TONE = `You write sales messages for ${SENDER} at Southline Agency in Ireland. Southline sells
+${OFFER} to tradesmen and local service businesses (plumbers, electricians, roofers, builders...).
+Voice: short, direct, friendly, plain Irish English, like a tradesman texting another tradesman.
+No hype, no exclamation marks, no emojis, no "I hope this finds you well", no corporate words.
+Answer exactly what they asked before moving them on. One clear next step per message.
+${BOOKING}
+Sign off "${SENDER}" on email only.`;
+
+const SMS_RULES = `This is an SMS. Keep it under 160 characters if at all possible (hard max 300).
+No links unless it's the booking link. Don't add "Reply STOP" - the system handles opt-outs.`;
 
 /** One Claude call that returns plain text. Returns null on refusal. */
 async function ask(system: string, prompt: string, opts: { maxTokens?: number; format?: Record<string, unknown> } = {}) {
@@ -145,7 +155,8 @@ Conversation so far (oldest first):
 ${transcript(messages) || "(nothing yet)"}
 
 Write the next ${channel === "sms" ? "SMS" : "email (body only, no subject line)"} from me.
-Goal: ${goal || "move them one step closer to a booked 10 minute demo call, or respond properly to what they said"}.
+${channel === "sms" ? SMS_RULES : "Keep the email under 90 words."}
+Goal: ${goal || "answer what they said, then move them one step closer to a booked 10 minute demo call"}.
 If they asked to stop or said no, write a one-line polite sign-off and nothing else.
 Return only the message text.`,
     );
@@ -174,6 +185,39 @@ export async function summariseLead(lead: Lead, messages: Message[], notes: stri
     if (out) return { text: out, source: "ai" };
   } catch (e) {
     console.error("summariseLead failed:", e);
+  }
+  return { text: fallback, source: "template" };
+}
+
+// ---------- Daily brief ----------
+
+export interface BriefInput {
+  waitingCount: number; // everyone waiting; `waiting` is just the top few
+  waiting: { name: string; said: string; tag: string | null; hours: number; score: number }[];
+  followUpsDue: number;
+  hot: { name: string; reasons: string[] }[];
+  yesterday: { sent: number; replies: number; positive: number };
+  medianReplyMinutes: number | null;
+}
+
+/** 3-5 bullet "what to do today" brief. Template version without an API key. */
+export async function dailyBrief(input: BriefInput): Promise<{ text: string; source: "ai" | "template" }> {
+  const fallback = [
+    input.waitingCount ? `• ${input.waitingCount} ${input.waitingCount === 1 ? "person" : "people"} waiting on a reply - start with ${input.waiting.slice(0, 3).map((w) => w.name).join(", ")}.` : "• Nobody waiting on a reply.",
+    input.followUpsDue ? `• ${input.followUpsDue} follow-ups due today.` : "• No follow-ups due.",
+    input.hot.length ? `• Hottest lead: ${input.hot[0].name} (${input.hot[0].reasons.slice(0, 2).join(", ").toLowerCase()}).` : "",
+    `• Yesterday: ${input.yesterday.sent} sent, ${input.yesterday.replies} replies, ${input.yesterday.positive} interested.`,
+  ].filter(Boolean).join("\n");
+  if (!aiEnabled()) return { text: fallback, source: "template" };
+  try {
+    const out = await ask(
+      "You are the sales assistant for a solo founder selling AI receptionists to Irish tradesmen. Write today's brief: 3-5 bullets starting with '• ', most important first, each one concrete (names, numbers) and ending in an action. No intro, no headings, under 90 words.",
+      JSON.stringify(input),
+      { maxTokens: 1500 },
+    );
+    if (out) return { text: out, source: "ai" };
+  } catch (e) {
+    console.error("dailyBrief failed:", e);
   }
   return { text: fallback, source: "template" };
 }

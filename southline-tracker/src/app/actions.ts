@@ -8,7 +8,9 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { getCredits } from "@/lib/adapters/sendmode";
 import { testGhl } from "@/lib/adapters/ghl";
-import { classifyReply, draftMessage, summariseLead } from "@/lib/ai";
+import { classifyReply, dailyBrief, draftMessage, summariseLead } from "@/lib/ai";
+import { responseMinutes, scoreLead, speedToLead } from "@/lib/crm";
+import { addDays, isoDay } from "@/lib/utils";
 import * as repo from "@/lib/repo";
 import { authMode } from "@/lib/auth";
 import { checkLogin, createSessionToken, SESSION_COOKIE, SESSION_MAX_AGE } from "@/lib/session";
@@ -81,7 +83,11 @@ export async function logSentAction(leadId: string, channel: Channel, body: stri
 
 export async function updateLeadAction(leadId: string, form: FormData) {
   const get = (k: string) => (form.get(k) as string | null)?.trim() || null;
-  await repo.updateLead(leadId, { name: get("name"), business: get("business"), email: get("email"), phone: get("phone"), trade: get("trade"), county: get("county") });
+  const value = Number(get("deal_value"));
+  await repo.updateLead(leadId, {
+    name: get("name"), business: get("business"), email: get("email"), phone: get("phone"), trade: get("trade"), county: get("county"),
+    deal_value: Number.isFinite(value) && value > 0 ? value : null,
+  });
   refresh();
 }
 
@@ -110,7 +116,7 @@ export async function signInAction(form: FormData) {
       maxAge: SESSION_MAX_AGE,
     });
   }
-  redirect("/inbox");
+  redirect("/");
 }
 
 export async function signOutAction() {
@@ -143,4 +149,64 @@ export async function testSendmodeAction() {
 
 export async function testGhlAction() {
   return testGhl();
+}
+
+// ---------- Reply queue ----------
+
+export async function draftReplyAction(messageId: string, regenerate = false, goal?: string) {
+  return repo.draftForReply(messageId, { regenerate, goal });
+}
+
+/** Approve a drafted reply: SMS goes out via SendMode, email is logged as sent (send it from your email tool). */
+export async function approveReplyAction(messageId: string, text: string): Promise<{ ok: boolean; error?: string; sent?: boolean }> {
+  try {
+    const reply = await getStore().get("messages", messageId);
+    if (!reply) return { ok: false, error: "Reply not found" };
+    if (reply.channel === "sms") {
+      const res = await repo.sendSmsToLead(reply.lead_id, text);
+      if (!res.ok) return res;
+      refresh();
+      return { ok: true, sent: true };
+    }
+    await logSentAction(reply.lead_id, "email", text);
+    return { ok: true, sent: false };
+  } catch (e) {
+    return { ok: false, error: (e as Error).message };
+  }
+}
+
+export async function dismissReplyAction(messageId: string) {
+  await repo.dismissReply(messageId, "Reply handled outside the app");
+  refresh();
+}
+
+// ---------- Today ----------
+
+const briefCache = globalThis as unknown as { __brief?: { key: string; text: string; source: string } };
+
+/** Today's AI brief. Cached for an hour so reloading the page doesn't cost a Claude call each time. */
+export async function briefAction(force = false) {
+  const today = isoDay();
+  const [queue, followUps, leads, messages] = await Promise.all([repo.replyQueue(), repo.followUpQueue(today), getStore().all("leads"), getStore().all("messages")]);
+  const byLead = repo.groupBy(messages, (m) => m.lead_id);
+  const hot = leads
+    .map((l) => ({ l, s: scoreLead(l, byLead.get(l.id) ?? []) }))
+    .filter((x) => x.s.hot)
+    .sort((a, b) => b.s.score - a.s.score)
+    .slice(0, 5);
+  const yday = addDays(today, -1);
+  const ym = messages.filter((m) => isoDay(m.sent_at) === yday);
+  const input = {
+    waitingCount: queue.length,
+    waiting: queue.slice(0, 8).map((q) => ({ name: q.lead.name ?? q.lead.business ?? "lead", said: q.reply.body.slice(0, 140), tag: q.reply.ai_tag, hours: Math.round(q.waitingMinutes / 60), score: q.score.score })),
+    followUpsDue: followUps.filter((f) => f.followUp).length,
+    hot: hot.map((h) => ({ name: h.l.name ?? h.l.business ?? "lead", reasons: h.s.reasons })),
+    yesterday: { sent: ym.filter((m) => m.direction === "outbound").length, replies: ym.filter((m) => m.direction === "inbound").length, positive: ym.filter((m) => m.ai_tag === "interested").length },
+    medianReplyMinutes: speedToLead(responseMinutes(messages, { from: new Date(Date.now() - 7 * 864e5).toISOString(), to: null })).median,
+  };
+  const key = `${new Date().toISOString().slice(0, 13)}:${JSON.stringify(input).length}:${queue.length}`;
+  if (!force && briefCache.__brief?.key === key) return briefCache.__brief;
+  const out = await dailyBrief(input);
+  briefCache.__brief = { key, ...out };
+  return briefCache.__brief;
 }

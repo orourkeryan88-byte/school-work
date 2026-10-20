@@ -134,6 +134,9 @@ export function buildMockData(): { [K in TableName]: Tables[K][] } {
       }
     }
 
+    // Plans: Starter €99, Pro €149, Multi-van €249 a month.
+    if (["interested", "booked"].includes(lead.status)) lead.deal_value = [99, 149, 149, 249][Math.floor(r() * 4)];
+
     // A few booked calls turn into wins, plus some manual notes and follow-ups.
     if (lead.status === "interested" && created > 4 && r() < 0.45) {
       lead.status = "booked";

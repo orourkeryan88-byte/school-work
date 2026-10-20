@@ -41,6 +41,7 @@ export interface Lead {
   status: LeadStatus;
   unsubscribed: boolean;
   ghl_contact_id?: string | null; // GoHighLevel contact id, when the lead came from GHL
+  deal_value?: number | null; // expected monthly value in EUR (pipeline + forecast)
   booked_at: string | null;
   won_at: string | null;
   created_at: string;
@@ -71,6 +72,9 @@ export interface Message {
   source: string | null;
   external_id: string | null; // id from the sending tool, used to dedupe
   delivery_status?: string | null; // outbound SMS: delivery report from SendMode
+  ai_draft?: string | null; // inbound only: cached Claude draft of my reply
+  ai_draft_source?: "ai" | "template" | null;
+  reply_handled_at?: string | null; // inbound only: answered elsewhere / dismissed from the queue
   created_at: string;
 }
 

@@ -7,7 +7,7 @@ export default function manifest(): MetadataRoute.Manifest {
     name: "Southline Agency",
     short_name: "Southline",
     description: "Every cold email and SMS sent, every reply, and what happened next.",
-    start_url: "/inbox",
+    start_url: "/",
     display: "standalone",
     background_color: "#0b1f3a",
     theme_color: "#0a0a0a",
