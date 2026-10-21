@@ -1,11 +1,11 @@
-import { ArrowRight, CalendarClock, Clock, Flame, Inbox, TrendingUp } from "lucide-react";
+import { ArrowRight, CalendarClock, Flame, Inbox } from "lucide-react";
 import Link from "next/link";
 import { ChannelBadge, StatusBadge, TagBadge } from "@/components/badges";
 import { DailyBrief } from "@/components/daily-brief";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { currentUserEmail } from "@/lib/auth";
-import { euro, formatMinutes, pipelineTotals, responseMinutes, scoreLead, speedToLead } from "@/lib/crm";
+import { formatMinutes, scoreLead } from "@/lib/crm";
 import { followUpQueue, groupBy, replyQueue } from "@/lib/repo";
 import { getStore } from "@/lib/store";
 import { formatDate } from "@/lib/utils";
@@ -20,8 +20,6 @@ export default async function TodayPage() {
     .filter((x) => x.s.hot)
     .sort((a, b) => b.s.score - a.s.score);
   const due = followUps.filter((f) => f.followUp);
-  const speed = speedToLead(responseMinutes(messages, { from: new Date(Date.now() - 30 * 864e5).toISOString(), to: null }));
-  const totals = pipelineTotals(leads);
 
   const hour = Number(new Intl.DateTimeFormat("en-GB", { timeZone: "Europe/Dublin", hour: "numeric", hour12: false }).format(new Date()));
   const hello = hour < 12 ? "Good morning" : hour < 18 ? "Good afternoon" : "Good evening";
@@ -33,9 +31,7 @@ export default async function TodayPage() {
   const tiles = [
     { label: "Waiting on you", value: String(queue.length), icon: Inbox, href: "/queue", warn: queue.length > 0 },
     { label: "Follow-ups due", value: String(due.length), icon: CalendarClock, href: "/follow-ups", warn: due.some((d) => d.overdue) },
-    { label: "Hot leads", value: String(hot.length), icon: Flame, href: "/pipeline" },
-    { label: "Median reply time (30d)", value: formatMinutes(speed.median), icon: Clock, href: "/dashboard", hint: speed.within1h !== null ? `${speed.within1h}% within 1h` : undefined },
-    { label: "Weighted pipeline", value: `${euro(totals.weighted)}/mo`, icon: TrendingUp, href: "/pipeline" },
+    { label: "Hot leads", value: String(hot.length), icon: Flame, href: "/leads?hot=1&sort=score" },
   ];
 
   return (
@@ -47,21 +43,20 @@ export default async function TodayPage() {
 
       <DailyBrief />
 
-      <div className="mt-4 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+      <div className="mt-4 grid grid-cols-3 gap-3">
         {tiles.map((t) => (
           <Link key={t.label} href={t.href} className="rounded-xl border bg-card p-4 transition-colors hover:bg-accent/50">
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground"><t.icon className="size-3.5" /> {t.label}</div>
             <div className={`mt-1 text-2xl font-semibold tabular-nums ${t.warn ? "text-amber-700 dark:text-amber-300" : ""}`}>{t.value}</div>
-            {t.hint && <div className="text-[11px] text-muted-foreground">{t.hint}</div>}
           </Link>
         ))}
       </div>
 
-      <div className="mt-5 grid gap-5 lg:grid-cols-[1.4fr_1fr]">
+      <div className="mt-5 grid gap-5 lg:grid-cols-[1.4fr_1fr] [&>*]:min-w-0">
         <Card>
-          <CardHeader className="flex-row items-center justify-between">
+          <CardHeader className="flex-row flex-wrap items-center justify-between gap-2">
             <CardTitle>Waiting on your reply</CardTitle>
-            <Button size="sm" asChild><Link href="/queue">Open reply queue <ArrowRight /></Link></Button>
+            <Button size="sm" asChild><Link href="/queue">Reply now <ArrowRight /></Link></Button>
           </CardHeader>
           <CardContent className="space-y-2">
             {queue.slice(0, 6).map((q) => (

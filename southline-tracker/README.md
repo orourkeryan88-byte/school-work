@@ -4,6 +4,8 @@ Southline Agency's sales CRM: every cold email and SMS sent, every reply, the pi
 
 Standalone Next.js app with its own Postgres database (Supabase). It is **not** a GoHighLevel plugin. Data comes in through webhooks, CSV imports and (optionally) API sync, from any sending tool.
 
+**The menu is kept short:** **Today · Replies · Leads · Check number · More**. Leads has a **List | Board** switch for the pipeline. Everything else is on the **More** page: Follow-ups, All replies, Stats, Campaigns, Import & connect, and Change requests. On a phone these five sit in a tab bar along the bottom.
+
 - **Today**: the first screen of the day. Claude writes a brief of who's waiting, who's hot and what's due, with counts and quick links.
 - **Reply queue**: everyone waiting on an answer from you, hottest first.
   - Claude drafts each reply. One-tap goal chips redraft it: *Book a call*, *Answer + price*, *Offer free trial*, *Handle objection*.

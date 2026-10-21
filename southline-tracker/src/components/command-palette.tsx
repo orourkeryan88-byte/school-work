@@ -3,7 +3,7 @@
 import { Search } from "lucide-react";
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { NAV } from "@/components/nav";
+import { NAV } from "@/lib/nav-items";
 
 type Hit = { id: string; name: string; sub: string; status: string };
 

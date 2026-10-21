@@ -1,41 +1,62 @@
 "use client";
 
-import { BarChart3, CalendarClock, Columns3, Inbox, Megaphone, Menu, PhoneCall, Sparkles, Sun, Upload, Users, X } from "lucide-react";
+import { LayoutGrid } from "lucide-react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { useEffect, useState } from "react";
+import { MAIN_NAV, MORE_NAV } from "@/lib/nav-items";
 import { cn } from "@/lib/utils";
 
-export const NAV = [
-  { href: "/", label: "Today", icon: Sun },
-  { href: "/queue", label: "Reply queue", icon: Sparkles },
-  { href: "/check", label: "Check number", icon: PhoneCall },
-  { href: "/inbox", label: "Responses", icon: Inbox },
-  { href: "/pipeline", label: "Pipeline", icon: Columns3 },
-  { href: "/leads", label: "Leads", icon: Users },
-  { href: "/follow-ups", label: "Follow-ups", icon: CalendarClock },
-  { href: "/campaigns", label: "Campaigns", icon: Megaphone },
-  { href: "/dashboard", label: "Dashboard", icon: BarChart3 },
-  { href: "/import", label: "Import & connect", icon: Upload },
-];
+// The pipeline board is part of Leads, so it doesn't light up "More".
+const MORE_PATHS = ["/more", ...MORE_NAV.map((n) => n.href).filter((h) => h !== "/pipeline")];
 
-function Links({ onClick }: { onClick?: () => void }) {
+function isActive(path: string, href: string) {
+  if (href === "/") return path === "/";
+  if (href === "/more") return MORE_PATHS.some((p) => path.startsWith(p));
+  // The pipeline board is part of Leads.
+  if (href === "/leads") return path.startsWith("/leads") || path.startsWith("/pipeline");
+  return path.startsWith(href);
+}
+
+/** Desktop sidebar: the four main items + More. */
+export function SideNav() {
   const path = usePathname();
+  const items = [...MAIN_NAV, { href: "/more", label: "More", icon: LayoutGrid }];
   return (
     <nav className="flex flex-col gap-1">
-      {NAV.map(({ href, label, icon: Icon }) => {
-        const active = href === "/" ? path === "/" : path.startsWith(href);
+      {items.map(({ href, label, icon: Icon }) => (
+        <Link
+          key={href}
+          href={href}
+          className={cn(
+            "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[15px] font-medium transition-colors",
+            isActive(path, href) ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
+          )}
+        >
+          <Icon className="size-[18px]" />
+          {label}
+        </Link>
+      ))}
+    </nav>
+  );
+}
+
+/** Phone: tab bar along the bottom with the same five items. */
+export function TabBar() {
+  const path = usePathname();
+  const items = [
+    ...MAIN_NAV.map((n) => (n.href === "/check" ? { ...n, label: "Check" } : n)),
+    { href: "/more", label: "More", icon: LayoutGrid },
+  ];
+  return (
+    <nav
+      aria-label="Main"
+      className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t bg-background/95 pb-[env(safe-area-inset-bottom,0px)] backdrop-blur md:hidden"
+    >
+      {items.map(({ href, label, icon: Icon }) => {
+        const active = isActive(path, href);
         return (
-          <Link
-            key={href}
-            href={href}
-            onClick={onClick}
-            className={cn(
-              "flex items-center gap-2.5 rounded-md px-3 py-2 text-sm font-medium transition-colors",
-              active ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
-            )}
-          >
-            <Icon className="size-4" />
+          <Link key={href} href={href} className={cn("flex flex-col items-center gap-0.5 py-2 text-[11px]", active ? "font-medium text-foreground" : "text-muted-foreground")}>
+            <Icon className={cn("size-5", active && "text-brand-accent")} />
             {label}
           </Link>
         );
@@ -44,28 +65,14 @@ function Links({ onClick }: { onClick?: () => void }) {
   );
 }
 
-export function SideNav() {
-  return <Links />;
-}
-
-/** Hamburger menu for phones. The tab bar's "More" button opens it too (via an event). */
-export function MobileNav() {
-  const [open, setOpen] = useState(false);
-  useEffect(() => {
-    const toggle = () => setOpen((o) => !o);
-    window.addEventListener("southline:menu", toggle);
-    return () => window.removeEventListener("southline:menu", toggle);
-  }, []);
+/** Leads ⇄ Pipeline board switch, shown at the top of both pages. */
+export function LeadsViewSwitch() {
+  const path = usePathname();
+  const board = path.startsWith("/pipeline");
   return (
-    <div className="md:hidden">
-      <button aria-label="Menu" className="rounded-md p-2 hover:bg-accent" onClick={() => setOpen(!open)}>
-        {open ? <X className="size-5" /> : <Menu className="size-5" />}
-      </button>
-      {open && (
-        <div className="absolute inset-x-0 top-14 z-50 max-h-[calc(100dvh-8.5rem)] overflow-y-auto border-b bg-background p-3 shadow-lg">
-          <Links onClick={() => setOpen(false)} />
-        </div>
-      )}
+    <div className="inline-flex rounded-lg border p-0.5 text-sm">
+      <Link href="/leads" className={cn("rounded-md px-3 py-1.5", !board ? "bg-accent font-medium" : "text-muted-foreground")}>List</Link>
+      <Link href="/pipeline" className={cn("rounded-md px-3 py-1.5", board ? "bg-accent font-medium" : "text-muted-foreground")}>Board</Link>
     </div>
   );
 }

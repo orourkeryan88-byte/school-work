@@ -8,6 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { NativeSelect } from "@/components/ui/select";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import { LeadsViewSwitch } from "@/components/nav";
 import { listLeads, listTrades } from "@/lib/repo";
 import { LEAD_STATUSES, STATUS_LABELS, type Channel, type LeadStatus } from "@/lib/types";
 import { formatDateTime } from "@/lib/utils";
@@ -16,6 +17,9 @@ export const dynamic = "force-dynamic";
 
 type SP = Record<string, string | undefined>;
 
+/** Search params without empty values, for building links. */
+const clean = (sp: SP) => Object.fromEntries(Object.entries(sp).filter((e): e is [string, string] => Boolean(e[1])));
+
 export default async function LeadsPage({ searchParams }: { searchParams: Promise<SP> }) {
   const sp = await searchParams;
   const [leads, trades] = await Promise.all([
@@ -23,13 +27,16 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
     listTrades(),
   ]);
 
+  const showFilters = Boolean(sp.filters || sp.channel || sp.trade || sp.status || (sp.sort && sp.sort !== "recent"));
+
   // Pipeline counts across the current filter, shown as a strip.
   const counts = LEAD_STATUSES.map((s) => ({ s, n: leads.filter((l) => l.status === s).length }));
 
   return (
     <>
       <PageHeader title="Leads" description={`${leads.length} leads`}>
-        <ExportButton view="leads" params={sp} />
+        <LeadsViewSwitch />
+        <span className="hidden sm:inline-flex"><ExportButton view="leads" params={sp} /></span>
         <Button size="sm" asChild>
           <Link href="/leads/new"><Plus /> Add lead</Link>
         </Button>
@@ -47,7 +54,13 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
       </div>
 
       <FilterForm className="mb-4 flex flex-wrap gap-2">
-        <Input type="search" name="q" defaultValue={sp.q} placeholder="Search name, business, email, phone…" className="w-full sm:w-72" />
+        <Input type="search" name="q" defaultValue={sp.q} placeholder="Search name, business, phone…" className="w-full sm:w-72" />
+        {/* Phones show just search + chips; the rest opens with "More filters" */}
+        {!showFilters && (
+          <Link href={`/leads?${new URLSearchParams({ ...clean(sp), filters: "1" })}`} className="py-1.5 text-sm text-muted-foreground underline sm:hidden">More filters</Link>
+        )}
+        <div className={`${showFilters ? "flex" : "hidden"} w-full flex-wrap gap-2 sm:flex sm:w-auto`}>
+          {showFilters && <input type="hidden" name="filters" value="1" />}
         <NativeSelect name="status" defaultValue={sp.status ?? ""} aria-label="Status">
           <option value="">All statuses</option>
           {LEAD_STATUSES.map((s) => <option key={s} value={s}>{STATUS_LABELS[s]}</option>)}
@@ -66,6 +79,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
           <option value="score">Sort: hottest first</option>
           <option value="name">Sort: name A-Z</option>
         </NativeSelect>
+        </div>
         {sp.hot === "1" && <input type="hidden" name="hot" value="1" />}
       </FilterForm>
 

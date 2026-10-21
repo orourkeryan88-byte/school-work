@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { LeadsViewSwitch } from "@/components/nav";
 import { PageHeader } from "@/components/page-header";
 import { PipelineBoard, type BoardCard } from "@/components/pipeline-board";
 import { Card, CardContent } from "@/components/ui/card";
@@ -7,7 +8,7 @@ import { groupBy } from "@/lib/repo";
 import { getStore } from "@/lib/store";
 import { pct } from "@/lib/utils";
 
-export const metadata: Metadata = { title: "Pipeline" };
+export const metadata: Metadata = { title: "Pipeline board" };
 
 export default async function PipelinePage() {
   const store = getStore();
@@ -36,7 +37,9 @@ export default async function PipelinePage() {
 
   return (
     <>
-      <PageHeader title="Pipeline" description={`Drag deals between stages. Deals without a value count as ${euro(defaultDealValue())}/mo - set it on the lead.`} />
+      <PageHeader title="Leads" description={`Drag a deal to move it to another stage. Deals without a value count as ${euro(defaultDealValue())}/mo.`}>
+        <LeadsViewSwitch />
+      </PageHeader>
       <div className="mb-5 grid grid-cols-2 gap-3 lg:grid-cols-4">
         {tiles.map((x) => (
           <Card key={x.label} className="gap-1 py-4" title={x.hint}>

@@ -42,7 +42,7 @@ export default async function DashboardPage({ searchParams }: { searchParams: Pr
 
   return (
     <>
-      <PageHeader title="Dashboard" description={range.label}>
+      <PageHeader title="Stats" description={range.label}>
         <FilterForm className="flex flex-wrap gap-2">
           <RangeFields range={sp.range} from={sp.from} to={sp.to} />
         </FilterForm>
