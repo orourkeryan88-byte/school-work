@@ -1,4 +1,4 @@
-import type { Campaign, ChangeRequest, FollowUp, ImportLog, Lead, Message, Note } from "@/lib/types";
+import type { AppSecret, Campaign, ChangeRequest, FollowUp, ImportLog, Lead, Message, Note } from "@/lib/types";
 
 /** Every table in the app, keyed by its Postgres name. */
 export interface Tables {
@@ -9,6 +9,7 @@ export interface Tables {
   follow_ups: FollowUp;
   import_logs: ImportLog;
   change_requests: ChangeRequest;
+  app_secrets: AppSecret;
 }
 export type TableName = keyof Tables;
 

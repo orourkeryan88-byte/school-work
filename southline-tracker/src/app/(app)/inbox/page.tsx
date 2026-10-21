@@ -59,7 +59,7 @@ export default async function InboxPage({ searchParams }: { searchParams: Promis
         <RangeFields range={sp.range} from={sp.from} to={sp.to} defaultRange="all" />
       </FilterForm>
 
-      <InboxTable rows={rows} smsEnabled={sendmodeConfigured()} />
+      <InboxTable rows={rows} smsEnabled={await sendmodeConfigured()} />
     </>
   );
 }

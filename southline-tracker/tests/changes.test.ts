@@ -19,7 +19,7 @@ test("submitChangeRequest saves the request with the issue link, or the reason i
   assert.equal(sent.error, null);
   const notConnected = await repo.submitChangeRequest({ kind: "feature", text: "Dark green theme", page: null, by: null }, () => null);
   assert.equal(notConnected.issue_url, null);
-  assert.match(notConnected.error ?? "", /GITHUB_TOKEN/);
+  assert.match(notConnected.error ?? "", /API keys page/);
   const failed = await repo.submitChangeRequest({ kind: "feature", text: "x", page: null, by: null }, async () => {
     throw new Error("GitHub 401: Bad credentials");
   });

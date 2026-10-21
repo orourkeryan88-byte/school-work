@@ -67,7 +67,7 @@ export default async function LeadPage({ params }: { params: Promise<{ id: strin
                 channel={last?.channel ?? (lead.phone && !lead.email ? "sms" : "email")}
                 messageId={last?.direction === "inbound" ? last.id : undefined}
                 tag={last?.direction === "inbound" ? last.ai_tag : undefined}
-                smsEnabled={sendmodeConfigured()}
+                smsEnabled={await sendmodeConfigured()}
               />
             </CardContent>
           </Card>

@@ -9,10 +9,12 @@
 //     CustomerID to the URL set in "Post Delivery Reports to URL" and expects
 //     the response body "True".
 
+import { secret } from "@/lib/secrets";
+
 const BASE = "https://rest.sendmode.com/v2";
 
-export function sendmodeConfigured() {
-  return Boolean(process.env.SENDMODE_ACCESS_KEY);
+export async function sendmodeConfigured() {
+  return Boolean(await secret("SENDMODE_ACCESS_KEY"));
 }
 
 /** SendMode wants Irish numbers without the "+": 353871234567. */
@@ -31,15 +33,15 @@ export interface SendResult {
  * our own message id to match the report to the message later.
  */
 export async function sendSms(opts: { to: string; text: string; customerId: string; senderId?: string }, fetchImpl: typeof fetch = fetch): Promise<SendResult> {
-  const key = process.env.SENDMODE_ACCESS_KEY;
-  if (!key) return { ok: false, error: "SENDMODE_ACCESS_KEY is not set", raw: null };
+  const key = await secret("SENDMODE_ACCESS_KEY");
+  if (!key) return { ok: false, error: "Add your SendMode access key on the API keys page", raw: null };
 
   const message: Record<string, unknown> = {
     messagetext: opts.text,
     recipients: [toSendmodeNumber(opts.to)],
     customerid: opts.customerId,
   };
-  const senderId = opts.senderId ?? process.env.SENDMODE_SENDER_ID;
+  const senderId = opts.senderId ?? (await secret("SENDMODE_SENDER_ID"));
   if (senderId) message.senderid = senderId;
 
   let res: Response;
@@ -73,8 +75,8 @@ export async function sendSms(opts: { to: string; text: string; customerId: stri
 
 /** Check the key works and how many credits are left. */
 export async function getCredits(fetchImpl: typeof fetch = fetch): Promise<{ ok: boolean; credits?: string; error?: string }> {
-  const key = process.env.SENDMODE_ACCESS_KEY;
-  if (!key) return { ok: false, error: "SENDMODE_ACCESS_KEY is not set" };
+  const key = await secret("SENDMODE_ACCESS_KEY");
+  if (!key) return { ok: false, error: "Add your SendMode access key on the API keys page" };
   try {
     const res = await fetchImpl(`${BASE}/credits?access_key=${encodeURIComponent(key)}`, { headers: { Authorization: key }, cache: "no-store", signal: AbortSignal.timeout(15000) });
     const text = await res.text();

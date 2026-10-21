@@ -6,7 +6,7 @@
 // a private personal mobile with no business listing is reported as such.
 
 import Anthropic from "@anthropic-ai/sdk";
-import { aiEnabled } from "@/lib/ai";
+import { aiEnabled, claude } from "@/lib/ai";
 import { normalizePhone } from "@/lib/utils";
 
 const MODEL = process.env.ANTHROPIC_MODEL || "claude-opus-5-5";
@@ -54,13 +54,13 @@ export async function webLookup(raw: string, opts: { fresh?: boolean; client?: P
   const e164 = normalizePhone(raw);
   const empty: WebLookup = { found: false, name: null, business: null, trade: null, location: null, website: null, summary: "", confidence: "none", sources: [] };
   if (!e164) return { ...empty, error: "That doesn't look like a phone number." };
-  if (!aiEnabled()) return { ...empty, error: "Add ANTHROPIC_API_KEY so Claude can search the web for this number." };
+  if (!(await aiEnabled())) return { ...empty, error: "Add your Claude API key on the API keys page so Claude can search the web for this number." };
 
   cache.__lookups ??= new Map();
   const hit = cache.__lookups.get(e164);
   if (hit && !opts.fresh && Date.now() - hit.at < DAY) return hit.result;
 
-  const client = opts.client ?? new Anthropic();
+  const client = opts.client ?? (await claude());
   const tools = [
     {
       type: "web_search_20260209" as const,

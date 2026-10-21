@@ -14,7 +14,7 @@ const AUTO_DRAFT = 8;
 export default async function QueuePage() {
   const queue = await replyQueue();
   const window = sendWindow();
-  const smsEnabled = sendmodeConfigured();
+  const smsEnabled = await sendmodeConfigured();
   return (
     <>
       <PageHeader

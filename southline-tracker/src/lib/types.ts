@@ -124,6 +124,14 @@ export interface ChangeRequest {
   created_at: string;
 }
 
+// An API key saved from the app's "API keys" page (encrypted - see lib/secrets.ts).
+export interface AppSecret {
+  id: string; // the setting name, e.g. SENDMODE_ACCESS_KEY
+  value_enc: string;
+  updated_at: string;
+  updated_by: string | null;
+}
+
 // A row in the responses inbox: an inbound reply joined to its lead and
 // the message it was replying to.
 export interface InboxRow {

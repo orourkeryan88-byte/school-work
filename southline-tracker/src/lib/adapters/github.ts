@@ -5,15 +5,18 @@
 // Env: GITHUB_TOKEN (fine-grained token with Issues: read & write on the repo)
 //      GITHUB_REPO  ("owner/repo", e.g. orourkeryan88-byte/school-work)
 
-export function githubConfigured() {
-  return Boolean(process.env.GITHUB_TOKEN && process.env.GITHUB_REPO);
+import { secret } from "@/lib/secrets";
+
+export async function githubConfigured() {
+  return Boolean((await secret("GITHUB_TOKEN")) && (await secret("GITHUB_REPO")));
 }
 
 export async function createIssue(title: string, body: string, labels: string[], fetchImpl: typeof fetch = fetch): Promise<{ url: string; number: number }> {
-  const res = await fetchImpl(`https://api.github.com/repos/${process.env.GITHUB_REPO}/issues`, {
+  const [token, repo] = [await secret("GITHUB_TOKEN"), await secret("GITHUB_REPO")];
+  const res = await fetchImpl(`https://api.github.com/repos/${repo}/issues`, {
     method: "POST",
     headers: {
-      Authorization: `Bearer ${process.env.GITHUB_TOKEN}`,
+      Authorization: `Bearer ${token}`,
       Accept: "application/vnd.github+json",
       "X-GitHub-Api-Version": "2022-11-28",
       "Content-Type": "application/json",

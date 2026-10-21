@@ -16,6 +16,7 @@ import * as repo from "@/lib/repo";
 import { authMode, currentUserEmail } from "@/lib/auth";
 import { createIssue, githubConfigured } from "@/lib/adapters/github";
 import { checkLogin, createSessionToken, SESSION_COOKIE, SESSION_MAX_AGE } from "@/lib/session";
+import { saveKey } from "@/lib/secrets";
 import { getStore } from "@/lib/store";
 import type { Channel, LeadStatus, ReplyTag } from "@/lib/types";
 import { LEAD_STATUSES, REPLY_TAGS } from "@/lib/types";
@@ -238,7 +239,16 @@ export async function saveLookupAction(number: string, found: { name?: string | 
 export async function requestChangeAction(kind: "feature" | "bug", text: string, page: string | null) {
   if (!text.trim()) return { ok: false as const, error: "Describe the change first." };
   const by = await currentUserEmail();
-  const saved = await repo.submitChangeRequest({ kind, text, page, by }, (title, body, labels) => (githubConfigured() ? createIssue(title, body, labels) : null));
+  const saved = await repo.submitChangeRequest({ kind, text, page, by }, async (title, body, labels) => ((await githubConfigured()) ? createIssue(title, body, labels) : null));
   refresh();
   return saved.issue_url ? { ok: true as const, url: saved.issue_url, number: saved.issue_number } : { ok: false as const, error: saved.error ?? "Not sent", saved: true, issueText: repo.changeRequestIssue(kind, text, page, by).body };
+}
+
+// ---------- API keys page ----------
+
+/** Save one API key (an empty value removes it). The value never comes back to the browser. */
+export async function saveKeyAction(name: string, value: string) {
+  const res = await saveKey(name, value, await currentUserEmail());
+  if (res.ok) refresh();
+  return res;
 }

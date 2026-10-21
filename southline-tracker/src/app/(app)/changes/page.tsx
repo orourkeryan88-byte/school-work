@@ -13,7 +13,7 @@ export default async function ChangesPage() {
   const rows = (await getStore().all("change_requests")).sort((a, b) => b.created_at.localeCompare(a.created_at));
   return (
     <>
-      <PageHeader title="Change requests" description={githubConfigured() ? "Features and fixes you've asked Claude for. Each one is a GitHub issue - Claude replies there and opens a pull request." : "GitHub isn't connected yet - requests are saved here. See README → \"Ask Claude to change the app\"."}>
+      <PageHeader title="Change requests" description={(await githubConfigured()) ? "Features and fixes you've asked Claude for. Each one is a GitHub issue - Claude replies there and opens a pull request." : "GitHub isn't connected yet - requests are saved here. See README → \"Ask Claude to change the app\"."}>
         <div className="w-52"><RequestChange /></div>
       </PageHeader>
       <ul className="divide-y rounded-xl border">

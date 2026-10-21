@@ -75,7 +75,7 @@ test("webLookup resumes paused searches, then caches the answer", async () => {
     delete process.env.ANTHROPIC_API_KEY;
   }
   const noKey = await webLookup("0871111111");
-  assert.match(noKey.error ?? "", /ANTHROPIC_API_KEY/);
+  assert.match(noKey.error ?? "", /API keys page/);
 });
 
 test("crmLookup finds a lead by any number format", async () => {

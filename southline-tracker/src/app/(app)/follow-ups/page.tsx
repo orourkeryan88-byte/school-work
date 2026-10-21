@@ -20,6 +20,7 @@ export default async function FollowUpsPage() {
   const upcoming = all
     .filter((f) => !f.done_at && f.due_date > today && f.due_date <= addDays(today, 7))
     .sort((a, b) => a.due_date.localeCompare(b.due_date));
+  const smsOn = await sendmodeConfigured();
   const leadName = new Map(leads.map((l) => [l.id, l.name ?? l.business ?? l.email ?? l.phone ?? "Lead"]));
 
   const card = (item: (typeof queue)[number]) => {
@@ -48,7 +49,7 @@ export default async function FollowUpsPage() {
           </div>
           <div>
             <div className="mb-1.5 text-xs font-medium text-muted-foreground">Suggested message</div>
-            <DraftBox leadId={lead.id} channel={last?.channel ?? "email"} initial={templateDraft(lead, last)} goal={item.reason} smsEnabled={sendmodeConfigured()} />
+            <DraftBox leadId={lead.id} channel={last?.channel ?? "email"} initial={templateDraft(lead, last)} goal={item.reason} smsEnabled={smsOn} />
           </div>
         </CardContent>
       </Card>

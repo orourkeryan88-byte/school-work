@@ -55,7 +55,7 @@ npm run lint
 ### 2a. Supabase (database + login)
 
 1. Create a project at [supabase.com](https://supabase.com) (EU region, e.g. Frankfurt or Ireland).
-2. Open **SQL Editor**, then paste and run every file in `supabase/migrations/` in order (`0001` → `0004`).
+2. Open **SQL Editor**, then paste and run every file in `supabase/migrations/` in order (`0001` → `0005`).
 3. Go to **Authentication → Users → Add user**. Create yourself with an email and password. Turn off public sign-ups under **Authentication → Providers → Email**, since this is a one-person app.
 4. Go to **Project Settings → API** and copy the URL, the `anon` key and the `service_role` key.
 
@@ -67,7 +67,8 @@ Copy `.env.example` to `.env.local` locally, or add these in Vercel → Settings
 |---|---|---|
 | `APP_USERS` | recommended when online | Turns on the login. `email-or-username:password` pairs separated by commas. Unset means no login. |
 | `LOGIN` | optional | `supabase` to use Supabase Auth users instead of `APP_USERS` |
-| `AUTH_SECRET` | yes (live) | Signs the login cookie. Generate one with `openssl rand -hex 32`. |
+| `AUTH_SECRET` | yes (live) | Signs the login cookie and locks the keys saved on the **API keys** page. Generate one with `openssl rand -hex 32`. Changing it means re-entering those keys. |
+| `SECRETS_KEY` | optional | Lock the saved API keys with this instead of `AUTH_SECRET` |
 | `NEXT_PUBLIC_SUPABASE_URL` | yes | Supabase project URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | yes | Used for login only |
 | `SUPABASE_SERVICE_ROLE_KEY` | yes | Server-side database access. Never expose this to the browser. |
@@ -88,6 +89,8 @@ Copy `.env.example` to `.env.local` locally, or add these in Vercel → Settings
 | `SMS_SEND_HOURS` / `SMS_SEND_DAYS` | optional | When SMS may be sent, in Irish time. Default `09-20` and `1-6` (Mon–Sat). |
 | `GITHUB_TOKEN` / `GITHUB_REPO` | optional | Lets **Request a change** open GitHub issues for Claude (section 7) |
 | `APP_USER_NAMES` | optional | Greeting names per login, e.g. `you@x.ie:Ryan,jamie:Jamie` |
+
+**The API keys page (More → API keys)** is the easy way to add the SendMode, GoHighLevel, Claude, Instantly and GitHub keys: paste them in and they're saved encrypted in your database. Only the last 4 characters are ever shown again. A key set as an environment variable above always wins, and the page shows it as "Set on the host". The Supabase keys and `AUTH_SECRET` must stay as environment variables, because the app needs them to open the database.
 
 **Logins are off by default**: the app opens straight in, which is fine on your own laptop.
 

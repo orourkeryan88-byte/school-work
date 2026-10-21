@@ -1,4 +1,7 @@
 import { headers } from "next/headers";
+import Link from "next/link";
+import { Button } from "@/components/ui/button";
+import { KeyRound } from "lucide-react";
 import { CsvImportForm } from "@/components/csv-import-form";
 import { TestConnection } from "@/components/test-connection";
 import { ghlConfigured } from "@/lib/adapters/ghl";
@@ -21,14 +24,14 @@ export default async function ImportPage() {
   const logs = (await getStore().all("import_logs")).sort((a, b) => b.created_at.localeCompare(a.created_at)).slice(0, 25);
 
   const amp = q ? "&" : "?";
-  const sendmodeOn = sendmodeConfigured();
-  const ghlOn = ghlConfigured();
+  const sendmodeOn = await sendmodeConfigured();
+  const ghlOn = await ghlConfigured();
 
   const integrations = [
     {
       name: "GoHighLevel",
       on: ghlOn,
-      status: ghlOn ? "API key set - contacts are looked up automatically" : "Webhooks work now. Add GHL_API_KEY + GHL_LOCATION_ID to fill in contact details.",
+      status: ghlOn ? "API key set - contacts are looked up automatically" : "Webhooks work now. Add your GHL API key + location ID on the API keys page to fill in contact details.",
       test: "ghl" as const,
       urls: [
         { label: "Private Integration webhook (InboundMessage + OutboundMessage)", url: `${base}/api/integrations/ghl${q}` },
@@ -40,7 +43,7 @@ export default async function ImportPage() {
     {
       name: "SendMode",
       on: sendmodeOn,
-      status: sendmodeOn ? "Access key set - you can send SMS from drafts" : "Replies + delivery reports work now. Add SENDMODE_ACCESS_KEY to send SMS from the app.",
+      status: sendmodeOn ? "Access key set - you can send SMS from drafts" : "Replies + delivery reports work now. Add your SendMode access key on the API keys page to send SMS from the app.",
       test: "sendmode" as const,
       urls: [
         { label: "Incoming SMS (replies) URL", url: `${base}/api/integrations/sendmode/inbound${q}` },
@@ -56,7 +59,9 @@ export default async function ImportPage() {
 
   return (
     <>
-      <PageHeader title="Import & connect" description="Bring sends and replies in by webhook (live) or CSV (any time)." />
+      <PageHeader title="Import & connect" description="Bring sends and replies in by webhook (live) or CSV (any time).">
+        <Button size="sm" variant="outline" asChild><Link href="/keys"><KeyRound /> API keys</Link></Button>
+      </PageHeader>
 
       <div className="mb-5 grid gap-5 lg:grid-cols-2">
         {integrations.map((it) => (

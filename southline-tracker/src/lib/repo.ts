@@ -552,14 +552,14 @@ _Sent from the Southline app's "Request a change" button._`;
 
 export async function submitChangeRequest(
   input: { kind: "feature" | "bug"; text: string; page: string | null; by: string | null },
-  send: (title: string, body: string, labels: string[]) => Promise<{ url: string; number: number }> | null,
+  send: (title: string, body: string, labels: string[]) => Promise<{ url: string; number: number } | null> | null,
 ) {
   const { title, body } = changeRequestIssue(input.kind, input.text, input.page, input.by);
   let issue: { url: string; number: number } | null = null;
   let error: string | null = null;
   try {
     issue = await (send(title, body, ["claude", input.kind === "bug" ? "bug" : "enhancement"]) ?? null);
-    if (!issue) error = "GitHub isn't connected yet (set GITHUB_TOKEN and GITHUB_REPO)";
+    if (!issue) error = "GitHub isn't connected yet - add a GitHub token and repository on the API keys page";
   } catch (e) {
     error = (e as Error).message;
   }

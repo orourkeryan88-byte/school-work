@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { secret } from "@/lib/secrets";
 import { fetchInstantlyRows } from "@/lib/adapters/instantly";
 import { importRows } from "@/lib/importer";
 import { checkIngestSecret } from "@/lib/ingest-auth";
@@ -14,8 +15,8 @@ async function handle(req: Request, { params }: { params: Promise<{ source: stri
   const { source } = await params;
 
   if (source === "instantly") {
-    const key = process.env.INSTANTLY_API_KEY;
-    if (!key) return NextResponse.json({ error: "INSTANTLY_API_KEY is not set" }, { status: 400 });
+    const key = await secret("INSTANTLY_API_KEY");
+    if (!key) return NextResponse.json({ error: "Add your Instantly API key on the API keys page" }, { status: 400 });
     try {
       const rows = await fetchInstantlyRows(key);
       const summary = await importRows(rows, { channel: "email", kind: "sync", source: "instantly" });

@@ -16,12 +16,13 @@
 //
 // Both are turned into the generic row shape that importRows() understands.
 
+import { secret } from "@/lib/secrets";
 import type { Channel, Direction } from "@/lib/types";
 
 const API = "https://services.leadconnectorhq.com";
 
-export function ghlConfigured() {
-  return Boolean(process.env.GHL_API_KEY);
+export async function ghlConfigured() {
+  return Boolean(await secret("GHL_API_KEY"));
 }
 
 export interface GhlContact {
@@ -39,7 +40,7 @@ export interface GhlContact {
 
 /** GET /contacts/{id} with a Private Integration token (scope: contacts.readonly). */
 export async function fetchGhlContact(contactId: string, fetchImpl: typeof fetch = fetch): Promise<GhlContact | null> {
-  const key = process.env.GHL_API_KEY;
+  const key = await secret("GHL_API_KEY");
   if (!key) return null;
   const res = await fetchImpl(`${API}/contacts/${encodeURIComponent(contactId)}`, {
     headers: { Authorization: `Bearer ${key}`, Version: process.env.GHL_API_VERSION || "2021-07-28", Accept: "application/json" },
@@ -53,10 +54,10 @@ export async function fetchGhlContact(contactId: string, fetchImpl: typeof fetch
 
 /** Quick connection check for the Import & connect page. */
 export async function testGhl(fetchImpl: typeof fetch = fetch): Promise<{ ok: boolean; detail: string }> {
-  const key = process.env.GHL_API_KEY;
-  const location = process.env.GHL_LOCATION_ID;
-  if (!key) return { ok: false, detail: "GHL_API_KEY is not set" };
-  if (!location) return { ok: false, detail: "GHL_LOCATION_ID is not set" };
+  const key = await secret("GHL_API_KEY");
+  const location = await secret("GHL_LOCATION_ID");
+  if (!key) return { ok: false, detail: "Add your GHL API key on the API keys page" };
+  if (!location) return { ok: false, detail: "Add your GHL location ID on the API keys page" };
   try {
     const res = await fetchImpl(`${API}/contacts/?locationId=${encodeURIComponent(location)}&limit=1`, {
       headers: { Authorization: `Bearer ${key}`, Version: process.env.GHL_API_VERSION || "2021-07-28", Accept: "application/json" },

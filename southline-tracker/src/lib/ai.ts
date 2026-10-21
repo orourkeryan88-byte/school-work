@@ -1,6 +1,7 @@
 import Anthropic from "@anthropic-ai/sdk";
 import type { Lead, Message, ReplyTag } from "@/lib/types";
 import { CHANNEL_LABELS, REPLY_TAGS, STATUS_LABELS, TAG_LABELS } from "@/lib/types";
+import { secret } from "@/lib/secrets";
 import { formatDate } from "@/lib/utils";
 
 // AI assist. Uses Claude when ANTHROPIC_API_KEY is set; otherwise falls back
@@ -8,14 +9,16 @@ import { formatDate } from "@/lib/utils";
 
 const MODEL = process.env.ANTHROPIC_MODEL || "claude-opus-5-5";
 
-export function aiEnabled() {
-  return Boolean(process.env.ANTHROPIC_API_KEY);
+export async function aiEnabled() {
+  return Boolean(await secret("ANTHROPIC_API_KEY"));
 }
 
-let client: Anthropic | null = null;
-function claude() {
-  if (!client) client = new Anthropic();
-  return client;
+// One client per key, rebuilt if the key is changed on the API keys page.
+let client: { key: string; api: Anthropic } | null = null;
+export async function claude() {
+  const key = (await secret("ANTHROPIC_API_KEY")) ?? "";
+  if (!client || client.key !== key) client = { key, api: new Anthropic({ apiKey: key }) };
+  return client.api;
 }
 
 // Southline's offer and voice. Override the offer / booking link with env vars.
@@ -36,7 +39,7 @@ No links unless it's the booking link. Don't add "Reply STOP" - the system handl
 
 /** One Claude call that returns plain text. Returns null on refusal. */
 async function ask(system: string, prompt: string, opts: { maxTokens?: number; format?: Record<string, unknown> } = {}) {
-  const res = await claude().beta.messages.create({
+  const res = await (await claude()).beta.messages.create({
     model: MODEL,
     max_tokens: opts.maxTokens ?? 2000,
     // Server-side fallback: if the model declines for policy reasons, the API
@@ -76,7 +79,7 @@ export function classifyByRules(text: string): ReplyTag {
 }
 
 export async function classifyReply(text: string): Promise<{ tag: ReplyTag; source: "ai" | "rules" }> {
-  if (!aiEnabled()) return { tag: classifyByRules(text), source: "rules" };
+  if (!(await aiEnabled())) return { tag: classifyByRules(text), source: "rules" };
   try {
     const out = await ask(
       `Classify a reply to a cold outreach message (email or SMS) from an AI receptionist agency to an Irish tradesman.
@@ -146,7 +149,7 @@ export function templateDraft(lead: Lead, last: Message | null): string {
 
 export async function draftMessage(lead: Lead, messages: Message[], channel: "email" | "sms", goal?: string): Promise<{ text: string; source: "ai" | "template" }> {
   const last = messages[messages.length - 1] ?? null;
-  if (!aiEnabled()) return { text: templateDraft(lead, last), source: "template" };
+  if (!(await aiEnabled())) return { text: templateDraft(lead, last), source: "template" };
   try {
     const out = await ask(
       TONE,
@@ -176,7 +179,7 @@ export async function summariseLead(lead: Lead, messages: Message[], notes: stri
     `${messages.filter((m) => m.direction === "outbound").length} sent, ${messages.filter((m) => m.direction === "inbound").length} replies${lastIn?.ai_tag ? ` - last reply: ${TAG_LABELS[lastIn.ai_tag]}` : ""}.`,
     lastIn ? `They said: "${lastIn.body.slice(0, 120)}"` : "No reply yet.",
   ].join("\n");
-  if (!aiEnabled()) return { text: fallback, source: "template" };
+  if (!(await aiEnabled())) return { text: fallback, source: "template" };
   try {
     const out = await ask(
       "You summarise sales leads for a busy solo founder. Exactly 3 short lines, no bullets or headings: who they are, where the conversation is, and the next best action.",
@@ -208,7 +211,7 @@ export async function dailyBrief(input: BriefInput): Promise<{ text: string; sou
     input.hot.length ? `• Hottest lead: ${input.hot[0].name} (${input.hot[0].reasons.slice(0, 2).join(", ").toLowerCase()}).` : "",
     `• Yesterday: ${input.yesterday.sent} sent, ${input.yesterday.replies} replies, ${input.yesterday.positive} interested.`,
   ].filter(Boolean).join("\n");
-  if (!aiEnabled()) return { text: fallback, source: "template" };
+  if (!(await aiEnabled())) return { text: fallback, source: "template" };
   try {
     const out = await ask(
       "You are the sales assistant for a solo founder selling AI receptionists to Irish tradesmen. Write today's brief: 3-5 bullets starting with '• ', most important first, each one concrete (names, numbers) and ending in an action. No intro, no headings, under 90 words.",

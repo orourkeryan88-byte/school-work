@@ -161,5 +161,5 @@ export function buildMockData(): { [K in TableName]: Tables[K][] } {
     }
   }
 
-  return { leads, campaigns, messages, notes, follow_ups, import_logs: [], change_requests: [] };
+  return { leads, campaigns, messages, notes, follow_ups, import_logs: [], change_requests: [], app_secrets: [] };
 }

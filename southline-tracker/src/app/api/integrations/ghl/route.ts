@@ -41,7 +41,7 @@ export async function POST(req: Request) {
       continue;
     }
     let row = parsed.row;
-    if (parsed.needsLookup && parsed.contactId && ghlConfigured()) {
+    if (parsed.needsLookup && parsed.contactId && (await ghlConfigured())) {
       try {
         const contact = await fetchGhlContact(parsed.contactId);
         if (contact) row = mergeContact(row, contact);
