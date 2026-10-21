@@ -1,5 +1,6 @@
 import { Flame, MessageSquare, Phone, Plus } from "lucide-react";
 import Link from "next/link";
+import { Avatar } from "@/components/avatar";
 import { ChannelBadge, StatusBadge, TagBadge } from "@/components/badges";
 import { ExportButton } from "@/components/export-button";
 import { FilterForm } from "@/components/filter-form";
@@ -86,10 +87,11 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
       {/* Phone: one card per lead */}
       <div className="space-y-2.5 md:hidden">
         {leads.map((l) => (
-          <div key={l.id} className="rounded-xl border bg-card p-3.5">
+          <div key={l.id} className="rounded-2xl border bg-card shadow-card p-3.5">
             <Link href={`/leads/${l.id}`} className="block">
               <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0">
+                <Avatar name={l.name ?? l.business} />
+                <div className="min-w-0 flex-1">
                   <div className="truncate font-medium">{l.name ?? l.business ?? l.email ?? l.phone ?? "Unknown"}</div>
                   <div className="truncate text-xs text-muted-foreground">{[l.name ? l.business : null, l.trade, l.county].filter(Boolean).join(" · ") || "No details yet"}</div>
                 </div>
@@ -123,7 +125,7 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
         {!leads.length && <p className="py-10 text-center text-sm text-muted-foreground">No leads match.</p>}
       </div>
 
-      <div className="hidden rounded-lg border md:block">
+      <div className="hidden overflow-hidden rounded-2xl border bg-card shadow-card md:block">
         <Table>
           <TableHeader>
             <TableRow>
@@ -141,8 +143,13 @@ export default async function LeadsPage({ searchParams }: { searchParams: Promis
             {leads.map((l) => (
               <TableRow key={l.id}>
                 <TableCell>
-                  <Link href={`/leads/${l.id}`} className="font-medium hover:underline">{l.name ?? l.email ?? l.phone ?? "Unknown"}</Link>
-                  <div className="text-xs text-muted-foreground">{l.business}</div>
+                  <div className="flex items-center gap-3">
+                    <Avatar name={l.name ?? l.business} className="size-8" />
+                    <div className="min-w-0">
+                      <Link href={`/leads/${l.id}`} className="font-medium hover:underline">{l.name ?? l.email ?? l.phone ?? "Unknown"}</Link>
+                      <div className="text-xs text-muted-foreground">{l.business}</div>
+                    </div>
+                  </div>
                 </TableCell>
                 <TableCell className="hidden text-xs sm:table-cell">
                   {l.trade ?? "—"}

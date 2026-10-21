@@ -4,6 +4,7 @@ import { Check, Copy, Flame, MessageSquare, RefreshCw, Send, X } from "lucide-re
 import Link from "next/link";
 import { useEffect, useState, useTransition } from "react";
 import { approveReplyAction, dismissReplyAction, draftReplyAction } from "@/app/actions";
+import { Avatar } from "@/components/avatar";
 import { ChannelBadge, StatusBadge, TagBadge } from "@/components/badges";
 import { SmsMeter } from "@/components/sms-meter";
 import { Badge } from "@/components/ui/badge";
@@ -70,9 +71,11 @@ export function ReplyCard({ lead, reply, recent, score, waitingMinutes, smsEnabl
   const canSend = sms && smsEnabled && !windowReason;
 
   return (
-    <div className="rounded-xl border bg-card p-4 shadow-sm">
+    <div className="rounded-2xl border bg-card shadow-card p-4">
       <div className="flex flex-wrap items-start justify-between gap-2">
-        <div>
+        <div className="flex min-w-0 items-start gap-3">
+          <Avatar name={lead.name ?? lead.business} />
+          <div className="min-w-0">
           <div className="flex flex-wrap items-center gap-2">
             <Link href={`/leads/${lead.id}`} className="font-medium hover:underline">{lead.name ?? lead.email ?? lead.phone}</Link>
             <StatusBadge status={lead.status} />
@@ -85,6 +88,7 @@ export function ReplyCard({ lead, reply, recent, score, waitingMinutes, smsEnabl
             {lead.phone && !lead.business && (
               <Link href={`/check?number=${encodeURIComponent(lead.phone)}`} className="ml-1 underline">Who is this?</Link>
             )}
+          </div>
           </div>
         </div>
         <div className={`text-xs ${waitingMinutes > 120 ? "font-medium text-amber-700 dark:text-amber-300" : "text-muted-foreground"}`}>

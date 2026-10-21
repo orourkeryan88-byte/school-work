@@ -28,11 +28,13 @@ export function SideNav() {
           key={href}
           href={href}
           className={cn(
-            "flex items-center gap-3 rounded-lg px-3 py-2.5 text-[15px] font-medium transition-colors",
-            isActive(path, href) ? "bg-accent text-accent-foreground" : "text-muted-foreground hover:bg-accent/60 hover:text-foreground",
+            "relative flex items-center gap-3 rounded-lg px-3 py-2.5 text-[15px] font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-brand-accent",
+            isActive(path, href) ? "bg-sidebar-active text-white" : "text-sidebar-muted hover:bg-sidebar-active hover:text-white",
           )}
         >
-          <Icon className="size-[18px]" />
+          {/* gold marker on the current page */}
+          {isActive(path, href) && <span aria-hidden className="absolute inset-y-2 left-0 w-1 rounded-full bg-brand-accent" />}
+          <Icon className={cn("size-[18px]", isActive(path, href) && "text-brand-accent")} />
           {label}
         </Link>
       ))}
@@ -55,8 +57,10 @@ export function TabBar() {
       {items.map(({ href, label, icon: Icon }) => {
         const active = isActive(path, href);
         return (
-          <Link key={href} href={href} className={cn("flex flex-col items-center gap-0.5 py-2 text-[11px]", active ? "font-medium text-foreground" : "text-muted-foreground")}>
-            <Icon className={cn("size-5", active && "text-brand-accent")} />
+          <Link key={href} href={href} className={cn("flex flex-col items-center gap-0.5 py-1.5 text-[11px]", active ? "font-semibold text-foreground" : "text-muted-foreground")}>
+            <span className={cn("rounded-full px-4 py-1 transition-colors", active && "bg-brand-accent/15 text-brand-ink")}>
+              <Icon className="size-5" />
+            </span>
             {label}
           </Link>
         );

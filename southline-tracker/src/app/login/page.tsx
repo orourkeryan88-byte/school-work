@@ -27,7 +27,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       {/* Brand panel */}
       <div className="relative hidden flex-col justify-between overflow-hidden bg-brand p-10 text-white lg:flex">
         <div className="flex items-center gap-2.5">
-          <LogoMark className="size-9 [&_rect]:fill-white/10" />
+          <LogoMark className="size-9" />
           <span className="text-lg font-semibold tracking-tight">Southline Agency</span>
         </div>
         <div className="max-w-md space-y-6">

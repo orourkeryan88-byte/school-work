@@ -7,7 +7,7 @@ import { normalizeEvent, parseCsv, toCsv } from "@/lib/ingest";
 import * as repo from "@/lib/repo";
 import { campaignStats, funnel } from "@/lib/stats";
 import { getStore } from "@/lib/store";
-import { businessKey, normalizePhone, parseDate } from "@/lib/utils";
+import { businessKey, initials, normalizePhone, parseDate } from "@/lib/utils";
 
 test("normalizePhone handles Irish formats", () => {
   assert.equal(normalizePhone("087 123 4567"), "+353871234567");
@@ -127,4 +127,13 @@ test("follow-up queue lists people waiting on me", async () => {
   const q = await repo.followUpQueue();
   assert.ok(q.length > 0);
   assert.ok(q.every((i) => !i.lead.unsubscribed));
+});
+
+test("avatar initials: two letters, Irish names, phone-only leads", () => {
+  assert.equal(initials("Conor O'Connor"), "CO");
+  assert.equal(initials("Seán Ó Briain"), "SÓ");
+  assert.equal(initials("Fiona"), "F");
+  assert.equal(initials("Doherty Roofers Ltd"), "DR");
+  assert.equal(initials("+353 87 123 4567"), "#");
+  assert.equal(initials(null), "#");
 });

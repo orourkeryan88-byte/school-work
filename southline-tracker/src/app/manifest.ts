@@ -9,8 +9,8 @@ export default function manifest(): MetadataRoute.Manifest {
     description: "Every cold email and SMS sent, every reply, and what happened next.",
     start_url: "/",
     display: "standalone",
-    background_color: "#0b1f3a",
-    theme_color: "#0a0a0a",
+    background_color: "#ffffff",
+    theme_color: "#0b1f3a",
     icons: [
       { src: "/icon", sizes: "512x512", type: "image/png", purpose: "any" },
       { src: "/apple-icon", sizes: "180x180", type: "image/png" },

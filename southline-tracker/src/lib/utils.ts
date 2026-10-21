@@ -119,3 +119,9 @@ export function parseDate(raw: string | null | undefined): string | null {
   if (isNaN(asUtc)) return null;
   return new Date(asUtc - dublinOffset(new Date(asUtc)) * 60000).toISOString();
 }
+
+/** Two-letter initials for avatars, e.g. "Conor O'Connor" -> "CO", "Seán Ó Briain" -> "SÓ". Numbers-only -> "#". */
+export function initials(name: string | null | undefined) {
+  const letters = (name ?? "").split(/\s+/).map((w) => w.match(/\p{L}/u)?.[0]).filter(Boolean);
+  return letters.slice(0, 2).join("").toUpperCase() || "#";
+}

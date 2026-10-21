@@ -3,58 +3,70 @@
 /* Dark mode is class-based (next-themes puts .dark on <html>). */
 @custom-variant dark (&:is(.dark *));
 
-/* shadcn/ui "neutral" theme tokens */
+/* Southline theme: neutrals tinted towards the brand navy, gold from the logo as the accent */
 :root {
-  --radius: 0.6rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.145 0 0);
+  --radius: 0.7rem;
+  --background: oklch(0.977 0.005 250);
+  --foreground: oklch(0.2 0.03 258);
   --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  --card-foreground: oklch(0.2 0.03 258);
   --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.2 0.03 258);
   --primary: #0b1f3a;
   --primary-foreground: oklch(0.985 0 0);
-  --secondary: oklch(0.97 0 0);
-  --secondary-foreground: oklch(0.205 0 0);
-  --muted: oklch(0.97 0 0);
-  --muted-foreground: oklch(0.52 0 0);
-  --accent: oklch(0.97 0 0);
-  --accent-foreground: oklch(0.205 0 0);
+  --secondary: oklch(0.955 0.008 250);
+  --secondary-foreground: oklch(0.26 0.03 258);
+  --muted: oklch(0.955 0.008 250);
+  --muted-foreground: oklch(0.5 0.025 256);
+  --accent: oklch(0.95 0.012 250);
+  --accent-foreground: oklch(0.24 0.03 258);
   --destructive: oklch(0.577 0.245 27.325);
-  --border: oklch(0.922 0 0);
-  --input: oklch(0.922 0 0);
-  --ring: oklch(0.708 0 0);
-  /* Southline brand: navy tile + teal wave */
+  --border: oklch(0.915 0.01 252);
+  --input: oklch(0.9 0.012 252);
+  --ring: oklch(0.74 0.09 80);
+  /* Southline brand: navy "SA" monogram + gold swoosh */
   --brand: #0b1f3a;
-  --brand-accent: #2dd4bf;
+  --brand-accent: #c9a55a;
+  --brand-ink: #876326; /* gold that reads as text on light backgrounds */
+  --sidebar: #0b1f3a;
+  --sidebar-foreground: oklch(0.97 0.01 250);
+  --sidebar-muted: oklch(0.74 0.03 250);
+  --sidebar-active: oklch(1 0 0 / 9%);
+  --card-shadow: 0 1px 2px rgb(11 31 58 / 0.05), 0 2px 8px rgb(11 31 58 / 0.04);
   /* channel colours (validated categorical pair): email = blue, SMS = orange */
   --email: #2a78d6;
   --sms: #eb6834;
 }
 
 .dark {
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.19 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  --muted-foreground: oklch(0.708 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
+  --background: oklch(0.17 0.025 258);
+  --foreground: oklch(0.96 0.008 250);
+  --card: oklch(0.215 0.03 258);
+  --card-foreground: oklch(0.96 0.008 250);
+  --popover: oklch(0.235 0.03 258);
+  --popover-foreground: oklch(0.96 0.008 250);
+  --primary: #d6b46c;
+  --primary-foreground: #0b1f3a;
+  --secondary: oklch(0.27 0.03 258);
+  --secondary-foreground: oklch(0.96 0.008 250);
+  --muted: oklch(0.27 0.03 258);
+  --muted-foreground: oklch(0.72 0.025 252);
+  --accent: oklch(0.28 0.035 258);
+  --accent-foreground: oklch(0.96 0.008 250);
   --destructive: oklch(0.704 0.191 22.216);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
+  --border: oklch(1 0 0 / 9%);
+  --input: oklch(1 0 0 / 14%);
+  --ring: oklch(0.74 0.09 80);
   --email: #3987e5;
   --sms: #d95926;
   --brand: #13315c;
-  --brand-accent: #2dd4bf;
+  --brand-accent: #d6b46c;
+  --brand-ink: #e3c785;
+  --sidebar: oklch(0.14 0.03 258);
+  --sidebar-foreground: oklch(0.96 0.008 250);
+  --sidebar-muted: oklch(0.7 0.025 252);
+  --sidebar-active: oklch(1 0 0 / 8%);
+  --card-shadow: 0 1px 2px rgb(0 0 0 / 0.25);
 }
 
 @theme inline {
@@ -80,6 +92,12 @@
   --color-ring: var(--ring);
   --color-brand: var(--brand);
   --color-brand-accent: var(--brand-accent);
+  --color-brand-ink: var(--brand-ink);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-muted: var(--sidebar-muted);
+  --color-sidebar-active: var(--sidebar-active);
+  --shadow-card: var(--card-shadow);
   --color-email: var(--email);
   --color-sms: var(--sms);
   --radius-sm: calc(var(--radius) - 4px);

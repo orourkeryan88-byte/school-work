@@ -81,7 +81,7 @@ export function CheckNumber({ initial, aiOn }: { initial?: string; aiOn: boolean
       {checked && crm !== null && (
         <div className="grid gap-5 lg:grid-cols-2">
           {/* In your CRM */}
-          <div className="rounded-xl border bg-card p-4">
+          <div className="rounded-2xl border bg-card shadow-card p-4">
             <div className="mb-3 text-sm font-semibold">In your CRM</div>
             {crmPending || crm === undefined ? (
               <Loader2 className="size-4 animate-spin text-muted-foreground" />
@@ -112,7 +112,7 @@ export function CheckNumber({ initial, aiOn }: { initial?: string; aiOn: boolean
           </div>
 
           {/* Claude web check */}
-          <div className="rounded-xl border bg-card p-4">
+          <div className="rounded-2xl border bg-card shadow-card p-4">
             <div className="mb-3 flex items-center justify-between">
               <div className="flex items-center gap-2 text-sm font-semibold"><Globe className="size-4 text-brand-accent" /> Claude web check</div>
               {web && !web.error && (

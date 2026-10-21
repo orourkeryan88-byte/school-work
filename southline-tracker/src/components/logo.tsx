@@ -1,24 +1,26 @@
+import { MARK } from "@/lib/brand-mark";
 import { cn } from "@/lib/utils";
 
-/** Southline Agency mark: a "south line" wave in a rounded navy tile. */
+/** Southline Agency mark: the navy "SA" monogram with the gold swoosh, on a white tile. */
 export function LogoMark({ className }: { className?: string }) {
   return (
-    <svg viewBox="0 0 32 32" aria-hidden className={cn("size-8 shrink-0", className)}>
-      <rect width="32" height="32" rx="8" className="fill-brand" />
-      <path d="M7 19.5c3-6 6-6 9 0s6 6 9 0" fill="none" stroke="currentColor" strokeWidth="2.6" strokeLinecap="round" className="text-brand-accent" />
-      <path d="M7 12.5h18" stroke="white" strokeOpacity=".9" strokeWidth="2.6" strokeLinecap="round" />
+    <svg viewBox="0 0 100 100" aria-hidden className={cn("size-8 shrink-0 rounded-[22%] ring-1 ring-black/5", className)}>
+      <rect width="100" height="100" rx="22" fill="#fff" />
+      <path d={MARK.s} fill={MARK.navy} />
+      <path d={MARK.a} fill={MARK.navy} />
+      <path d={MARK.swoosh} fill={MARK.gold} />
     </svg>
   );
 }
 
-/** Full logo: mark + "Southline Agency" wordmark. */
-export function Logo({ subtitle = "Outreach tracker", className }: { subtitle?: string | null; className?: string }) {
+/** Full logo: mark + "Southline Agency" wordmark. onDark = on the navy sidebar. */
+export function Logo({ subtitle = "Outreach tracker", className, onDark }: { subtitle?: string | null; className?: string; onDark?: boolean }) {
   return (
     <div className={cn("flex items-center gap-2.5", className)}>
-      <LogoMark />
+      <LogoMark className="size-9" />
       <div className="leading-tight">
         <div className="text-[15px] font-semibold tracking-tight">Southline Agency</div>
-        {subtitle && <div className="text-xs text-muted-foreground">{subtitle}</div>}
+        {subtitle && <div className={cn("text-xs", onDark ? "text-sidebar-muted" : "text-muted-foreground")}>{subtitle}</div>}
       </div>
     </div>
   );
