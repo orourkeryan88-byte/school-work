@@ -36,7 +36,7 @@ def draw_lines(im, sps, cy, gap=0.98, scale=1.0):
 
 
 # ---------------------------------------------------------------- opener
-def scene_one_builder(word="Plumbers,", l1="IF ONE BUILDER GIVES YOU", l2="MOST OF YOUR WORK…", dur=3.2):
+def scene_one_builder(word="Plumbers,", l1="IF ONE BUILDER GIVES YOU", l2="MOST OF YOUR WORK…", dur=3.2, pop_at=0.55, rise_at=0.75):
     """frame 0: giant gradient trade word + a 'YOUR WORK' donut that's mostly one builder, both fully on screen mid-slam.
     The builder slice punches out and throbs, then the line rises in."""
     big = text(word, "bl", fit_size(word, "bl", 260, 940), grad=(A.TH["accent"], A.TH["accent2"], 0))
@@ -67,34 +67,35 @@ def scene_one_builder(word="Plumbers,", l1="IF ONE BUILDER GIVES YOU", l2="MOST 
         # trade word: fully opaque on frame 0, settling from a slam
         put(im, big, W / 2, 420, 1, 1.06 - 0.06 * eo(t / 0.28))
         underline(im, big, W / 2, 420 + big.height / 2 + 2, 0.35 + (t - 0.05) / 0.3, h=14)
-        # donut: builder slice punches out at 0.55s, then throbs
-        pop = 0 if t < 0.55 else 26 * spring((t - 0.55) / 0.5) + 6 * math.sin((t - 0.55) * 9) * clamp((t - 0.9) / 0.3)
+        # donut: builder slice punches out at pop_ats, then throbs
+        pop = 0 if t < pop_at else 26 * spring((t - pop_at) / 0.5) + 6 * math.sin((t - pop_at) * 9) * clamp((t - 0.9) / 0.3)
         key = round(pop)
         if key not in cache:
             dn = donut(key); gl = dn.filter(ImageFilter.GaussianBlur(30)); gl.putalpha(gl.split()[3].point(lambda v: v * 6 // 10))
             cache[key] = (dn, gl)
         dn, gl = cache[key]
-        if t > 0.55: im.alpha_composite(gl)
+        if t > pop_at: im.alpha_composite(gl)
         im.alpha_composite(dn)
         for i, sp in enumerate(centre): put(im, sp, CX, CY - 36 + i * 72, 1, 1.06 - 0.06 * eo(t / 0.3))
-        ring(im, CX, CY, (t - 0.55) / 0.9, maxr=420, r0=R)
-        put(im, tag, CX - 270, CY - R - 10, 1, (1 + 0.25 * (1 - eo((t - 0.55) / 0.3))) if t > 0.55 else 1, -6)
+        ring(im, CX, CY, (t - pop_at) / 0.9, maxr=420, r0=R)
+        put(im, tag, CX - 270, CY - R - 10, 1, (1 + 0.25 * (1 - eo((t - pop_at) / 0.3))) if t > pop_at else 1, -6)
         put(im, other, CX + 300, CY - R + 40, clamp((t - 0.2) / 0.2), 1, 5)
-        if 0.55 <= t < 0.7: sh = 8 * (1 - (t - 0.55) / 0.15)
-        put_rise(im, s1, W / 2, 1330, eo((t - 0.75) / 0.32))
-        put_rise(im, s2, W / 2, 1430, eo((t - 0.95) / 0.32))
+        if pop_at <= t < 0.7: sh = 8 * (1 - (t - pop_at) / 0.15)
+        put_rise(im, s1, W / 2, 1330, eo((t - rise_at) / 0.32))
+        put_rise(im, s2, W / 2, 1430, eo((t - rise_at - 0.2) / 0.32))
         return im, sh
-    return dur, fn, [(0.0, "hit", 1.0), (0.55, "hit", 0.6), (0.55, "pop", 0.6), (0.75, "whoosh", 0.4)]
+    return dur, fn, [(0.0, "hit", 1.0), (pop_at, "hit", 0.6), (pop_at, "pop", 0.6), (rise_at, "whoosh", 0.4)]
 
 
 # ---------------------------------------------------------------- fast-cut slams
-def scene_slam(parts, dur=2.4, lock_last=False, last_share=1.7):
+def scene_slam(parts, dur=2.4, lock_last=False, last_share=1.7, cuts=None):
     """giant fast-cut type. parts=[(text with | breaks, style d|y|dh)]. each part is a hard cut with a slam + hit.
-    lock_last: the final card holds, then an underline locks it in with a click."""
+    lock_last: the final card holds, then an underline locks it in with a click. cuts: explicit cut times (e.g. on the words)"""
     cards = [big_lines(s, st) for s, st in parts]
     wts = [len(s.replace("|", "")) + 6 for s, _ in parts]; wts[-1] *= last_share
-    tot = sum(wts); cuts = [0.0]
+    tot = sum(wts); cuts_in, cuts = cuts, [0.0]
     for w_ in wts[:-1]: cuts.append(cuts[-1] + dur * w_ / tot)
+    cuts = list(cuts_in) if cuts_in else cuts
 
     def fn(t):
         i = max(k for k, c in enumerate(cuts) if t >= c); k = t - cuts[i]
@@ -119,10 +120,9 @@ def header(im, lines, t, y0=300, size=104, t0=0.0, step=0.12):
 
 
 # ---------------------------------------------------------------- he's busy / he's quiet
-def scene_linked(dur=4.4, flip=2.1):
-    """two diary meters chained together. his drains, yours follows. header swaps from busy to quiet"""
-    A_lines = [("WHEN HE'S BUSY,", False), ("YOU'RE BUSY.", True)]
-    B_lines = [("WHEN HE GOES QUIET…", False), ("SO DO YOU.", True)]
+def scene_linked(dur=4.4, flip=2.1, lag=0.45, A_lines=(("WHEN HE'S BUSY,", False), ("YOU'RE BUSY.", True)),
+                 B_lines=(("WHEN HE GOES QUIET…", False), ("SO DO YOU.", True)), step_a=0.12, step_b=0.12):
+    """two diary meters chained together. his drains at flip, yours follows lag later. header swaps from busy to quiet"""
     BW, BH, TOP = 300, 680, 760; XS = (W / 2 - 220, W / 2 + 220)
     labs = [text("HIS DIARY", "xb", 40, A.TH["muted"]), text("YOUR DIARY", "xb", 40, A.TH["muted"])]
 
@@ -140,8 +140,8 @@ def scene_linked(dur=4.4, flip=2.1):
     def fn(t):
         im = A.bg(); sh = 0
         phase_b = t >= flip
-        header(im, B_lines if phase_b else A_lines, t, 330, 104, flip if phase_b else 0)
-        lv_him = 0.92 - 0.82 * eio((t - flip) / 0.7); lv_you = 0.92 - 0.82 * eio((t - flip - 0.45) / 0.7)
+        header(im, B_lines if phase_b else A_lines, t, 330, 104, flip if phase_b else 0, step_b if phase_b else step_a)
+        lv_him = 0.92 - 0.82 * eio((t - flip) / 0.7); lv_you = 0.92 - 0.82 * eio((t - flip - lag) / 0.7)
         bob = 0 if t > flip else math.sin(t * 6) * 0.02
         for x, lv, lab in zip(XS, (lv_him + bob, lv_you + bob), labs):
             meter(im, x, lv, t); put(im, lab, x, TOP + BH + 60, eo((t - 0.2) / 0.3))
@@ -149,14 +149,15 @@ def scene_linked(dur=4.4, flip=2.1):
         d = ImageDraw.Draw(im); cy = TOP + BH / 2
         for k in range(4):
             cx = XS[0] + BW / 2 + 22 + k * 30; d.ellipse((cx - 20, cy - 13, cx + 20, cy + 13), outline=A.TH["accent"] if not phase_b else RED, width=7)
-        if flip + 0.45 <= t < flip + 0.6: sh = 9
+        if flip + lag <= t < flip + lag + 0.15: sh = 9
         if flip <= t < flip + 0.16: sh = 12 * (1 - (t - flip) / 0.16)
         return im, sh
-    return dur, fn, [(0.0, "whoosh", 0.6), (0.05, "pop", 0.6), (flip, "hit", 0.9), (flip + 0.45, "hit", 0.7), (flip + 0.2, "glitch", 0.4)]
+    return dur, fn, [(0.0, "whoosh", 0.6), (0.05, "pop", 0.6), (flip, "hit", 0.9), (flip + lag, "hit", 0.7), (flip + 0.2, "glitch", 0.4)]
 
 
 # ---------------------------------------------------------------- his price
-def scene_his_price(dur=4.2, your="€6,500", his="€4,800", job="Bathroom refit · 3-bed semi"):
+def scene_his_price(dur=4.2, your="€6,500", his="€4,800", job="Bathroom refit · 3-bed semi", strike_at=1.1, stamp_at=1.45,
+                    sub_txt="Because he knows you can't say no.", sub_at=2.0, lines=(("YOU WORK AT", False), ("HIS PRICE.", True))):
     """your quote card gets struck through and HIS PRICE is stamped on it (illustrative numbers)"""
     def card_fn(d, s):
         d.text((56 * s, 50 * s), "YOUR QUOTE", font=A.font("b", 34 * s), fill=A.TH["muted"])
@@ -166,24 +167,25 @@ def scene_his_price(dur=4.2, your="€6,500", his="€4,800", job="Bathroom refi
     stamp = sprite(560, 190, lambda d, s, im: (d.rounded_rectangle((0, 0, 560 * s - 1, 190 * s - 1), 26 * s, outline=RED, width=10 * s),
                                                 d.text((40 * s, 22 * s), "HIS PRICE", font=A.font("bl", 46 * s), fill=RED),
                                                 d.text((40 * s, 74 * s), his, font=A.font("bl", 96 * s), fill=RED)))
-    sub = text("Because he knows you can't say no.", "xb", fit_size("Because he knows you can't say no.", "xb", 60, 960), A.TH["muted"])
+    sub = text(sub_txt, "xb", fit_size(sub_txt, "xb", 64, 960))
 
     def fn(t):
         im = A.bg(); sh = 0
-        header(im, [("YOU WORK AT", False), ("HIS PRICE.", True)], t, 330, 120)
+        header(im, lines, t, 330, 120)
         k = (t - 0.3) / 0.5; put(im, card, W / 2, 900 + 120 * (1 - eo(k)), clamp(k / 0.3), 0.92 + 0.08 * spring(k))
-        sp = clamp((t - 1.1) / 0.25)
+        sp = clamp((t - strike_at) / 0.25)
         if sp > 0: ImageDraw.Draw(im).line((W / 2 - 400, 990, W / 2 - 400 + 640 * eo(sp), 970), fill=RED, width=14)
-        st = (t - 1.45) / 0.3
+        st = (t - stamp_at) / 0.3
         if st > 0: put(im, stamp, W / 2 + 140, 1150, clamp(st / 0.15), 1.5 - 0.5 * eo(st), -8)
-        if 1.45 <= t < 1.62: sh = 14 * (1 - (t - 1.45) / 0.17)
-        put_rise(im, sub, W / 2, 1420, eo((t - 2.0) / 0.32))
+        if stamp_at <= t < stamp_at + 0.17: sh = 14 * (1 - (t - stamp_at) / 0.17)
+        put_rise(im, sub, W / 2, 1420, eo((t - sub_at) / 0.32))
         return im, sh
-    return dur, fn, [(0.0, "whoosh", 0.5), (0.3, "pop", 0.7), (1.1, "swish", 0.6), (1.45, "hit", 1.0), (2.0, "whoosh", 0.3)]
+    return dur, fn, [(0.0, "whoosh", 0.5), (0.3, "pop", 0.7), (strike_at, "swish", 0.6), (stamp_at, "hit", 1.0), (sub_at, "whoosh", 0.3)]
 
 
 # ---------------------------------------------------------------- paid when he gets paid
-def scene_invoice(dur=4.4, amount="€3,600", days=67):
+def scene_invoice(dur=4.4, amount="€3,600", keys=((0.7, 0), (2.6, 67)), sub_txt="If he's slow paying, so are you.", sub_at=2.75,
+                  van=None, van_at=None, lines=(("YOU GET PAID WHEN", False), ("HE GETS PAID.", True))):
     """invoice card: days-waiting counter rolls up, status flips to OVERDUE in red, progress bar fills red"""
     def base_fn(d, s):
         d.text((56 * s, 50 * s), "INVOICE #0418", font=A.font("b", 34 * s), fill=A.TH["muted"])
@@ -191,26 +193,36 @@ def scene_invoice(dur=4.4, amount="€3,600", days=67):
         d.text((56 * s, 170 * s), amount, font=A.font("bl", 130 * s), fill=A.TH["card_ink"])
         d.text((56 * s, 352 * s), "DAYS WAITING", font=A.font("b", 32 * s), fill=A.TH["muted"])
     card = A.card_sprite(900, 560, base_fn, outline=(60, 62, 52))
-    sub = text("If he's slow paying, so are you.", "xb", fit_size("If he's slow paying, so are you.", "xb", 64, 960), A.TH["muted"])
-    T0, T1 = 0.7, 2.6
+    sub = text(sub_txt, "xb", fit_size(sub_txt, "xb", 64, 960))
+    T0, T1 = keys[0][0], keys[-1][0]; vanp = shadowed(pill(van, 40, RED, WHITE, w="bl"), blur=18, dy=10, alpha=120, pad=30) if van else None
+
+    def days_at(t):  # eased roll between keyframes (t, value)
+        for (ta, va), (tb, vb) in zip(keys, keys[1:]):
+            if t < tb: return va + (vb - va) * eio((t - ta) / (tb - ta))
+        return keys[-1][1]
+    over_at = next((ta + (tb - ta) * 0.5 for (ta, va), (tb, vb) in zip(keys, keys[1:]) if vb >= 45), T1)
 
     def fn(t):
         im = A.bg(); sh = 0
-        header(im, [("YOU GET PAID WHEN", False), ("HE GETS PAID.", True)], t, 330, 104)
+        header(im, lines, t, 330, 104)
         k = (t - 0.25) / 0.5; cy = 960 + 120 * (1 - eo(k)); put(im, card, W / 2, cy, clamp(k / 0.3), 0.92 + 0.08 * spring(k))
         if k > 0.3:
-            n = int(round(days * eio((t - T0) / (T1 - T0)))); over = n >= 45
+            n = int(round(days_at(t))); over = n >= 45
             x0, y0 = W / 2 - 450 + 56, cy - 280 + 400
             d = ImageDraw.Draw(im)
             num = text(str(n), "bl", 96, RED if over else A.TH["ink"]); put(im, num, x0 + num.width / 2, y0 + 30)
             chip = pill("OVERDUE" if over else ("AWAITING PAYMENT" if n > 0 else "SENT"), 30, RED if over else (60, 62, 52), WHITE)
-            put(im, chip, W / 2 + 450 - 56 - chip.width / 2, y0 + 30, 1, 1 + 0.25 * (1 - eo((t - (T0 + (T1 - T0) * 0.62)) / 0.25)) if over else 1)
+            put(im, chip, W / 2 + 450 - 56 - chip.width / 2, y0 + 30, 1, 1 + 0.25 * (1 - eo((t - over_at) / 0.25)) if over else 1)
             bx0, bx1, by = x0, W / 2 + 450 - 56, y0 + 110
             d.rounded_rectangle((bx0, by, bx1, by + 22), 11, fill=(50, 52, 44))
-            d.rounded_rectangle((bx0, by, bx0 + max(22, (bx1 - bx0) * min(1, n / 60)), by + 22), 11, fill=RED if over else A.TH["accent"])
-        put_rise(im, sub, W / 2, 1420, eo((t - 2.75) / 0.32))
+            d.rounded_rectangle((bx0, by, bx0 + max(22, (bx1 - bx0) * min(1, n / max(60, keys[-1][1]))), by + 22), 11, fill=RED if over else A.TH["accent"])
+        put_rise(im, sub, W / 2, 1420, eo((t - sub_at) / 0.32))
+        if vanp and t >= van_at:
+            vk = (t - van_at) / 0.35; put(im, vanp, W / 2, 1540, clamp(vk / 0.2), 1.4 - 0.4 * eo(vk), -3)
+            if vk < 0.45: sh = 12 * (1 - vk / 0.45)
         return im, sh
-    ev = [(0.0, "whoosh", 0.5), (0.25, "pop", 0.7)] + [(T0 + i * 0.12, "tick", 0.35) for i in range(15)] + [(T0 + (T1 - T0) * 0.62, "glitch", 0.6), (T0 + (T1 - T0) * 0.62, "hit", 0.6), (2.75, "whoosh", 0.3)]
+    ev = [(0.0, "whoosh", 0.5), (0.25, "pop", 0.7)] + [(T0 + i * 0.12, "tick", 0.35) for i in range(int((T1 - T0) / 0.12))] + [(over_at, "glitch", 0.6), (over_at, "hit", 0.6), (sub_at, "whoosh", 0.3)]
+    if van: ev.append((van_at, "hit", 1.0))
     return dur, fn, ev
 
 
@@ -230,23 +242,24 @@ def notif_v(title, body, age):
     return shadowed(sp, blur=22, dy=14, alpha=45, pad=40)
 
 
-def scene_own_leads(leads, dur=5.6, interval=0.5, k=0.74, top=640, crop=1610):
+def scene_own_leads(leads, dur=5.6, interval=0.5, k=0.74, top=640, crop=1610, lt=None, tag_at=0.3, price_at=None,
+                    price_txt="AT YOUR PRICE.", lines=(("YOUR OWN", False), ("HOMEOWNERS.", True))):
     """header + phone rising from the bottom (cropped with a fade), enquiries drop and stack, 'AT YOUR PRICE.' pops at the end"""
     ph0 = A.phone(date="Monday 26 October", wall=((34, 36, 24), (8, 8, 6), A.TH["accent"]))
     ages = ["now", "4m", "22m", "1h", "3h", "5h"]; cache = {}
     def N(i, r):
         if (i, r) not in cache: cache[(i, r)] = notif_v(*leads[i], ages[min(r, len(ages) - 1)])
         return cache[(i, r)]
-    LT = [0.65 + i * interval for i in range(len(leads))]; END = LT[-1] + 0.55
+    LT = list(lt) if lt else [0.65 + i * interval for i in range(len(leads))]; END = price_at if price_at is not None else LT[-1] + 0.55
     tagp = pill("BOILER SWAPS · BATHROOM REFITS", 34, (44, 46, 38), A.TH["accent"], w="b")
-    price = shadowed(pill("AT YOUR PRICE.", 62, A.TH["accent"], w="bl"), blur=24, dy=14, alpha=120, pad=40)
+    price = shadowed(pill(price_txt, 62, A.TH["accent"], w="bl"), blur=24, dy=14, alpha=120, pad=40)
     mask = Image.new("L", (W, H), 255); md = ImageDraw.Draw(mask)
     for y in range(crop - 160, H): md.line((0, y, W, y), fill=int(255 * clamp((crop - y) / 160)))
 
     def fn(t):
         im = A.bg(); arrived = [i for i, lt in enumerate(LT) if t >= lt]
-        header(im, [("YOUR OWN", False), ("HOMEOWNERS.", True)], t, 300, 112)
-        put(im, tagp, W / 2, 548, eo((t - 0.3) / 0.3), 0.9 + 0.1 * spring((t - 0.3) / 0.4))
+        header(im, lines, t, 300, 112)
+        put(im, tagp, W / 2, 548, eo((t - tag_at) / 0.3), 0.9 + 0.1 * spring((t - tag_at) / 0.4))
         ph = ph0.copy(); nk = eo((t - LT[arrived[-1]]) / 0.38) if arrived else 0
         for rank, i in enumerate(reversed(arrived)):
             if rank == 0: kk = (t - LT[i]) / 0.42; cy = 640 - 140 * (1 - spring(kk)); al = clamp(kk / 0.15); sc = 0.9 + 0.1 * spring(kk)
@@ -265,3 +278,30 @@ def scene_own_leads(leads, dur=5.6, interval=0.5, k=0.74, top=640, crop=1610):
         return im, sh
     ev = [(0.0, "whoosh", 0.7)] + [(lt, "ping", 0.8) for lt in LT] + [(END, "hit", 1.0), (END + 0.05, "coin", 0.6)]
     return dur, fn, ev
+
+
+# ---------------------------------------------------------------- "if you're relying on…"
+def warn_card(title, sub):
+    """stack card with a red warning tile"""
+    def dr(d, s):
+        d.rounded_rectangle((40 * s, 45 * s, 160 * s, 165 * s), 30 * s, fill=(70, 24, 24))
+        d.polygon([(100 * s, 70 * s), (140 * s, 140 * s), (60 * s, 140 * s)], fill=RED)
+        d.rectangle((96 * s, 92 * s, 104 * s, 120 * s), fill=(70, 24, 24)); d.ellipse((95 * s, 126 * s, 105 * s, 136 * s), fill=(70, 24, 24))
+        d.text((196 * s, 50 * s), title, font=A.font("bl", 50 * s), fill=A.TH["card_ink"])
+        d.text((196 * s, 122 * s), sub, font=A.font("m", 34 * s), fill=A.TH["muted"])
+    return A.card_sprite(940, 210, dr, outline=(60, 62, 52))
+
+
+def scene_relying(items, drops, dur=4.0, title=("IF YOU'RE", "RELYING ON…")):
+    """giant 'IF YOU'RE RELYING ON…' header, then each crutch drops onto a card stack on its word. items=[(title, sub)], drops=[t]"""
+    cards = [warn_card(*it) for it in items]
+    big = [text(title[0], "bl", fit_size(title[0], "bl", 150, 900)), text(title[1], "bl", fit_size(title[1], "bl", 150, 900), A.TH["accent"])]
+
+    def fn(t):
+        im = A.bg()
+        for j, sp in enumerate(big): put_rise(im, sp, W / 2, 400 + j * 160, eo((t - j * 0.1) / 0.25))
+        sh = A.draw_stack(im, cards, drops, t, 1150, step=78, from_y=1300, rot=5)
+        n = sum(1 for d in drops if t >= d)
+        if n: put(im, pill(f"{n} THING{'S' if n > 1 else ''} YOU CAN'T CONTROL", 34, RED, WHITE), W / 2, 1450, 1, 1 + 0.15 * (1 - eo((t - drops[n - 1] - 0.3) / 0.25)))
+        return im, sh
+    return dur, fn, [(0.0, "hit", 0.9)] + sum([[(d, "swish", 0.4), (d + 0.3, "hit", 0.8)] for d in drops], [])

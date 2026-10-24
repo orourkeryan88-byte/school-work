@@ -425,22 +425,23 @@ def scene_cta_button(l1, l2, label, brand, brand_sub, dur=3.6, t_tap=1.9):
         return im, 0
     return dur, fn, [(0.0, "whoosh", 0.6), (0.55, "pop", 0.8), (t_tap, "click", 1.0), (t_tap + 0.02, "ping", 0.5)]
 
-def scene_cta_comment(l1, l2, keyword, brand, brand_sub, after="to get started.", toast_msg="We'll DM you the details", dur=3.8):
-    """'Comment KEYWORD to get started': keyword pill, comment box types it, Post tapped, toast"""
+def scene_cta_comment(l1, l2, keyword, brand, brand_sub, after="to get started.", toast_msg="We'll DM you the details", dur=3.8, comment_at=0.4):
+    """'Comment KEYWORD to get started': keyword pill, comment box types it, Post tapped, toast. comment_at: when 'Comment' lands"""
+    sh_ = comment_at - 0.4  # shifts the comment part so it lands on the word
     kp = shadowed(pill(keyword, 64, TH["accent"], w="bl"), blur=22, dy=14, alpha=60, pad=40); cw = text("Comment", "xb", 92)
     s1, s2, s3 = text(l1, "xb", fit_size(l1, "xb", 84)), text(l2, "xb", fit_size(l2, "xb", 84), TH["accent"]), text(after, "xb", 92)
-    TY = 1.15; CH = 0.1; PT = TY + len(keyword) * CH + 0.35; ts = toast(toast_msg); cb = {}
+    TY = 1.15 + sh_; CH = 0.1; PT = TY + len(keyword) * CH + 0.35; ts = toast(toast_msg); cb = {}
     def CB(ty, c):
         if (ty, c) not in cb: cb[(ty, c)] = comment_box(ty, c)
         return cb[(ty, c)]
     def fn(t):
         im = bg(); put_rise(im, s1, W / 2, 440, eo(t / 0.32)); put_rise(im, s2, W / 2, 540, eo((t - 0.12) / 0.32))
-        a = (t - 0.4) / 0.4; tot = cw.width + 26 + kp.width - 80
+        a = (t - 0.4 - sh_) / 0.4; tot = cw.width + 26 + kp.width - 80
         if a > 0:
             put(im, cw, W / 2 - tot / 2 + cw.width / 2, 780, eo(a))
-            put(im, kp, W / 2 - tot / 2 + cw.width + 26 + (kp.width - 80) / 2, 780, clamp(a / 0.5), (0.6 + 0.4 * spring(a * 0.8)) * (1 + 0.03 * math.sin(max(0, t - 1.0) * 6)))
-        put_rise(im, s3, W / 2, 900, eo((t - 0.6) / 0.35))
-        b = (t - 0.8) / 0.4
+            put(im, kp, W / 2 - tot / 2 + cw.width + 26 + (kp.width - 80) / 2, 780, clamp(a / 0.5), (0.6 + 0.4 * spring(a * 0.8)) * (1 + 0.03 * math.sin(max(0, t - 1.0 - sh_) * 6)))
+        put_rise(im, s3, W / 2, 900, eo((t - 0.6 - sh_) / 0.35))
+        b = (t - 0.8 - sh_) / 0.4
         if b > 0:
             n = int(clamp((t - TY) / CH, 0, len(keyword))); posted = t >= PT + 0.08
             caret = (not posted) and (int(t * 3) % 2 == 0 or TY <= t < TY + 0.6)
@@ -450,7 +451,7 @@ def scene_cta_comment(l1, l2, keyword, brand, brand_sub, after="to get started."
         tap(im, 915, 1160, t, PT, t_in=0.5, from_dx=120, from_dy=330)
         c = eo((t - 1.0) / 0.4); put(im, text(brand, "bl", 64), W / 2, 1560 + 20 * (1 - c), c); put(im, text(brand_sub, "m", 38, TH["muted"]), W / 2, 1630 + 20 * (1 - c), c)
         return im, 0
-    return dur, fn, [(0.0, "whoosh", 0.6), (0.4, "pop", 0.8)] + [(TY + i * CH, "tick", 0.5) for i in range(len(keyword))] + [(PT, "click", 1.0), (PT + 0.15, "ping", 0.6)]
+    return dur, fn, [(0.0, "whoosh", 0.6), (comment_at, "pop", 0.8)] + [(TY + i * CH, "tick", 0.5) for i in range(len(keyword))] + [(PT, "click", 1.0), (PT + 0.15, "ping", 0.6)]
 
 def scene_callout(word, sub="you need to watch this.", dur=1.7):
     """BIG ICP callout opener: 'Electricians,' fills the width in gradient text, slam + shake + underline, then the subline rises in"""
@@ -621,16 +622,20 @@ def _synth():
 class Video:
     def __init__(self): self.scenes = []
     def add(self, dur, fn, events=()): self.scenes.append((dur, fn, list(events))); return self
-    def render(self, out, transition="whip", tr_frames=5, bpm=120, music=True, sfx=True, preview_times=None, lufs=-14.0, tp=-1.0):
+    def render(self, out, transition="whip", tr_frames=5, bpm=120, music=True, sfx=True, preview_times=None, lufs=-14.0, tp=-1.0,
+               voice=None, voice_at=0.0, duck_db=18.0, pause_db=8.0, sfx_duck_db=6.0, audio_only=False):
         """transition: whip | fade | flash | cut. preview_times=[sec,...] writes a contact sheet <out>_preview.png
-        lufs/tp: master loudness with a two-pass ffmpeg loudnorm (None = skip)"""
+        lufs/tp: master loudness with a two-pass ffmpeg loudnorm (None = skip)
+        voice: voiceover file, placed at voice_at seconds. Music sits duck_db under the voice while words are spoken
+        and pause_db under it in the gaps; SFX dip sfx_duck_db under speech. The voice itself is never limited.
+        audio_only: skip the frames and write just the mastered soundtrack to out (fast audio checks)"""
         tmp = tempfile.mkdtemp(); vpath, apath = os.path.join(tmp, "v.mp4"), os.path.join(tmp, "a.wav")
-        p = subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
+        p = None if audio_only else subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
                               "-c:v", "libx264", "-preset", "medium", "-crf", "17", "-pix_fmt", "yuv420p", vpath], stdin=subprocess.PIPE)
         t0 = 0.0; events = []; cuts = []; prev = None
         for si, (dur, fn, ev) in enumerate(self.scenes):
             events += [(t0 + a, k, g) for a, k, g in ev]; n = int(round(dur * FPS))
-            for i in range(n):
+            for i in range(0 if audio_only else n):
                 im, sh = fn(i / FPS); im = im.convert("RGB")
                 if sh: im = im.transform(im.size, Image.AFFINE, (1, 0, -sh * math.sin(i * 2.7), 0, 1, -sh * math.cos(i * 3.1)), fillcolor=TH["bg"][0])
                 last, first = si < len(self.scenes) - 1 and i >= n - tr_frames, si > 0 and i < tr_frames
@@ -642,26 +647,84 @@ class Video:
                 p.stdin.write(im.tobytes())
                 if i == n - 1: prev = im
             t0 += n / FPS; cuts.append(t0)
-        p.stdin.close(); p.wait(); total = t0
-        N = int(total * SR); mix = np.zeros(N + SR, np.float32); S = _synth()
-        def add(sig, at, g):
-            s = int(at * SR); e = min(len(mix), s + len(sig)); mix[s:e] += sig[:e - s] * g
+        if p: p.stdin.close(); p.wait()
+        total = t0
+        N = int(total * SR); S = _synth(); mus = np.zeros(N + SR, np.float32); fx = np.zeros(N + SR, np.float32)
+        def add(buf, sig, at, g):
+            s = int(at * SR); e = min(len(buf), s + len(sig)); buf[s:e] += sig[:e - s] * g
         if music:
             beat = 60 / bpm; b = 0.0
             while b < total - 0.2:
-                if b >= 0.45: add(S["kick"], b, 0.32)
-                add(S["hat"], b + beat / 2, 0.5); b += beat
-            pt = np.arange(len(mix)) / SR; mix += (np.sin(2 * np.pi * 55 * pt) + 0.5 * np.sin(2 * np.pi * 82.4 * pt)) * 0.05 * np.minimum(pt, 1) * np.clip((total - pt) / 0.8, 0, 1)
+                if b >= 0.45: add(mus, S["kick"], b, 0.32)
+                add(mus, S["hat"], b + beat / 2, 0.5); b += beat
+            pt = np.arange(len(mus)) / SR; mus += (np.sin(2 * np.pi * 55 * pt) + 0.5 * np.sin(2 * np.pi * 82.4 * pt)) * 0.05 * np.minimum(pt, 1) * np.clip((total - pt) / 0.8, 0, 1)
         if sfx:
-            for at, k, g in events: add(S[k], at, g)
+            for at, k, g in events: add(fx, S[k], at, g)
             if transition != "cut":
-                for c in cuts[:-1]: add(S["whoosh"], c - 0.25, 0.5)
-        mix = mix[:N]; mix = np.tanh(mix * 1.2) / np.tanh(1.2); mix /= max(1e-6, np.abs(mix).max()) / 0.89
+                for c in cuts[:-1]: add(fx, S["whoosh"], c - 0.25, 0.5)
+        mus, fx = mus[:N], fx[:N]
+        if voice is None:
+            mix = mus + fx; mix = np.tanh(mix * 1.2) / np.tanh(1.2); mix /= max(1e-6, np.abs(mix).max()) / 0.89; bed_limit = 0.35
+        else:
+            vo = load_audio(voice, N, voice_at)
+            talk = speech_gain(vo)                                   # 1 while words are spoken, 0 in gaps (smoothed)
+            v_rms = rms(vo[talk > 0.5])
+            k = v_rms * 10 ** (-pause_db / 20) / max(1e-6, rms(mus))  # music level in the gaps
+            duck = 10 ** (-(duck_db - pause_db) / 20)
+            mg = np.minimum(1 - talk * (1 - duck), follow_gain(vo, mus * k, talk, duck_db + 2))  # also track soft words
+            bed = (mus * k) * mg + (fx * k) * (1 - talk * (1 - 10 ** (-sfx_duck_db / 20)))
+            ceil = np.abs(vo).max() * 0.6; bed = np.tanh(bed / ceil) * ceil  # soft-clip SFX/beat peaks only
+            words = speech_gain(vo, hold=0.0, pre=0.0, attack=0.005, release=0.005)  # raw word activity, no hold
+            self.duck_report = duck_check(vo, mus * k * mg, words)
+            mix = vo + bed; mix /= max(1.0, np.abs(mix).max() / 0.99); bed_limit = None   # plain gain, no limiter on the voice
         with wave.open(apath, "wb") as wf: wf.setnchannels(1); wf.setsampwidth(2); wf.setframerate(SR); wf.writeframes((mix * 32767).astype(np.int16).tobytes())
-        if lufs is not None: apath = master(apath, lufs, tp)
-        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", vpath, "-i", apath, "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-ar", "48000", "-shortest", "-movflags", "+faststart", out], check=True)
+        if lufs is not None: apath = master(apath, lufs, tp, bed_limit, peak_catch=voice is not None)
+        if audio_only:
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", apath, "-c:a", "aac", "-b:a", "256k", "-ar", "48000", out], check=True); return total
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", vpath, "-i", apath, "-c:v", "copy", "-c:a", "aac", "-b:a", "256k", "-ar", "48000", "-shortest", "-movflags", "+faststart", out], check=True)
         if preview_times: contact_sheet(out, preview_times)
         return total
+
+def rms(x): return float(np.sqrt(np.mean(np.square(x, dtype=np.float64)))) if len(x) else 0.0
+
+def load_audio(path, n, at=0.0, offset=0.0):
+    """decode a file to mono float32 at SR, starting offset seconds in, placed at `at` seconds, padded/cut to n samples"""
+    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-ss", str(offset), "-i", path, "-ac", "1", "-ar", str(SR), "-f", "f32le", "-"], capture_output=True, check=True).stdout
+    a = np.frombuffer(raw, np.float32); out = np.zeros(n, np.float32); s = int(at * SR)
+    if s < 0: a, s = a[-s:], 0
+    m = min(len(a), n - s)
+    if m > 0: out[s:s + m] = a[:m]
+    return out
+
+def speech_gain(vo, thresh_db=-35.0, hold=0.12, pre=0.06, attack=0.03, release=0.25, hop=0.01):
+    """0..1 curve: 1 while the voice is talking. thresh relative to the loudest 10ms; held across short gaps,
+    opens `pre` seconds early so the duck lands before the word, smoothed with attack/release"""
+    h = int(hop * SR); n = len(vo) // h + 1
+    env = np.sqrt(np.convolve(np.square(vo), np.ones(h) / h, "same")[::h])[:n]
+    on = env > env.max() * 10 ** (thresh_db / 20)
+    k = int((hold + pre) / hop); idx = np.flatnonzero(on); g = np.zeros(len(env))
+    for i in idx: g[max(0, i - int(pre / hop)):i + int(hold / hop) + 1] = 1
+    a, r = 1 - math.exp(-hop / attack), 1 - math.exp(-hop / release); sm = np.zeros_like(g); y = 0.0
+    for i, x in enumerate(g): y += (a if x > y else r) * (x - y); sm[i] = y
+    return np.interp(np.arange(len(vo)) / h, np.arange(len(sm)), sm).astype(np.float32)
+
+def follow_gain(vo, music, talk, under_db, win=0.3, hop=0.01, release=0.3):
+    """music gain that keeps the music under_db below the voice's own local level while it talks (soft words duck harder)"""
+    h = int(hop * SR); w = max(1, int(win / hop))
+    env = lambda x: np.sqrt(np.convolve(np.convolve(np.square(x), np.ones(h) / h, "same")[::h], np.ones(w) / w, "same")) + 1e-9
+    v, m, tk = env(vo), env(music), talk[::h][:len(env(vo))]
+    req = np.where(tk > 0.05, np.minimum(1.0, v * 10 ** (-under_db / 20) / m), 1.0)
+    r = 1 - math.exp(-hop / release); sm = np.empty_like(req); y = 1.0
+    for i, x in enumerate(req): y = x if x < y else y + r * (x - y); sm[i] = y   # instant attack, smooth release
+    sm = np.minimum(sm, np.concatenate([sm[int(0.06 / hop):], np.ones(int(0.06 / hop))]))  # open the duck 60ms early
+    return np.interp(np.arange(len(vo)) / h, np.arange(len(sm)), sm).astype(np.float32)
+
+def duck_check(vo, music, talk, win=0.4):
+    """voice-minus-music level (dB) over each window that is words (not pauses). returns (min, median) for the report"""
+    w = int(win * SR); d = []
+    for s in range(0, len(vo) - w, w):
+        if talk[s:s + w].mean() > 0.8: d.append(20 * math.log10(max(1e-9, rms(vo[s:s + w])) / max(1e-9, rms(music[s:s + w]))))
+    return (min(d), float(np.median(d))) if d else (None, None)
 
 def loudness(path, lufs=-14.0, tp=-1.0, extra=""):
     """measure with loudnorm (print_format=json) -> dict of input_i / input_tp / ..."""
@@ -669,15 +732,27 @@ def loudness(path, lufs=-14.0, tp=-1.0, extra=""):
     r = subprocess.run(["ffmpeg", "-hide_banner", "-nostats", "-i", path, "-af", f"loudnorm=I={lufs}:TP={tp}:LRA=11{extra}:print_format=json", "-f", "null", "-"], capture_output=True, text=True)
     return json.loads(r.stderr[r.stderr.rindex("{"):])
 
-def master(wav, lufs=-14.0, tp=-1.0, bed_limit=0.35):
-    """two-pass loudnorm to lufs / tp (aims 1.5 dB under tp so the AAC encode stays under it). returns the new wav path.
+def master(wav, lufs=-14.0, tp=-1.0, bed_limit=0.35, peak_catch=False):
+    """two-pass loudnorm to lufs / tp (aims 0.2 dB under tp; check the encoded file). returns the new wav path.
     bed_limit: first tame the synthesized SFX/beat transients (fast alimiter, linear ceiling) so loudnorm can stay
-    linear. Only for beds with no voice in them; pass None to skip."""
+    linear. Only for beds with no voice in them; pass None to skip.
+    peak_catch: for voice mixes. Gain to lufs, then a 1ms-attack catch on just the peaks over the ceiling (a dB or two on
+    well under 1% of samples) instead of loudnorm's dynamic mode, which would ride the whole voice."""
     if bed_limit:
         pre = os.path.splitext(wav)[0] + "_pre.wav"
         subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-af", f"alimiter=limit={bed_limit}:attack=2:release=60:level=false", "-ar", "48000", pre], check=True); wav = pre
-    m = loudness(wav, lufs, tp - 1.5); out = os.path.splitext(wav)[0] + "_master.wav"
-    af = (f"loudnorm=I={lufs}:TP={tp - 1.5}:LRA=11:measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}"
+    if peak_catch:  # plain gain to the target, then a fast catch on only the peaks above the ceiling (no compression)
+        m = loudness(wav, lufs, tp); out = os.path.splitext(wav)[0] + "_master.wav"; ceil = 10 ** ((tp - 0.6) / 20)
+        gain = lufs - float(m["input_i"])
+        for _ in range(4):  # the catch takes a little loudness off, so nudge the gain until the output lands on lufs
+            af = f"volume={gain:.2f}dB,alimiter=limit={ceil:.4f}:attack=1:release=15:level=false"
+            subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-af", af, "-ar", "48000", out], check=True)
+            got = float(loudness(out, lufs, tp)["input_i"])
+            if abs(got - lufs) < 0.15: break
+            gain += lufs - got
+        master.info = dict(gain_db=round(gain, 2), catch_db=round(gain - (lufs - float(m["input_i"])), 2)); return out
+    m = loudness(wav, lufs, tp - 0.2); out = os.path.splitext(wav)[0] + "_master.wav"
+    af = (f"loudnorm=I={lufs}:TP={tp - 0.2}:LRA=11:measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}"
           f":measured_thresh={m['input_thresh']}:offset={m['target_offset']}:linear=true")
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-af", af, "-ar", "48000", out], check=True); return out
 
