@@ -631,7 +631,7 @@ class Video:
         audio_only: skip the frames and write just the mastered soundtrack to out (fast audio checks)"""
         tmp = tempfile.mkdtemp(); vpath, apath = os.path.join(tmp, "v.mp4"), os.path.join(tmp, "a.wav")
         p = None if audio_only else subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
-                              "-c:v", "libx264", "-preset", "medium", "-crf", "17", "-pix_fmt", "yuv420p", vpath], stdin=subprocess.PIPE)
+                              "-c:v", "libx264", "-preset", "medium", "-crf", "17", "-pix_fmt", "yuv420p", "-vf", "setsar=1", vpath], stdin=subprocess.PIPE)
         t0 = 0.0; events = []; cuts = []; prev = None
         for si, (dur, fn, ev) in enumerate(self.scenes):
             events += [(t0 + a, k, g) for a, k, g in ev]; n = int(round(dur * FPS))
@@ -755,6 +755,16 @@ def master(wav, lufs=-14.0, tp=-1.0, bed_limit=0.35, peak_catch=False):
     af = (f"loudnorm=I={lufs}:TP={tp - 0.2}:LRA=11:measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}"
           f":measured_thresh={m['input_thresh']}:offset={m['target_offset']}:linear=true")
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-af", af, "-ar", "48000", out], check=True); return out
+
+def reframe_4x5(src, out, top=200, bottom=1700):
+    """Instagram/Facebook feed version (1080x1350, 4:5) of a 9:16 render. Keeps the y=top..bottom band where all the
+    content lives, scales it to 1350 tall and fills the thin side strips with a blurred copy of the frame."""
+    h = bottom - top; fw = int(round(W * 1350 / h / 2) * 2)
+    fc = (f"[0:v]split[a][b];[a]scale=1080:1350:force_original_aspect_ratio=increase,crop=1080:1350,gblur=sigma=40[bg];"
+          f"[b]crop={W}:{h}:0:{top},scale={fw}:1350[fg];[bg][fg]overlay=(W-w)/2:0,setsar=1[v]")
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", src, "-filter_complex", fc, "-map", "[v]", "-map", "0:a?",
+                    "-c:v", "libx264", "-preset", "medium", "-crf", "17", "-pix_fmt", "yuv420p", "-c:a", "copy", "-movflags", "+faststart", out], check=True)
+    return out
 
 def contact_sheet(video, times, width=260):
     """grab frames at times -> <video>_preview.png for visual QA"""
