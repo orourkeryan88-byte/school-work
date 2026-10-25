@@ -54,3 +54,13 @@ test("unknown names and keys with spaces are rejected", async () => {
   assert.equal((await saveKey("SUPABASE_SERVICE_ROLE_KEY", "x", null)).ok, false);
   assert.equal((await saveKey("ANTHROPIC_API_KEY", "sk ant with spaces", null)).ok, false);
 });
+
+test("Supabase paging order: every table sorts by created_at except app_secrets (which has no such column)", async () => {
+  const { orderColumn } = await import("@/lib/store/supabase");
+  assert.equal(orderColumn("app_secrets"), "id");
+  for (const t of ["leads", "messages", "campaigns", "notes", "follow_ups", "import_logs", "change_requests"] as const) assert.equal(orderColumn(t), "created_at");
+  // and the schema agrees: app_secrets is the only table created without created_at
+  const fs = await import("node:fs");
+  const sql = fs.readFileSync("supabase/migrations/0005_app_secrets.sql", "utf8");
+  assert.ok(!sql.includes("created_at"));
+});

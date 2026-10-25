@@ -50,10 +50,12 @@ export function decrypt(b64: string, key: Buffer): string | null {
 
 // Decrypted values, re-read from the database at most every 30 seconds.
 let cache: { at: number; values: Map<string, string> } | null = null;
+let lastReadError: string | null = null;
 async function stored(): Promise<Map<string, string>> {
   if (cache && Date.now() - cache.at < 30_000) return cache.values;
   const values = new Map<string, string>();
   const key = cipherKey();
+  lastReadError = null;
   if (key) {
     try {
       for (const row of await getStore().all("app_secrets")) {
@@ -62,7 +64,8 @@ async function stored(): Promise<Map<string, string>> {
       }
     } catch (e) {
       // Table missing (migration 0005 not run yet) - behave as if nothing is saved.
-      console.warn("Couldn't read saved API keys:", (e as Error).message);
+      lastReadError = (e as Error).message;
+      console.warn("Couldn't read saved API keys:", lastReadError);
     }
   }
   cache = { at: Date.now(), values };
@@ -124,5 +127,7 @@ export async function saveKey(name: string, value: string, by: string | null): P
   if (existing) await store.update("app_secrets", name, row);
   else await store.insert("app_secrets", row);
   cache = null;
+  // Read it straight back, so a key that saved but can't be used never looks "Saved".
+  if ((await stored()).get(name) !== v) return { ok: false, error: `Saved, but the app couldn't read it back${lastReadError ? `: ${lastReadError}` : ""}` };
   return { ok: true };
 }

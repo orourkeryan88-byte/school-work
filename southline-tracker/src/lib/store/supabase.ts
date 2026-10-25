@@ -1,5 +1,5 @@
 import { createClient, type SupabaseClient } from "@supabase/supabase-js";
-import type { Store } from "./types";
+import type { Store, TableName } from "./types";
 
 // Server-only client using the service role key. It bypasses RLS, so it must
 // never be imported into client components. Page access is protected by
@@ -17,12 +17,17 @@ function sb() {
 
 const PAGE = 1000; // Supabase returns at most 1000 rows per request
 
+/** Column to page through a table in a stable order. app_secrets has no created_at. */
+export function orderColumn(table: TableName) {
+  return table === "app_secrets" ? "id" : "created_at";
+}
+
 export const supabaseStore: Store = {
   kind: "supabase",
   async all(table, where) {
     const out = [];
     for (let from = 0; ; from += PAGE) {
-      let q = sb().from(table).select("*").order("created_at").range(from, from + PAGE - 1);
+      let q = sb().from(table).select("*").order(orderColumn(table)).range(from, from + PAGE - 1);
       if (where) q = q.match(where as Record<string, unknown>);
       const { data, error } = await q;
       if (error) throw new Error(`${table}: ${error.message}`);
