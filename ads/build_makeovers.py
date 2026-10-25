@@ -1,24 +1,24 @@
 """Southline KITCHEN & BATHROOM makeover ad (silent, 30s), one combined ad for both.
 8-part short-form structure: Hook, Lead, Body 1, Open loop, Body 2, Open loop, Body 3, CTA.
-Simple look: off-white, black type, one blue accent. Open loops are questions.
+Simple look: off-white, black type, one blue accent. Open loops are questions. Stacking cards, highlight-then-zoom on key words.
 python3 build_makeovers.py [--stills]"""
 import sys
 from PIL import Image
 import adkit as A
-import structure_scenes as S
+import stack_scenes as S
 
 BLUE = (30, 86, 255)
 A.set_theme("clean", accent=BLUE, accent2=BLUE, bg=((248, 247, 244), (240, 238, 233)), blobs=[], grid=False)
 SCENES = [
-    S.scene_hook(dur=3.6),                                                     # HOOK       6 quotes struck out, 1 booked -> '6 quotes. 1 yes.'
-    S.scene_lead(dur=3.2),                                                     # LEAD       every 'free' quote costs you an evening -> 15 hrs
-    S.scene_body1(dur=4.0),                                                    # BODY 1     they found you on a list: 1 of 80 -> collecting quotes
-    S.scene_question(["So how is the company", "down the road", "booked till summer", "without chasing a quote?"], hi=2, dur=3.0, gap=0.28),  # OPEN LOOP
-    S.scene_body2(dur=4.6),                                                    # BODY 2     their best job is in the feed -> quote requests
-    S.scene_question(["But what stops", "the time-wasters", "ever ringing them?"], hi=1, dur=2.6, gap=0.3),  # OPEN LOOP
-    S.scene_body3(dur=4.6),                                                    # BODY 3     the ad asks first -> only ready buyers
-    A.scene_cta_comment("Want buyers,", "not browsers?", "MAKEOVER", "Southline Agency", "Paid ads for kitchen & bathroom companies",
-                        after="to see how.", toast_msg="We'll DM you the details", dur=4.4, logo=A.logo()),  # CTA
+    S.scene_hook(dur=3.8),    # HOOK       quotes stack + get struck out, last one BOOKED -> '6 quotes. 1 yes.' highlight + zoom
+    S.scene_lead(dur=3.6),    # LEAD       'costs you an evening.' highlight + zoom -> cost cards stack -> 15 hrs
+    S.scene_body1(dur=3.8),   # BODY 1     'on a list.' -> pull back to 1 of 80 -> 'Not choosing you.' pop + highlight
+    S.scene_question(["So how is the company", "down the road", "booked till summer", "without chasing a quote?"], 2, (2, 2), dur=3.0),  # OPEN LOOP, zoom on 'summer'
+    S.scene_body2(dur=4.4),   # BODY 2     'in the feed.' -> feed scroll, push-in on 'Get a quote', requests stack
+    S.scene_question(["But what stops", "the time-wasters", "ever ringing them?"], 1, (1, 1), dur=2.6, mode="pop", zoom=1.2, size=104),  # OPEN LOOP, words pop
+    S.scene_body3(dur=4.6),   # BODY 3     'asks first.' -> question cards build a tower -> ready to book
+    S.camera(A.scene_cta_comment("Want buyers,", "not browsers?", "MAKEOVER", "Southline Agency", "Paid ads for kitchen & bathroom companies",
+                                 after="to see how.", toast_msg="We'll DM you the details", dur=4.2, logo=A.logo()), [(0.0, 1.25, 540, 600), (0.45, 1.0, 540, 960)]),  # CTA
 ]
 
 if "--stills" in sys.argv:
