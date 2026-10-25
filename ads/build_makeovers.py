@@ -9,16 +9,16 @@ import stack_scenes as S
 
 BLUE = (30, 86, 255)
 A.set_theme("clean", accent=BLUE, accent2=BLUE, bg=((248, 247, 244), (240, 238, 233)), blobs=[], grid=False)
-SCENES = [
-    S.scene_hook(dur=3.8),    # HOOK       quotes stack + get struck out, last one BOOKED -> '6 quotes. 1 yes.' highlight + zoom
-    S.scene_lead(dur=3.6),    # LEAD       'costs you an evening.' highlight + zoom -> cost cards stack -> 15 hrs
-    S.scene_body1(dur=3.8),   # BODY 1     'on a list.' -> pull back to 1 of 80 -> 'Not choosing you.' pop + highlight
-    S.scene_question(["So how is the company", "down the road", "booked till summer", "without chasing a quote?"], 2, (2, 2), dur=3.0),  # OPEN LOOP, zoom on 'summer'
-    S.scene_body2(dur=4.4),   # BODY 2     'in the feed.' -> feed scroll, push-in on 'Get a quote', requests stack
-    S.scene_question(["But what stops", "the time-wasters", "ever ringing them?"], 1, (1, 1), dur=2.6, mode="pop", zoom=1.2, size=104),  # OPEN LOOP, words pop
-    S.scene_body3(dur=4.6),   # BODY 3     'asks first.' -> question cards build a tower -> ready to book
+SCENES = [  # paced so every line gets read: one idea per beat, ~1s hold on each key line
+    S.scene_hook(dur=4.0),    # HOOK       4 quotes stack + get struck out, last one BOOKED -> '4 quotes. 1 yes.' highlight + zoom
+    S.scene_lead(dur=3.2),    # LEAD       'costs you an evening.' highlight + zoom -> 15 hrs
+    S.scene_body1(dur=4.2, zoom=(0.9, 2.2), you_at=2.35, punch_at=3.0),  # BODY 1 'on a list.' -> pull back to 1 of 80 -> 'Not choosing you.'
+    S.scene_question(["So how is the company", "down the road", "booked till summer?"], 2, (2, 2), dur=3.0, gap=0.35),  # OPEN LOOP, zoom on 'summer?'
+    S.scene_body2(dur=4.6, scroll=(0.7, 1.4), tap_at=2.0, notes_at=(2.7, 3.2, 3.7)),  # BODY 2 'in the feed.' -> tap -> requests stack
+    S.scene_question(["So what stops", "the time-wasters?"], 1, (1, 1), dur=2.8, mode="pop", zoom=1.25, size=110, word_gap=0.13),  # OPEN LOOP
+    S.scene_body3(dur=4.6),   # BODY 3     'asks first.' -> 3 question cards build a tower -> ready to book
     S.camera(A.scene_cta_comment("Want buyers,", "not browsers?", "MAKEOVER", "Southline Agency", "Paid ads for kitchen & bathroom companies",
-                                 after="to see how.", toast_msg="We'll DM you the details", dur=4.2, logo=A.logo()), [(0.0, 1.25, 540, 600), (0.45, 1.0, 540, 960)]),  # CTA
+                                 after="to see how.", toast_msg="We'll DM you the details", dur=3.8, logo=A.logo()), [(0.0, 1.2, 540, 600), (0.45, 1.0, 540, 960)]),  # CTA
 ]
 
 if "--stills" in sys.argv:
@@ -32,5 +32,5 @@ v = A.Video(); [v.add(*s) for s in SCENES]
 out = "out/southline_makeovers.mp4"
 ends, t = [], 0
 for d, _, _ in SCENES: t += round(d * A.FPS) / A.FPS; ends.append(t - 0.3)
-total = v.render(out, transition="whip", tr_frames=5, preview_times=ends, punch=True, drift=0.025, bpm=120)
+total = v.render(out, transition="whip", tr_frames=5, preview_times=ends, punch=False, drift=0.02, bpm=120)
 print(f"rendered {total:.2f}s")

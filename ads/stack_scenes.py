@@ -88,13 +88,14 @@ def quote_card(title, area, status, state):
         if state == 2: A.check(d, s, w - 84, 37, (255, 255, 255)); d.line([((w - 72) * s, 60 * s), ((w - 64) * s, 68 * s), ((w - 50) * s, 51 * s)], fill=acc, width=6 * s)
     return card(w, h, dr, fill)
 
-def scene_hook(dur=3.8, drops=(-0.6, 0.3, 0.55, 0.8, 1.05, 1.4), big_at=2.1):
+def scene_hook(dur=4.0, drops=(-0.6, 0.45, 0.85, 1.25), big_at=2.05, quotes=None):
     """frame 0: 'Kitchen & bathroom companies,' + a quote card on the deck. Quote cards slam onto the stack one by one,
     each gets struck out (no reply, just looking...), the last one lands BOOKED in blue. The deck falls away,
     '6 quotes. 1 yes.' slams in, '1 yes.' gets highlighted and the camera zooms into it."""
     h1 = text("Kitchen & bathroom", "bl", fit_size("Kitchen & bathroom", "bl", 110, 960)); h2 = text("companies,", "bl", 136, ACC())
-    cards = [[quote_card(t_, a_, s_, st) for st in (0, 1, 2)] for t_, a_, s_ in QUOTES]
-    b1 = text("6 quotes.", "bl", 190); YES_Y = 1170
+    qs = quotes or [QUOTES[0], QUOTES[1], QUOTES[3], QUOTES[5]]  # no reply, just looking, ghosted, BOOKED
+    cards = [[quote_card(t_, a_, s_, st) for st in (0, 1, 2)] for t_, a_, s_ in qs]
+    b1 = text(f"{len(qs)} quotes.", "bl", 190); YES_Y = 1170
 
     def fn(t):
         im = A.bg(); sh = 12 * (1 - t / 0.16) if t < 0.16 else 0
@@ -102,55 +103,45 @@ def scene_hook(dur=3.8, drops=(-0.6, 0.3, 0.55, 0.8, 1.05, 1.4), big_at=2.1):
         put(im, h1, W / 2, 390, ta, 1.04 - 0.04 * eo(t / 0.3)); put(im, h2, W / 2, 515, ta, 1.06 - 0.06 * eo(t / 0.3))
         if out < 1:
             sps = []
-            for i, (tt, ar, st) in enumerate(QUOTES):
-                ok = st == "BOOKED"; sps.append(cards[i][(2 if ok else 1) if t >= drops[i] + (0.3 if ok else 0.2) else 0])
+            for i, (tt, ar, st) in enumerate(qs):
+                ok = st == "BOOKED"; sps.append(cards[i][(2 if ok else 1) if t >= drops[i] + (0.4 if ok else 0.3) else 0])
             deck = Image.new("RGBA", (W, H), (0, 0, 0, 0)); sh = max(sh, A.draw_stack(deck, sps, drops, t, 940, step=70, from_y=-1300, rot=-8))
             if out > 0: deck.putalpha(deck.split()[3].point(lambda v: int(v * (1 - out))))
             im.alpha_composite(deck, (0, int(900 * out * out)))
-            kk = (t - drops[-1] - 0.3) / 1.2; ring(im, W / 2, 940, kk, col=ACC(), maxr=420, width=6, r0=80)
+            kk = (t - drops[-1] - 0.4) / 1.2; ring(im, W / 2, 940, kk, col=ACC(), maxr=420, width=6, r0=80)
         if t >= big_at:
             k = (t - big_at - 0.1) / 0.3
             put(im, b1, W / 2, 900, clamp(k / 0.2), 1.25 - 0.25 * eo(k))
             if k > 0.9: marker(im, "1 yes.", W / 2, YES_Y, (t - big_at - 0.65) / 0.3, 240)
             if 0.9 <= k < 1.35: sh = 16
         return im, sh
-    ev = [(0.0, "hit", 1.0)] + [(d0 + 0.28, "hit", 0.55) for d0 in drops[1:]] + [(drops[i] + 0.2, "swish", 0.4) for i in range(1, 5)] + \
-         [(drops[-1] + 0.3, "ping", 0.8), (big_at, "whoosh", 0.5), (big_at + 0.1, "hit", 0.9), (big_at + 0.37, "hit", 1.0), (big_at + 0.65, "swish", 0.6), (big_at + 1.0, "whoosh", 0.6)]
+    ev = [(0.0, "hit", 1.0)] + [(d0 + 0.28, "hit", 0.55) for d0 in drops[1:]] + [(drops[i] + 0.3, "swish", 0.4) for i in range(1, len(drops) - 1)] + \
+         [(drops[-1] + 0.4, "ping", 0.8), (big_at, "whoosh", 0.5), (big_at + 0.1, "hit", 0.9), (big_at + 0.37, "hit", 1.0), (big_at + 0.65, "swish", 0.6), (big_at + 1.0, "whoosh", 0.6)]
     sc = (dur, fn, ev)
-    return camera(sc, [(big_at + 0.95, 1.0, W / 2, 960), (big_at + 1.4, 1.28, W / 2, 1080), (dur, 1.33, W / 2, 1090)])
+    return camera(sc, [(big_at + 0.95, 1.0, W / 2, 960), (big_at + 1.45, 1.12, W / 2, 1060), (dur, 1.15, W / 2, 1070)])
 
 
 # ======================================================================= 02 LEAD
-def scene_lead(dur=3.6, swap=1.5, drops=(1.62, 1.92, 2.22), total_at=2.5):
-    """'Every free quote costs you AN EVENING.' -> highlight -> zoom into 'evening.', zoom back out to reveal the cost cards
-    stacking on a deck, then an hours counter rolls to 15"""
+def scene_lead(dur=3.2, swap=1.85, total_at=1.9):
+    """'Every free quote costs you AN EVENING.' -> highlight -> zoom into 'evening.', then zoom back out to
+    an hours counter rolling to 15 (example week)"""
     l1, l2 = Line("Every 'free' quote", 100), Line("costs you", 100); l3 = Line("an evening.", 150, hi=(1, 1))
     ex_, ey_ = l3.hi_centre(W / 2, 1090)
-    t1, t2 = text("Every 'free' quote", "bl", 78), Line("costs you an evening.", 78, hi=(2, 3))
-    def cost(a, b):
-        def dr(d, s):
-            d.ellipse((34 * s, 44 * s, 60 * s, 70 * s), fill=ACC()); d.text((86 * s, 30 * s), a, font=A.font("b", 46 * s), fill=INK)
-            f = A.font("bl", 46 * s); tw = A.tsize(b, f)[0]; d.text((800 * s - tw, 30 * s), b, font=f, fill=ACC())
-        return card(840, 116, dr)
-    costs = [cost("The drive out", "+1 hr"), cost("The measure-up", "+1 hr"), cost("The drawings", "+1 hr")]
-    sub = text("on 5 quotes that went nowhere.", "xb", 54); ex = text("3 hrs a quote · example week", "mono", 26, MUTED)
+    sub = text("gone on dead quotes.", "xb", 64); ex = text("example week", "mono", 28, MUTED)
 
     def fn(t):
         im = A.bg(); sh = 0
         if t < swap:
-            l1.draw(im, W / 2, 790, t / 0.25); l2.draw(im, W / 2, 930, (t - 0.15) / 0.25); l3.draw(im, W / 2, 1090, (t - 0.3) / 0.25, (t - 0.55) / 0.3)
+            l1.draw(im, W / 2, 790, t / 0.3); l2.draw(im, W / 2, 930, (t - 0.25) / 0.3); l3.draw(im, W / 2, 1090, (t - 0.5) / 0.3, (t - 0.85) / 0.35)
         else:
-            put(im, t1, W / 2, 380); t2.draw(im, W / 2, 485, 1, 1)
-            sh = A.draw_stack(im, costs, drops, t, 930, step=104, from_y=-1200, rot=6)
-            if t >= total_at:
-                n = int(round(15 * eo((t - total_at) / 0.6))); k = (t - total_at) / 0.3
-                put(im, text(f"{n} hrs", "bl", 250), W / 2, 1250, clamp(k / 0.2), 1.15 - 0.15 * eo(k))
-                put_rise(im, sub, W / 2, 1430, eo((t - total_at - 0.45) / 0.3)); put(im, ex, W / 2, 1505, eo((t - total_at - 0.7) / 0.3))
-                if total_at + 0.6 <= t < total_at + 0.74: sh = 12
+            n = int(round(15 * eo((t - total_at) / 0.5))); k = (t - total_at) / 0.3
+            put(im, text(f"{n} hrs", "bl", 280), W / 2, 880, clamp(k / 0.2), 1.15 - 0.15 * eo(k))
+            put_rise(im, sub, W / 2, 1080, eo((t - total_at - 0.45) / 0.3)); put(im, ex, W / 2, 1170, eo((t - total_at - 0.6) / 0.3))
+            if total_at + 0.5 <= t < total_at + 0.64: sh = 10
         return im, sh
-    ev = [(0.0, "whoosh", 0.4), (0.3, "swish", 0.4), (0.55, "swish", 0.6), (0.9, "whoosh", 0.6), (swap - 0.05, "whoosh", 0.6)] + \
-         [(d0 + 0.28, "hit", 0.6) for d0 in drops] + [(total_at + i * 0.04, "tick", 0.35) for i in range(14)] + [(total_at + 0.6, "hit", 1.0)]
-    return camera((dur, fn, ev), [(0.85, 1.0, W / 2, 960), (1.25, 1.6, ex_, ey_), (swap - 0.06, 1.66, ex_, ey_), (swap + 0.16, 1.0, W / 2, 960)])
+    ev = [(0.0, "whoosh", 0.4), (0.25, "swish", 0.4), (0.5, "swish", 0.4), (0.85, "swish", 0.6), (1.25, "whoosh", 0.6), (swap - 0.05, "whoosh", 0.5)] + \
+         [(total_at + i * 0.035, "tick", 0.3) for i in range(14)] + [(total_at + 0.5, "hit", 1.0)]
+    return camera((dur, fn, ev), [(1.2, 1.0, W / 2, 960), (1.6, 1.55, ex_, ey_), (swap - 0.05, 1.6, ex_, ey_), (swap + 0.15, 1.0, W / 2, 960)])
 
 
 # ======================================================================= 03 BODY 1
@@ -205,7 +196,7 @@ def scene_question(lines, hi_line, hi, dur=3.0, gap=0.26, mode="rise", zoom=1.7,
     for j, l in enumerate(L):
         if mode == "pop": starts.append([k + i * word_gap for i in range(len(l.words))]); k += len(l.words) * word_gap
         else: starts.append([k] * len(l.words)); k += gap
-    t_hi = k + 0.2; t_z = t_hi + 0.32; zx, zy = L[hi_line].hi_centre(W / 2, ys[hi_line])
+    t_hi = k + 0.3; t_z = t_hi + 0.45; zx, zy = L[hi_line].hi_centre(W / 2, ys[hi_line])
 
     def fn(t):
         im = A.bg()
@@ -217,7 +208,7 @@ def scene_question(lines, hi_line, hi, dur=3.0, gap=0.26, mode="rise", zoom=1.7,
         return im, 0
     ev = [(s[0], "swish", 0.45) for s in starts] if mode == "rise" else [(s0, "pop", 0.35) for s in starts for s0 in s]
     ev += [(t_hi, "swish", 0.7), (t_z, "whoosh", 0.7), (t_z + 0.4, "hit", 0.6)]
-    return camera((dur, fn, ev), [(t_z, 1.0, W / 2, 960), (t_z + 0.45, zoom, zx, zy), (dur, zoom * 1.06, zx, zy)])
+    return camera((dur, fn, ev), [(t_z, 1.0, W / 2, 960), (t_z + 0.5, zoom, zx, zy), (dur, zoom * 1.04, zx, zy)])
 
 
 # ======================================================================= 05 BODY 2
@@ -258,7 +249,7 @@ def scene_body2(dur=4.4, scroll=(0.4, 1.1), tap_at=1.6, notes_at=(2.15, 2.5, 2.8
     BTN_Y = CY - SH / 2 + 70 + 76 + 440 + 22 + 43  # button centre once the feed has scrolled
 
     def fn(t):
-        im = A.bg(); h1.draw(im, W / 2, 400, t / 0.25); h2.draw(im, W / 2, 505, (t - 0.1) / 0.25, (t - 0.35) / 0.3)
+        im = A.bg(); h1.draw(im, W / 2, 400, t / 0.25); h2.draw(im, W / 2, 505, (t - 0.15) / 0.3, (t - 0.5) / 0.35)
         k = eo(t / 0.4); cy = CY + 220 * (1 - k)
         put(im, shell, W / 2, cy, k); sc, by = screen(t); put(im, sc, W / 2, cy, k)
         A.tap(im, W / 2 + 205, cy - SH / 2 + by, t, tap_at, t_in=0.4, from_dx=160, from_dy=260)
@@ -276,10 +267,10 @@ def scene_body2(dur=4.4, scroll=(0.4, 1.1), tap_at=1.6, notes_at=(2.15, 2.5, 2.8
 
 
 # ======================================================================= 07 BODY 3
-def scene_body3(dur=4.6, drops=(0.45, 0.8, 1.15, 1.5), junk_at=2.0, ready_at=2.6):
+def scene_body3(dur=4.6, drops=(0.7, 1.2, 1.7), junk_at=2.35, ready_at=3.0, qa=None):
     """'The ad ASKS FIRST.' (highlight). Question cards slam down and build a tower from the bottom up,
     a 'Just browsing' lead is flicked away, a 'Ready to book' lead lands with a ring."""
-    qa = [("Kitchen or bathroom?", "Kitchen"), ("Budget?", "€15k+"), ("When?", "Next 3 months"), ("Photos?", "3 uploaded")]
+    qa = qa or [("Budget?", "€15k+"), ("When?", "Next 3 months"), ("Photos?", "3 uploaded")]
     hd = Line("The ad asks first.", 104, hi=(2, 3))
     def qcard(q, a):
         chip = A.pill(a, 36, ACC(), w="b")
@@ -290,11 +281,11 @@ def scene_body3(dur=4.6, drops=(0.45, 0.8, 1.15, 1.5), junk_at=2.0, ready_at=2.6
     end = text("Only ready buyers reach your phone.", "xb", fit_size("Only ready buyers reach your phone.", "xb", 56, 960))
 
     def fn(t):
-        im = A.bg(); sh = 0; hd.draw(im, W / 2, 420, t / 0.25, (t - 0.25) / 0.3)
+        im = A.bg(); sh = 0; hd.draw(im, W / 2, 440, t / 0.3, (t - 0.35) / 0.35)
         for i, d0 in enumerate(drops):  # tower: first card lands lowest
             k = (t - d0) / 0.45
             if k <= 0: continue
-            y = 1190 - i * 132 - 1400 * (1 - spring(k, f=1.5, d=6.5))
+            y = 1150 - i * 140 - 1400 * (1 - spring(k, f=1.5, d=6.5))
             put(im, Q[i], W / 2, y, clamp(k / 0.15), 1, (-6 if i % 2 else 6) * (1 - eo(k * 1.3)))
             if 0.28 <= t - d0 < 0.4: sh = 8
         if t >= junk_at:  # browser slides in and is flicked off the left with a spin
