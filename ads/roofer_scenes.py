@@ -124,8 +124,8 @@ def scene_big_jobs_gone(items, appear, gone_at, dur=5.0, lines=(("AND THE", Fals
 
 # ---------------------------------------------------------------- storm week, then nothing
 def scene_storm_diary(dur=5.0, clear_at=2.6, drain_at=3.6, A_lines=(("STORM HITS?", False), ("FLAT OUT FOR A WEEK.", True)),
-                      B_lines=(("THE WEATHER CLEARS…", False), ("SO DOES YOUR DIARY.", True)), step_a=0.6, step_b=1.0):
-    """2-week diary: storm week fills instantly with lightning + rain; weather clears and the jobs fall out of the diary"""
+                      B_lines=(("THE WEATHER CLEARS…", False), ("SO DOES YOUR CALENDAR.", True)), step_a=0.6, step_b=1.0):
+    """2-week calendar: storm week fills instantly with lightning + rain; weather clears and the jobs fall out of the calendar"""
     cw, ch, gap = 180, 230, 15; x0 = (W - (5 * cw + 4 * gap)) / 2; ys = [700, 700 + ch + 70]; days = ("Mon", "Tue", "Wed", "Thu", "Fri")
     jobs = ["Leak", "Slates", "Ridge", "Valley", "Flashing", "Gutter", "Leak", "Slates", "Chimney", "Leak"]
 

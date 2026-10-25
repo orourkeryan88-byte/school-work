@@ -475,8 +475,8 @@ def scene_callout(word, sub="you need to watch this.", dur=1.7):
         return im, sh
     return dur, fn, [(0.0, "hit", 1.0), (0.25, "swish", 0.5), (0.35, "whoosh", 0.4)]
 
-def scene_diary(jobs, title="Your next 2 weeks", days=("Mon", "Tue", "Wed", "Thu", "Fri"), done_label="{n} jobs in the diary", dur=4.9):
-    """two-week diary grid (10 cells); job chips pop into days in a scattered order with rings, counter pill turns green when full. jobs = 10 short labels"""
+def scene_diary(jobs, title="Your next 2 weeks", days=("Mon", "Tue", "Wed", "Thu", "Fri"), done_label="{n} jobs in the calendar", dur=4.9):
+    """two-week calendar grid (10 cells); job chips pop into days in a scattered order with rings, counter pill turns green when full. jobs = 10 short labels"""
     cw, ch, gap = 180, 290, 15; x0 = (W - (5 * cw + 4 * gap)) / 2; ys = [640, 640 + ch + 70]
     def cell(day, job):
         def dr(d, s):

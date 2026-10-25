@@ -126,9 +126,9 @@ def header(im, lines, t, y0=300, size=104, t0=0.0, step=0.12):
 # ---------------------------------------------------------------- he's busy / he's quiet
 def scene_linked(dur=4.4, flip=2.1, lag=0.45, A_lines=(("WHEN HE'S BUSY,", False), ("YOU'RE BUSY.", True)),
                  B_lines=(("WHEN HE GOES QUIET…", False), ("SO DO YOU.", True)), step_a=0.12, step_b=0.12):
-    """two diary meters chained together. his drains at flip, yours follows lag later. header swaps from busy to quiet"""
+    """two calendar meters chained together. his drains at flip, yours follows lag later. header swaps from busy to quiet"""
     BW, BH, TOP = 300, 680, 760; XS = (W / 2 - 220, W / 2 + 220)
-    labs = [text("HIS DIARY", "xb", 40, A.TH["muted"]), text("YOUR DIARY", "xb", 40, A.TH["muted"])]
+    labs = [text("HIS CALENDAR", "xb", 40, A.TH["muted"]), text("YOUR CALENDAR", "xb", 40, A.TH["muted"])]
 
     def meter(im, x, level, t):
         d = ImageDraw.Draw(im)
@@ -136,7 +136,7 @@ def scene_linked(dur=4.4, flip=2.1, lag=0.45, A_lines=(("WHEN HE'S BUSY,", False
         col = A.TH["accent"] if level > 0.45 else (RED if level < 0.25 else (255, 170, 40))
         fh = (BH - 40) * level
         if fh > 4: d.rounded_rectangle((x - BW / 2 + 20, TOP + BH - 20 - fh, x + BW / 2 - 20, TOP + BH - 20), 26, fill=col)
-        # day ticks so it reads like a diary
+        # day ticks so it reads like a calendar
         for k in range(1, 5): d.line((x - BW / 2 + 20, TOP + 20 + k * (BH - 40) / 5, x + BW / 2 - 20, TOP + 20 + k * (BH - 40) / 5), fill=(0, 0, 0, 70), width=3)
         word = "FULL" if level > 0.45 else "EMPTY"; st = text(word, "bl", 64, DARK if level > 0.45 else A.TH["ink"])
         put(im, st, x, TOP + BH - 90 if level < 0.45 else TOP + BH - 20 - fh + 60, 1)
