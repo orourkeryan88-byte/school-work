@@ -214,3 +214,41 @@ def scene_versus(dur=4.0, loses_at=1.4, easy_at=2.4):
             if h_ <= t < h_ + 0.16: sh = 12 * (1 - (t - h_) / 0.16)
         return im, sh
     return dur, fn, [(0.0, "whoosh", 0.5), (loses_at, "hit", 0.9), (easy_at, "hit", 1.0), (easy_at + 0.05, "shimmer", 0.7)]
+
+
+# ---------------------------------------------------------------- SHORT AD HOOK: your big job, gone
+def scene_job_gone(word="Roofers,", job=("Full re-roof", "Rathfarnham · 3-bed semi", "€12,400"), dur=2.6, gone_at=0.75, rise_at=1.05,
+                   l1="WENT TO THE LAD", l2="DOWN THE ROAD."):
+    """frame 0: giant 'Roofers,' + a big-ticket job card, both fully on screen mid-slam. The card gets a red GONE. stamp,
+    greys out with its price struck through and yanks sideways, then the sting line rises in. Reads with the sound off."""
+    big = text(word, "bl", fit_size(word, "bl", 250, 940), grad=(A.TH["accent"], A.TH["accent2"], 0))
+    title, sub, val = job; w, h = 940, 330
+    def card(dead):
+        def dr(d, s):
+            d.rounded_rectangle((44 * s, 60 * s, 184 * s, 200 * s), 34 * s, fill=(230, 232, 236) if dead else tuple(int(c * 0.2 + 255 * 0.8) for c in A.TH["accent"]))
+            bx, by, ic = 114 * s, 130 * s, (150, 150, 150) if dead else A.TH["accent"]
+            d.polygon([(bx, by - 46 * s), (bx - 52 * s, by), (bx + 52 * s, by)], fill=ic); d.rectangle((bx - 36 * s, by - 2 * s, bx + 36 * s, by + 44 * s), fill=ic)
+            d.text((220 * s, 64 * s), title, font=A.font("bl", 64 * s), fill=(120, 120, 120) if dead else (17, 17, 16))
+            d.text((222 * s, 150 * s), sub, font=A.font("m", 38 * s), fill=(150, 150, 150) if dead else (100, 96, 90))
+            f = A.font("bl", 92 * s); tw, th, ox, oy = A.tsize(val, f)
+            d.text((222 * s - ox, 212 * s), val, font=f, fill=(150, 150, 150) if dead else GREEN)
+            if dead: d.line((214 * s, 268 * s, (230 + tw / s) * s, 256 * s), fill=RED, width=10 * s)
+        return A.card_sprite(w, h, dr, fill=WHITE, radius=48)
+    GREEN = A.GREEN; live, dead = card(False), card(True)
+    gone = shadowed(stamp("GONE.", RED, 120), blur=10, dy=6, alpha=80, pad=30)
+    s1 = text(l1, "bl", fit_size(l1, "bl", 110, 960)); s2 = text(l2, "bl", fit_size(l2, "bl", 110, 960), A.TH["accent"])
+
+    def fn(t):
+        im = A.bg(); sh = 14 * (1 - t / 0.2) if t < 0.2 else 0
+        put(im, big, W / 2, 330, 1, 1.08 - 0.08 * eo(t / 0.25))
+        underline(im, big, W / 2, 330 + big.height / 2 + 2, 0.4 + (t - 0.05) / 0.3, h=14)
+        g = t >= gone_at; k = (t - gone_at) / 0.35
+        x = W / 2 + (38 * math.sin((t - gone_at) * 55) * (1 - clamp(k)) if g else 0)  # yank on the stamp
+        put(im, dead if g else live, x, 860, 1, (1.06 - 0.06 * eo(t / 0.3)) if not g else 0.97, -3 * eo(k) if g else 0)
+        if g:
+            put(im, gone, W / 2 + 220, 945, clamp(k / 0.15), 2.0 - 1.0 * eo(k), -12)
+            ring(im, W / 2 + 220, 945, k / 1.2, col=RED, maxr=560, width=8, r0=120)
+            if k < 0.5: sh = 16 * (1 - k / 0.5)
+        put_rise(im, s1, W / 2, 1260, eo((t - rise_at) / 0.28)); put_rise(im, s2, W / 2, 1390, eo((t - rise_at - 0.18) / 0.28))
+        return im, sh
+    return dur, fn, [(0.0, "hit", 1.0), (0.02, "coin", 0.5), (gone_at, "hit", 1.0), (gone_at, "glitch", 0.7), (rise_at, "whoosh", 0.4)]
