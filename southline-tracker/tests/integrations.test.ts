@@ -2,7 +2,7 @@
 import assert from "node:assert/strict";
 import { test } from "node:test";
 import { mergeContact, parseGhlPayload } from "@/lib/adapters/ghl";
-import { parseDeliveryReport, sendSms } from "@/lib/adapters/sendmode";
+import { getCredits, parseDeliveryReport, sendSms } from "@/lib/adapters/sendmode";
 import { importRows } from "@/lib/importer";
 import * as repo from "@/lib/repo";
 import { getStore } from "@/lib/store";
@@ -119,4 +119,20 @@ test("SendMode network failure returns an error instead of throwing", async () =
   const res = await sendSms({ to: "+353871234567", text: "x", customerId: "r" }, fake);
   assert.equal(res.ok, false);
   assert.match(res.error!, /ENOTFOUND/);
+});
+
+test("SendMode test connection: a rejected key is reported as a failure, not 'Connected'", async () => {
+  process.env.SENDMODE_ACCESS_KEY = "bad-key";
+  try {
+    const reply = (body: string) => (async () => new Response(body, { status: 200 })) as unknown as typeof fetch;
+    const bad = await getCredits(reply('{"status":"INVALID_ACCESS_KEY","statusCode":14,"error":"[access_key] is not valid"}'));
+    assert.equal(bad.ok, false);
+    assert.match(bad.error ?? "", /isn't valid/);
+    const good = await getCredits(reply('{"credits":"482"}'));
+    assert.deepEqual(good, { ok: true, credits: "482" });
+    const plain = await getCredits(reply("120"));
+    assert.deepEqual(plain, { ok: true, credits: "120" });
+  } finally {
+    delete process.env.SENDMODE_ACCESS_KEY;
+  }
 });
