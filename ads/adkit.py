@@ -642,13 +642,14 @@ class Video:
     def __init__(self): self.scenes = []
     def add(self, dur, fn, events=()): self.scenes.append((dur, fn, list(events))); return self
     def render(self, out, transition="whip", tr_frames=5, bpm=120, music=True, sfx=True, preview_times=None, lufs=-14.0, tp=-1.0,
-               voice=None, voice_at=0.0, duck_db=18.0, pause_db=8.0, sfx_duck_db=6.0, audio_only=False, punch=False):
+               voice=None, voice_at=0.0, duck_db=18.0, pause_db=8.0, sfx_duck_db=6.0, audio_only=False, punch=False, drift=0.0):
         """transition: whip | fade | flash | cut. preview_times=[sec,...] writes a contact sheet <out>_preview.png
         lufs/tp: master loudness with a two-pass ffmpeg loudnorm (None = skip)
         voice: voiceover file, placed at voice_at seconds. Music sits duck_db under the voice while words are spoken
         and pause_db under it in the gaps; SFX dip sfx_duck_db under speech. The voice itself is never limited.
         audio_only: skip the frames and write just the mastered soundtrack to out (fast audio checks)
-        punch: camera punch-in + RGB split on every big 'hit' sound, so slams land on screen as well as in the mix"""
+        punch: camera punch-in + RGB split on every big 'hit' sound, so slams land on screen as well as in the mix
+        drift: slow camera push-in across each scene (e.g. 0.04 = 4%), so no frame ever sits dead still"""
         tmp = tempfile.mkdtemp(); vpath, apath = os.path.join(tmp, "v.mp4"), os.path.join(tmp, "a.wav")
         p = None if audio_only else subprocess.Popen(["ffmpeg", "-y", "-loglevel", "error", "-f", "rawvideo", "-pix_fmt", "rgb24", "-s", f"{W}x{H}", "-r", str(FPS), "-i", "-",
                               "-c:v", "libx264", "-preset", "medium", "-crf", "17", "-pix_fmt", "yuv420p", "-vf", "setsar=1", vpath], stdin=subprocess.PIPE)
@@ -658,6 +659,7 @@ class Video:
             hits = sorted(a for a, k, g in ev if k == "hit" and g >= 0.75) if punch else []
             for i in range(0 if audio_only else n):
                 im, sh = fn(i / FPS); im = im.convert("RGB")
+                if drift: im = zoom(im, 1 + drift * eio(i / max(1, n - 1)))
                 if sh: im = im.transform(im.size, Image.AFFINE, (1, 0, -sh * math.sin(i * 2.7), 0, 1, -sh * math.cos(i * 3.1)), fillcolor=TH["bg"][0])
                 if hits: im = impact(im, min((i / FPS - h for h in hits if i / FPS >= h), default=9))
                 last, first = si < len(self.scenes) - 1 and i >= n - tr_frames, si > 0 and i < tr_frames

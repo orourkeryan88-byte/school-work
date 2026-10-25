@@ -28,11 +28,15 @@ def big_lines(s, style, maxw=900, start=300, max_h=980):
     return [text(l, "bl", size, col, grad) for l in lines], size
 
 
-def draw_lines(im, sps, cy, gap=0.98, scale=1.0):
-    """centre a stack of line sprites on cy"""
+def draw_lines(im, sps, cy, gap=0.98, scale=1.0, k=None, stagger=0.0):
+    """centre a stack of line sprites on cy. k (seconds into the cut) + stagger pop the lines in one after another"""
     h = sum(sp.height * gap for sp in sps); y = cy - h / 2
-    for sp in sps:
-        put(im, sp, W / 2, y + sp.height * gap / 2, 1, scale); y += sp.height * gap
+    for j, sp in enumerate(sps):
+        if k is None or not stagger: put(im, sp, W / 2, y + sp.height * gap / 2, 1, scale)
+        else:
+            q = (k - j * stagger) / 0.14
+            if q > 0: put(im, sp, W / 2, y + sp.height * gap / 2, clamp(q * 3), 1.25 - 0.25 * eo(q))
+        y += sp.height * gap
 
 
 # ---------------------------------------------------------------- opener
@@ -88,7 +92,7 @@ def scene_one_builder(word="Plumbers,", l1="IF ONE BUILDER GIVES YOU", l2="MOST 
 
 
 # ---------------------------------------------------------------- fast-cut slams
-def scene_slam(parts, dur=2.4, lock_last=False, last_share=1.7, cuts=None):
+def scene_slam(parts, dur=2.4, lock_last=False, last_share=1.7, cuts=None, stagger=0.0):
     """giant fast-cut type. parts=[(text with | breaks, style d|y|dh)]. each part is a hard cut with a slam + hit.
     lock_last: the final card holds, then an underline locks it in with a click. cuts: explicit cut times (e.g. on the words)"""
     cards = [big_lines(s, st) for s, st in parts]
@@ -101,7 +105,7 @@ def scene_slam(parts, dur=2.4, lock_last=False, last_share=1.7, cuts=None):
         i = max(k for k, c in enumerate(cuts) if t >= c); k = t - cuts[i]
         im = volt_bg() if parts[i][1] == "dh" else A.bg()
         sps, size = cards[i]
-        draw_lines(im, sps, H / 2 - 40, scale=1.12 - 0.12 * eo(k / 0.14))
+        draw_lines(im, sps, H / 2 - 40, scale=1.12 - 0.12 * eo(k / 0.14), k=k, stagger=stagger)
         if lock_last and i == len(parts) - 1:
             ref = max(sps, key=lambda s: s.width); h = sum(s.height * 0.98 for s in sps)
             underline(im, ref, W / 2, H / 2 - 40 + h / 2 + 10, (k - 0.3) / 0.25, DARK if parts[i][1] == "dh" else A.TH["accent"], h=18)
