@@ -1,11 +1,11 @@
-import { LockKeyhole, ShieldAlert } from "lucide-react";
+import { CircleAlert, LockKeyhole, ShieldAlert } from "lucide-react";
 import type { Metadata } from "next";
 import { KeyRow } from "@/components/key-row";
 import { PageHeader } from "@/components/page-header";
 import { TestConnection } from "@/components/test-connection";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { authMode } from "@/lib/auth";
-import { keyStatuses } from "@/lib/secrets";
+import { keyStatuses, keysReadError } from "@/lib/secrets";
 import { isSupabaseConfigured } from "@/lib/store";
 
 export const metadata: Metadata = { title: "API keys" };
@@ -15,11 +15,20 @@ export default async function KeysPage() {
   const keys = await keyStatuses();
   const groups = [...new Set(keys.map((k) => k.group))];
   const loginOff = authMode() === "off";
+  const readError = keysReadError();
+  // Which build is live (Vercel sets this), so "is the fix deployed?" has a clear answer.
+  const version = (process.env.VERCEL_GIT_COMMIT_SHA ?? "").slice(0, 7) || "local";
 
   return (
     <>
       <PageHeader title="API keys" description="Connect SendMode, GoHighLevel and Claude by pasting your keys. They're saved encrypted and only the last 4 characters are ever shown." />
 
+      {readError && (
+        <div role="alert" className="mb-4 flex gap-3 rounded-2xl border border-destructive/30 bg-destructive/10 p-4 text-sm text-destructive">
+          <CircleAlert className="mt-0.5 size-4 shrink-0" />
+          <p>Saved keys couldn&apos;t be read from the database: {readError}</p>
+        </div>
+      )}
       {loginOff && (
         <div className="mb-4 flex gap-3 rounded-2xl border border-amber-500/30 bg-amber-500/10 p-4 text-sm text-amber-900 dark:text-amber-100">
           <ShieldAlert className="mt-0.5 size-4 shrink-0" />
@@ -49,6 +58,7 @@ export default async function KeysPage() {
       <p className="mt-6 max-w-2xl text-xs text-muted-foreground">
         Your database keys (Supabase) and AUTH_SECRET can&apos;t live here, because the app needs them to open the database in the first place. Those go in your host&apos;s settings. Anything set there always takes priority over this page.
       </p>
+      <p className="mt-2 text-xs text-muted-foreground">App version {version}</p>
     </>
   );
 }
