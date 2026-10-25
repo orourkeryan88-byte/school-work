@@ -24,6 +24,10 @@ THEMES = {
                      ink=(255, 255, 255), muted=(255, 225, 215), accent=(255, 255, 255), accent2=(255, 220, 120), card=(255, 255, 255), card_ink=(30, 20, 30), grid=False, light=False),
     "clean":    dict(bg=((255, 255, 255), (244, 245, 248)), blobs=[(540, 700, 700, (120, 140, 255), 0.06)], ink=(12, 14, 20), muted=(110, 115, 130),
                      accent=(37, 99, 235), accent2=(124, 58, 237), card=(255, 255, 255), card_ink=(12, 14, 20), grid=True, light=True),
+    "mint":     dict(bg=((10, 30, 34), (4, 12, 16)), blobs=[(540, 820, 640, (40, 220, 190), 0.16), (180, 300, 420, (90, 170, 255), 0.12)], ink=(240, 252, 250), muted=(140, 170, 172),
+                     accent=(40, 220, 190), accent2=(150, 240, 255), card=(16, 40, 46), card_ink=(240, 252, 250), grid=True, light=False),
+    "plum":     dict(bg=((40, 18, 36), (10, 5, 12)), blobs=[(540, 800, 640, (236, 200, 140), 0.12), (900, 1500, 460, (240, 150, 170), 0.14)], ink=(252, 246, 240), muted=(190, 164, 176),
+                     accent=(236, 200, 140), accent2=(246, 170, 180), card=(48, 24, 44), card_ink=(252, 246, 240), grid=False, light=False),
     "hazard":   dict(bg=((22, 20, 19), (6, 6, 6)), blobs=[(540, 860, 620, (255, 84, 20), 0.20), (950, 260, 380, (255, 150, 40), 0.12)], ink=(250, 248, 245), muted=(168, 160, 152),
                      accent=(255, 84, 20), accent2=(255, 168, 40), card=(32, 28, 26), card_ink=(250, 248, 245), grid=False, light=False),
     "navy":     dict(bg=((18, 30, 56), (5, 9, 20)), blobs=[(540, 760, 640, (240, 186, 88), 0.10), (180, 1500, 460, (60, 110, 190), 0.18)], ink=(246, 244, 238), muted=(150, 160, 180),
@@ -32,6 +36,11 @@ THEMES = {
                      accent=(212, 255, 0), accent2=(255, 226, 0), card=(26, 28, 22), card_ink=(245, 247, 240), grid=True, light=False),
 }
 GREEN = (34, 170, 92); WHITE = (255, 255, 255); BLACK = (0, 0, 0)
+LOGO_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), "brand", "southline_logo_badge.png")
+
+def logo():
+    """the Southline SA badge (cut from the brand graphic) as RGBA, for the CTA. Rule: no logo before the CTA."""
+    return Image.open(LOGO_PATH).convert("RGBA")
 TH = dict(THEMES["cream"]); _BG = None
 
 def set_theme(name, **override):
@@ -757,14 +766,14 @@ def loudness(path, lufs=-14.0, tp=-1.0, extra=""):
     return json.loads(r.stderr[r.stderr.rindex("{"):])
 
 def master(wav, lufs=-14.0, tp=-1.0, bed_limit=0.35, peak_catch=False):
-    """two-pass loudnorm to lufs / tp (aims 0.2 dB under tp; check the encoded file). returns the new wav path.
+    """two-pass loudnorm to lufs / tp (aims 1 dB under tp so the AAC encode stays under it). returns the new wav path.
     bed_limit: first tame the synthesized SFX/beat transients (fast alimiter, linear ceiling) so loudnorm can stay
     linear. Only for beds with no voice in them; pass None to skip.
     peak_catch: for voice mixes. Gain to lufs, then a 1ms-attack catch on just the peaks over the ceiling (a dB or two on
     well under 1% of samples) instead of loudnorm's dynamic mode, which would ride the whole voice."""
     if bed_limit:
         pre = os.path.splitext(wav)[0] + "_pre.wav"
-        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-af", f"alimiter=limit={bed_limit}:attack=2:release=60:level=false", "-ar", "48000", pre], check=True); wav = pre
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-af", f"lowpass=f=14000:p=2,alimiter=limit={bed_limit}:attack=2:release=60:level=false", "-ar", "48000", pre], check=True); wav = pre  # the 14k roll-off tames inter-sample peaks from synthesized clicks
     if peak_catch:  # plain gain to the target, then a fast catch on only the peaks above the ceiling (no compression)
         m = loudness(wav, lufs, tp); out = os.path.splitext(wav)[0] + "_master.wav"; ceil = 10 ** ((tp - 0.6) / 20)
         gain = lufs - float(m["input_i"])
@@ -775,8 +784,8 @@ def master(wav, lufs=-14.0, tp=-1.0, bed_limit=0.35, peak_catch=False):
             if abs(got - lufs) < 0.15: break
             gain += lufs - got
         master.info = dict(gain_db=round(gain, 2), catch_db=round(gain - (lufs - float(m["input_i"])), 2)); return out
-    m = loudness(wav, lufs, tp - 0.2); out = os.path.splitext(wav)[0] + "_master.wav"
-    af = (f"loudnorm=I={lufs}:TP={tp - 0.2}:LRA=11:measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}"
+    m = loudness(wav, lufs, tp - 1.0); out = os.path.splitext(wav)[0] + "_master.wav"
+    af = (f"loudnorm=I={lufs}:TP={tp - 1.0}:LRA=11:measured_I={m['input_i']}:measured_TP={m['input_tp']}:measured_LRA={m['input_lra']}"
           f":measured_thresh={m['input_thresh']}:offset={m['target_offset']}:linear=true")
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", wav, "-af", af, "-ar", "48000", out], check=True); return out
 
