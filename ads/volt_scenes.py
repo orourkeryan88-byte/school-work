@@ -227,13 +227,14 @@ def scene_invoice(dur=4.4, amount="€3,600", keys=((0.7, 0), (2.6, 67)), sub_tx
 
 
 # ---------------------------------------------------------------- own homeowners
-def notif_v(title, body, age):
-    """lock-screen enquiry notification with a water-drop tile (no brand logo before the CTA)"""
+def notif_v(title, body, age, icon="drop"):
+    """lock-screen enquiry notification with a water-drop or house tile (no brand logo before the CTA)"""
     w = 820
     def dr(d, s):
         d.rounded_rectangle((30 * s, 36 * s, 114 * s, 120 * s), 22 * s, fill=A.TH["accent"])
         bx, by = 72 * s, 80 * s
-        d.polygon([(bx, by - 30 * s), (bx - 20 * s, by + 2 * s), (bx + 20 * s, by + 2 * s)], fill=DARK); d.ellipse((bx - 20 * s, by - 16 * s, bx + 20 * s, by + 24 * s), fill=DARK)
+        if icon == "house": d.polygon([(bx, by - 30 * s), (bx - 28 * s, by - 4 * s), (bx + 28 * s, by - 4 * s)], fill=DARK); d.rectangle((bx - 20 * s, by - 6 * s, bx + 20 * s, by + 24 * s), fill=DARK)
+        else: d.polygon([(bx, by - 30 * s), (bx - 20 * s, by + 2 * s), (bx + 20 * s, by + 2 * s)], fill=DARK); d.ellipse((bx - 20 * s, by - 16 * s, bx + 20 * s, by + 24 * s), fill=DARK)
         d.text((140 * s, 34 * s), "NEW ENQUIRY", font=A.font("sb", 24 * s), fill=(120, 116, 108))
         d.text(((w - 40) * s - A.tsize(age, A.font("m", 24 * s))[0], 34 * s), age, font=A.font("m", 24 * s), fill=(120, 116, 108))
         d.text((140 * s, 72 * s), title, font=A.font("b", 38 * s), fill=(17, 17, 16))
@@ -243,15 +244,16 @@ def notif_v(title, body, age):
 
 
 def scene_own_leads(leads, dur=5.6, interval=0.5, k=0.74, top=640, crop=1610, lt=None, tag_at=0.3, price_at=None,
-                    price_txt="AT YOUR PRICE.", lines=(("YOUR OWN", False), ("HOMEOWNERS.", True))):
+                    price_txt="AT YOUR PRICE.", lines=(("YOUR OWN", False), ("HOMEOWNERS.", True)),
+                    tag="BOILER SWAPS · BATHROOM REFITS", icon="drop"):
     """header + phone rising from the bottom (cropped with a fade), enquiries drop and stack, 'AT YOUR PRICE.' pops at the end"""
     ph0 = A.phone(date="Monday 26 October", wall=((34, 36, 24), (8, 8, 6), A.TH["accent"]))
     ages = ["now", "4m", "22m", "1h", "3h", "5h"]; cache = {}
     def N(i, r):
-        if (i, r) not in cache: cache[(i, r)] = notif_v(*leads[i], ages[min(r, len(ages) - 1)])
+        if (i, r) not in cache: cache[(i, r)] = notif_v(*leads[i], ages[min(r, len(ages) - 1)], icon)
         return cache[(i, r)]
     LT = list(lt) if lt else [0.65 + i * interval for i in range(len(leads))]; END = price_at if price_at is not None else LT[-1] + 0.55
-    tagp = pill("BOILER SWAPS · BATHROOM REFITS", 34, (44, 46, 38), A.TH["accent"], w="b")
+    tagp = pill(tag, 34, tuple(int(c * 0.25) for c in A.TH["accent"]), A.TH["accent"], w="b")
     price = shadowed(pill(price_txt, 62, A.TH["accent"], w="bl"), blur=24, dy=14, alpha=120, pad=40)
     mask = Image.new("L", (W, H), 255); md = ImageDraw.Draw(mask)
     for y in range(crop - 160, H): md.line((0, y, W, y), fill=int(255 * clamp((crop - y) / 160)))
@@ -292,7 +294,7 @@ def warn_card(title, sub):
     return A.card_sprite(940, 210, dr, outline=(60, 62, 52))
 
 
-def scene_relying(items, drops, dur=4.0, title=("IF YOU'RE", "RELYING ON…")):
+def scene_relying(items, drops, dur=4.0, title=("IF YOU'RE", "RELYING ON…"), count_lbl="{n} THING{s} YOU CAN'T CONTROL"):
     """giant 'IF YOU'RE RELYING ON…' header, then each crutch drops onto a card stack on its word. items=[(title, sub)], drops=[t]"""
     cards = [warn_card(*it) for it in items]
     big = [text(title[0], "bl", fit_size(title[0], "bl", 150, 900)), text(title[1], "bl", fit_size(title[1], "bl", 150, 900), A.TH["accent"])]
@@ -302,6 +304,6 @@ def scene_relying(items, drops, dur=4.0, title=("IF YOU'RE", "RELYING ON…")):
         for j, sp in enumerate(big): put_rise(im, sp, W / 2, 400 + j * 160, eo((t - j * 0.1) / 0.25))
         sh = A.draw_stack(im, cards, drops, t, 1150, step=78, from_y=1300, rot=5)
         n = sum(1 for d in drops if t >= d)
-        if n: put(im, pill(f"{n} THING{'S' if n > 1 else ''} YOU CAN'T CONTROL", 34, RED, WHITE), W / 2, 1450, 1, 1 + 0.15 * (1 - eo((t - drops[n - 1] - 0.3) / 0.25)))
+        if n and count_lbl: put(im, pill(count_lbl.replace("{n}", str(n)).replace("{s}", "S" if n > 1 else ""), 34, RED, WHITE), W / 2, 1450, 1, 1 + 0.15 * (1 - eo((t - drops[n - 1] - 0.3) / 0.25)))
         return im, sh
     return dur, fn, [(0.0, "hit", 0.9)] + sum([[(d, "swish", 0.4), (d + 0.3, "hit", 0.8)] for d in drops], [])

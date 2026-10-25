@@ -24,6 +24,8 @@ THEMES = {
                      ink=(255, 255, 255), muted=(255, 225, 215), accent=(255, 255, 255), accent2=(255, 220, 120), card=(255, 255, 255), card_ink=(30, 20, 30), grid=False, light=False),
     "clean":    dict(bg=((255, 255, 255), (244, 245, 248)), blobs=[(540, 700, 700, (120, 140, 255), 0.06)], ink=(12, 14, 20), muted=(110, 115, 130),
                      accent=(37, 99, 235), accent2=(124, 58, 237), card=(255, 255, 255), card_ink=(12, 14, 20), grid=True, light=True),
+    "navy":     dict(bg=((18, 30, 56), (5, 9, 20)), blobs=[(540, 760, 640, (240, 186, 88), 0.10), (180, 1500, 460, (60, 110, 190), 0.18)], ink=(246, 244, 238), muted=(150, 160, 180),
+                     accent=(240, 186, 88), accent2=(255, 222, 150), card=(22, 34, 60), card_ink=(246, 244, 238), grid=True, light=False),
     "volt":     dict(bg=((16, 17, 12), (5, 5, 4)), blobs=[(540, 760, 640, (212, 255, 0), 0.10), (900, 1500, 420, (255, 226, 0), 0.06)], ink=(245, 247, 240), muted=(160, 165, 150),
                      accent=(212, 255, 0), accent2=(255, 226, 0), card=(26, 28, 22), card_ink=(245, 247, 240), grid=True, light=False),
 }
@@ -425,9 +427,10 @@ def scene_cta_button(l1, l2, label, brand, brand_sub, dur=3.6, t_tap=1.9):
         return im, 0
     return dur, fn, [(0.0, "whoosh", 0.6), (0.55, "pop", 0.8), (t_tap, "click", 1.0), (t_tap + 0.02, "ping", 0.5)]
 
-def scene_cta_comment(l1, l2, keyword, brand, brand_sub, after="to get started.", toast_msg="We'll DM you the details", dur=3.8, comment_at=0.4):
+def scene_cta_comment(l1, l2, keyword, brand, brand_sub, after="to get started.", toast_msg="We'll DM you the details", dur=3.8, comment_at=0.4, logo=None):
     """'Comment KEYWORD to get started': keyword pill, comment box types it, Post tapped, toast. comment_at: when 'Comment' lands"""
     sh_ = comment_at - 0.4  # shifts the comment part so it lands on the word
+    lg = logo.resize((120, 120), Image.LANCZOS) if logo is not None else None  # logo: RGBA badge, shown beside the brand
     kp = shadowed(pill(keyword, 64, TH["accent"], w="bl"), blur=22, dy=14, alpha=60, pad=40); cw = text("Comment", "xb", 92)
     s1, s2, s3 = text(l1, "xb", fit_size(l1, "xb", 84)), text(l2, "xb", fit_size(l2, "xb", 84), TH["accent"]), text(after, "xb", 92)
     TY = 1.15 + sh_; CH = 0.1; PT = TY + len(keyword) * CH + 0.35; ts = toast(toast_msg); cb = {}
@@ -449,7 +452,12 @@ def scene_cta_comment(l1, l2, keyword, brand, brand_sub, after="to get started."
         tp = (t - PT - 0.12) / 0.4
         if tp > 0: put(im, ts, W / 2, 1330 + 40 * (1 - eo(tp)), clamp(tp / 0.4), 0.9 + 0.1 * spring(tp))
         tap(im, 915, 1160, t, PT, t_in=0.5, from_dx=120, from_dy=330)
-        c = eo((t - 1.0) / 0.4); put(im, text(brand, "bl", 64), W / 2, 1560 + 20 * (1 - c), c); put(im, text(brand_sub, "m", 38, TH["muted"]), W / 2, 1630 + 20 * (1 - c), c)
+        c = eo((t - 1.0) / 0.4)
+        if lg is not None:  # [badge] BRAND / sub, as one centred row
+            bt, st = text(brand, "bl", 60), text(brand_sub, "m", 34, TH["muted"]); rw = 120 + 28 + max(bt.width, st.width); x0 = W / 2 - rw / 2
+            put(im, lg, x0 + 60, 1575 + 20 * (1 - c), c, 0.8 + 0.2 * back((t - 1.0) / 0.5))
+            put(im, bt, x0 + 148 + bt.width / 2, 1548 + 20 * (1 - c), c); put(im, st, x0 + 148 + st.width / 2, 1612 + 20 * (1 - c), c)
+        else: put(im, text(brand, "bl", 64), W / 2, 1560 + 20 * (1 - c), c); put(im, text(brand_sub, "m", 38, TH["muted"]), W / 2, 1630 + 20 * (1 - c), c)
         return im, 0
     return dur, fn, [(0.0, "whoosh", 0.6), (comment_at, "pop", 0.8)] + [(TY + i * CH, "tick", 0.5) for i in range(len(keyword))] + [(PT, "click", 1.0), (PT + 0.15, "ping", 0.6)]
 
