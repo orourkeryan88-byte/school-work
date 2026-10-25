@@ -387,17 +387,17 @@ def scene_stack_total(jobs, header="{n} jobs from Meta ad leads", done_line="ext
     ev = [(0.0, "whoosh", 0.6)] + sum([[(d, "swish", 0.4), (d + 0.3, "hit", 0.5), (d + 0.32, "coin", 0.6)] for d in DR], []) + [(DR[-1] + 0.45, "shimmer", 0.8)]
     return dur, fn, ev
 
-def scene_steps(steps, title="How it works", mode="stack", dur=2.8):
+def scene_steps(steps, title="How it works", mode="stack", dur=2.8, drops=None):
     """steps=[(title, sub)]; mode 'stack' (deck) or 'slide' (cards slide in with a connector line drawing)"""
     sps = [step_card(i + 1, a, b, i == len(steps) - 1) for i, (a, b) in enumerate(steps)]
-    DR = [0.35 + i * 0.6 for i in range(len(steps))] if mode == "stack" else [0.35 + i * 0.45 for i in range(len(steps))]
+    DR = list(drops) if drops else ([0.35 + i * 0.6 for i in range(len(steps))] if mode == "stack" else [0.35 + i * 0.45 for i in range(len(steps))])
     tsp = text(title, "xb", 84)
     def fn(t):
         im = bg(); sh = 0
         if mode == "stack":
             put_rise(im, tsp, W / 2, 520, eo(t / 0.35)); sh = draw_stack(im, sps, DR, t, 1120, step=70, from_y=1400, rot=6)
         else:
-            put_rise(im, tsp, W / 2, 430, eo(t / 0.35)); lp = eio((t - 0.45) / 1.2)
+            put_rise(im, tsp, W / 2, 430, eo(t / 0.35)); lp = eio((t - DR[0]) / max(0.5, DR[-1] - DR[0]))  # connector grows with the cards
             if lp > 0: ImageDraw.Draw(im).line((W / 2 - 336, 700, W / 2 - 336, 700 + 270 * (len(steps) - 1) * lp), fill=TH["muted"], width=6)
             for i, sp in enumerate(sps):
                 k = (t - DR[i]) / 0.5
@@ -511,7 +511,7 @@ def scene_diary(jobs, title="Your next 2 weeks", days=("Mon", "Tue", "Wed", "Thu
 _yy, _xx = np.mgrid[0:H, 0:W]
 _DOTS = (((_xx % 11) - 5.5) ** 2 + ((_yy % 11) - 5.5) ** 2 <= (11 * 0.42) ** 2).astype(np.float32)
 _SCAN = (0.85 + 0.15 * (np.sin(_yy * 0.9) > 0)).astype(np.float32)
-def scene_dot_matrix(lines, dur=1.4, color=None, sub=None, size=None):
+def scene_dot_matrix(lines, dur=1.4, color=None, sub=None, size=None, sub_at=0.25):
     """screen-push-digital: LED dot-matrix text, push-in scale, flicker, glow, chromatic fringe"""
     color = color or (235, 232, 225); m = Image.new("L", (W, H), 0); d = ImageDraw.Draw(m)
     size = size or min(fit_size(l, "bl", 230) for l in lines); f = font("bl", size); y = H // 2 - len(lines) * size // 2 - 40
@@ -525,9 +525,9 @@ def scene_dot_matrix(lines, dur=1.4, color=None, sub=None, size=None):
         out = np.zeros((H, W, 3), np.float32) + 12 + glow0[..., None] * col * 0.18 + a[..., None] * col * 0.95
         out[..., 0] += np.roll(a, 3, axis=1) * 40; out[..., 2] += np.roll(a, -3, axis=1) * 40
         im = Image.fromarray(np.clip(out, 0, 255).astype(np.uint8)).convert("RGBA")
-        if sub: put_rise(im, text(sub, "sb", 46, TH["accent"]), W / 2, 1340, eo((t - 0.25) / 0.3))
+        if sub: put_rise(im, text(sub, "xb", fit_size(sub, "xb", 64, 960), TH["accent"]), W / 2, 1340, eo((t - sub_at) / 0.3))
         return im, 0
-    return dur, fn, [(0.0, "glitch", 0.7)]
+    return dur, fn, [(0.0, "glitch", 0.7)] + ([(sub_at, "whoosh", 0.4)] if sub else [])
 
 def scene_match_cut(word, para, sub=None, dur=2.8):
     """match-cut: blurred paragraph drifting/zooming, highlighted pill word pops in centre"""
@@ -549,7 +549,7 @@ def scene_match_cut(word, para, sub=None, dur=2.8):
         return im, 0
     return dur, fn, [(0.15, "pop", 0.9), (0.7, "swish", 0.4)]
 
-def scene_float_cards(title, cards, dur=3.6):
+def scene_float_cards(title, cards, dur=3.6, times=None):
     """floating tilted stat cards bobbing. cards=[(label, big, small, accent_bool)]"""
     sps = []
     for lab, big, small, acc in cards:
@@ -562,11 +562,11 @@ def scene_float_cards(title, cards, dur=3.6):
     def fn(t):
         im = dark_bg() if TH["light"] else bg(); put_rise(im, tsp, W / 2, 300, eo(t / 0.4))
         for i, (sp, (x, y, ang)) in enumerate(zip(sps, pos)):
-            k = t - 0.35 - i * 0.55
+            k = t - (times[i] if times else 0.35 + i * 0.55)
             if k <= 0: continue
             p = back(k / 0.5); put(im, sp, x + (1 - p) * (200 if i % 2 else -200), y + math.sin((t + i) * 2.2) * 8, clamp(k / 0.25), 0.7 + 0.3 * p, ang * (1 + (1 - p) * 3))
         return im, 0
-    return dur, fn, [(0.35 + i * 0.55, "pop", 0.7) for i in range(len(cards))]
+    return dur, fn, [((times[i] if times else 0.35 + i * 0.55), "pop", 0.7) for i in range(len(cards))]
 
 def scene_glass_graph(label, points, big_suffix="", badge="GUARANTEED", dur=3.4):
     """liquid-glass panel over gradient blobs, line chart draws on with glow + area fill, counter, badge pop. points=[(x 0..30, y)]"""

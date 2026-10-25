@@ -1,16 +1,16 @@
-"""Southline roofers ad: 'storm season' angle, navy + gold theme, SA logo on the CTA, timed to the Seán voiceover.
-python3 build_roofers.py [--stills | --audio]
+"""Southline roofers ad: 'the maths' angle (one re-roof vs forty patch jobs), navy + gold theme, SA logo on the CTA,
+timed to the Seán voiceover.  python3 build_roofers.py [--stills | --audio]
 Every scene starts on its line and every beat inside a scene lands on its word, using the word timings
-in vo_words_roofers_take1.json (ElevenLabs speech-to-text of voice_roofers_take1.mp3)."""
+in vo_words_roofers_maths.json (ElevenLabs speech-to-text of voice_roofers_maths_take1.mp3)."""
 import json, sys
 from PIL import Image
 import adkit as A
 import volt_scenes as V
-import roofer_scenes as R
+import maths_scenes as M
 
 A.set_theme("navy")
-VOICE = "voice_roofers_take1.mp3"
-WORDS = [w for w in json.load(open("vo_words_roofers_take1.json"))["words"] if w.get("type", "word") == "word"]
+VOICE = "voice_roofers_maths_take1.mp3"
+WORDS = [w for w in json.load(open("vo_words_roofers_maths.json"))["words"] if w.get("type", "word") == "word"]
 LOGO = Image.open("brand/southline_logo_badge.png").convert("RGBA")
 PRE = 0.08  # visuals land a hair before the word so the whip-in has cleared
 
@@ -25,55 +25,47 @@ def at(phrase, after=0.0):
 
 
 # scene starts: each on the first word of its line
-S = [0.0, at("if you're up a ladder") - PRE, at("and the big jobs") - PRE, at("this is for you") - PRE, at("storm hits") - PRE,
-     at("and here's the part") - PRE, at("the homeowner who") - PRE, at("his work isn't") - PRE, at("so what if") - PRE,
-     at("that's exactly") - PRE, at("fourteen days") - PRE, at("we're only taking") - PRE]
+S = [0.0, at("here's the maths") - PRE, at("a slipped slate") - PRE, at("you'd need") - PRE, at("so why are you") - PRE,
+     at("the big jobs don't") - PRE, at("so here's what we do") - PRE, at("name number") - PRE, at("try it for") - PRE,
+     at("we're only taking") - PRE]
 END = WORDS[-1]["end"] + 0.8
 S = [round(x * A.FPS) / A.FPS for x in S] + [round(END * A.FPS) / A.FPS]
 D = [b - a for a, b in zip(S, S[1:])]
 r = lambda i, phrase: at(phrase, S[i] - 0.01) - S[i]  # beat time inside scene i
 
-LEADS = [("Full re-roof", "Rathfarnham · 1960s semi"), ("Flat roof", "Clontarf · kitchen extension"),
-         ("Fascias + soffits", "Lucan · 4-bed detached"), ("Full re-roof", "Malahide · bungalow"),
-         ("Flat roof", "Drumcondra · garage conversion")]
-
 SCENES = [
-    # 0 Roofers. If your phone only rings after a storm…
-    R.scene_storm_calls(dur=D[0], flash_at=r(0, "after a storm") - 0.05, rise_at=r(0, "if your phone") - 0.05),
-    # 1 if you're up a ladder in the rain, fixing slipped slates for a hundred and fifty euro…  (illustrative small jobs)
-    R.scene_patch_jobs([("Slipped slates", "Crumlin · front pitch", 150), ("Leaking flashing", "Walkinstown · chimney", 180),
-                        ("Blocked gutter", "Tallaght · semi-d", 90)],
-                       [r(1, "slipped slates") - 0.3, r(1, "€150") + 0.2, r(1, "€150") + 0.7], dur=D[1]),
-    # 2 and the BIG jobs — full re-roofs, flat roofs, fascias and soffits — are going to someone else…
-    R.scene_big_jobs_gone([("Full re-roof", "The whole roof, start to finish"), ("Flat roof", "Extensions, garages, dormers"),
-                           ("Fascias + soffits", "The full front of the house")],
-                          [r(2, "full re-roofs") - 0.1, r(2, "flat roofs") - 0.1, r(2, "fascias and soffits") - 0.1],
-                          gone_at=r(2, "going to someone") - 0.05, dur=D[2]),
-    # 3 this is for you.
-    V.scene_slam([("THIS IS|FOR YOU.", "dh")], dur=D[3], lock_last=True),
-    # 4 Storm hits? You're flat out for a week. Then the weather clears… and so does your diary.
-    R.scene_storm_diary(dur=D[4], clear_at=r(4, "then the weather") - 0.05, drain_at=r(4, "so does your diary") - 0.05,
-                        step_a=r(4, "you're flat out") - 0.05, step_b=r(4, "and so does") - r(4, "then the weather")),
-    # 5 And here's the part that stings.
-    V.scene_slam([("AND HERE'S|THE PART", "d"), ("THAT|STINGS.", "dh")], dur=D[5], cuts=[0.0, r(5, "that stings")]),
-    # 6 The homeowner who needed a whole new roof? They never rang you. They saw the other lad's ad on Facebook.
-    R.scene_feed_steal(dur=D[6], never_at=r(6, "they never rang") - 0.05, tap_at=r(6, "ad on facebook")),
-    # 7 His work isn't better. He's just SEEN.
-    V.scene_slam([("HIS WORK|ISN'T BETTER.", "d"), ("HE'S JUST|SEEN.", "dh")], dur=D[7], lock_last=True, cuts=[0.0, r(7, "he's just")]),
-    # 8 So what if every week, homeowners were ringing YOU… for the big jobs? Re-roofs. Flat roofs. Fascias and soffits. Booked in, rain or shine.
-    V.scene_own_leads(LEADS, dur=D[8], lines=(("HOMEOWNERS", False), ("RINGING YOU.", True)), icon="house",
-                      tag="RE-ROOFS · FLAT ROOFS · FASCIAS", tag_at=r(8, "re-roofs") - 0.05,
-                      lt=[r(8, "homeowners were"), r(8, "ringing you") + 0.2, r(8, "re-roofs"), r(8, "flat roofs"), r(8, "fascias and soffits")],
-                      price_at=r(8, "rain or shine") - 0.05, price_txt="RAIN OR SHINE."),
-    # 9 That's exactly what we set up for you.
-    V.scene_slam([("THAT'S EXACTLY|WHAT WE", "d"), ("SET UP|FOR YOU.", "y")], dur=D[9], cuts=[0.0, r(9, "set up")]),
-    # 10 Fourteen days. No fee. Just €300 ad spend. See the leads yourself.
-    A.scene_offer("14-DAY TEST DRIVE", "€0 fee", "Just €300 ad spend.", "See the leads yourself.",
-                  ["Homeowners ringing you direct", "Re-roofs, flat roofs, fascias"], dur=D[10]),
-    # 11 We're only taking on two roofers this month. Comment "leads" and we'll send you the details.  (logo appears here only)
+    # 0 Roofers… one full re-roof can be worth more than FORTY patch jobs.
+    M.scene_scale(dur=D[0], rise_at=r(0, "one full") - 0.05, tip_at=r(0, "40 patch") - 0.05),
+    # 1 Here's the maths.
+    V.scene_slam([("HERE'S THE|MATHS.", "dh")], dur=D[1], lock_last=True),
+    # 2 A slipped slate? €150. A leak in the valley? Maybe €250.  (typical small-job prices, illustrative)
+    M.scene_prices([("A SLIPPED SLATE?", "€150"), ("A LEAK IN THE VALLEY?", "€250")], [0.0, r(2, "a leak")],
+                   sticker_times=[r(2, "€150") - 0.05, r(2, "€250") - 0.05], dur=D[2]),
+    # 3 You'd need forty of them… forty ladders, forty call-outs, forty times up in the rain… just to match ONE re-roof on a three-bed semi.
+    M.scene_forty(dur=D[3], fill_from=r(3, "40 of them"), fill_to=r(3, "up in the rain") + 0.3, match_at=r(3, "just to match") - 0.05),
+    # 4 So why are you spending your week on the small stuff? Because that's what rings.
+    A.scene_dot_matrix(["WHY THE", "SMALL", "STUFF?"], dur=D[4], color=A.TH["accent"], sub="Because that's what rings.",
+                       sub_at=r(4, "because that's") - 0.05),
+    # 5 The big jobs don't come from luck. They come from being in front of the RIGHT homeowners… the ones already planning a new roof.
+    M.scene_targeting(dur=D[5], right_at=r(5, "the right homeowners") - 0.05, planning_at=r(5, "already planning")),
+    # 6 So here's what we do. We run Facebook and Instagram ads that go after re-roofs, flat roofs and fascias. Nothing else.
+    #   The homeowner fills in their details… and it lands on your phone.
+    A.scene_steps([("We run your ads", "Facebook + Instagram, big jobs only"), ("They fill in a form", "Homeowners planning the work"),
+                   ("It lands on your phone", "Straight to you, no middleman")],
+                  title="Here's what we do", mode="slide", dur=D[6],
+                  drops=[r(6, "we run facebook") - 0.1, r(6, "the homeowner fills") - 0.1, r(6, "it lands on") - 0.1]),
+    # 7 Name, number, the job. You ring them back.  (example lead)
+    M.scene_lead_card([("Name", "Declan K."), ("Number", "087 ••• ••••"), ("The job", "Full re-roof, 3-bed semi")],
+                      [r(7, "name"), r(7, "number"), r(7, "the job")], tap_at=r(7, "you ring them") + 0.15, dur=D[7]),
+    # 8 Try it for fourteen days. No fee. Just €300 in ad spend… and you see every lead yourself.
+    A.scene_float_cards("TRY IT FOR 14 DAYS.", [("TEST DRIVE", "14 days", "See every lead yourself", False),
+                                                ("OUR FEE", "€0", "No fee to us", True),
+                                                ("AD SPEND", "€300", "Just your ad budget", False)],
+                        dur=D[8], times=[r(8, "14 days") - 0.1, r(8, "no fee") - 0.1, r(8, "€300") - 0.1]),
+    # 9 We're only taking on two roofers this month. Comment "leads"… and I'll send you the details.  (logo appears here only)
     A.scene_cta_comment("Only taking on 2", "roofers this month.", "LEADS", "SOUTHLINE AGENCY", "Meta ads for Irish roofers",
-                        after="for the details.", toast_msg="We'll send you the details", dur=D[11],
-                        comment_at=r(11, "comment leads") - 0.05, logo=LOGO),
+                        after="for the details.", toast_msg="I'll send you the details", dur=D[9],
+                        comment_at=r(9, "comment leads") - 0.05, logo=LOGO),
 ]
 
 if "--audio" in sys.argv:  # soundtrack only, for checking the mix
@@ -90,7 +82,7 @@ if "--stills" in sys.argv:  # quick layout QA: a few frames per scene, no encode
 
 v = A.Video()
 for s in SCENES: v.add(*s)
-out = "out/southline_roofers_storm_vo.mp4"
+out = "out/southline_roofers_maths_vo.mp4"
 total = v.render(out, transition="whip", preview_times=[e - 0.3 for e in S[1:]], voice=VOICE, voice_at=0.0)
 A.reframe_4x5(out, out.replace(".mp4", "_4x5.mp4"))
 print(f"rendered {total:.2f}s  scene starts {[round(x, 2) for x in S[:-1]]}")
