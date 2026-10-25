@@ -73,6 +73,14 @@ export async function sendSms(opts: { to: string; text: string; customerId: stri
   return { ok: false, error: `SendMode ${res.status}: ${String(why).slice(0, 300)}`, raw };
 }
 
+/** Plain-English version of a SendMode error reply. */
+export function sendmodeError(j: Record<string, unknown>) {
+  const code = String(j.status ?? "");
+  if (code === "INVALID_ACCESS_KEY" || Number(j.statusCode) === 14)
+    return "SendMode says this access key isn't valid. In the SendMode portal (Settings → API Settings) copy the access key again, or create a new one, and paste it here.";
+  return `SendMode: ${String(j.error ?? j.description ?? j.message ?? code ?? "unknown error").slice(0, 200)}`;
+}
+
 /** Check the key works and how many credits are left. */
 export async function getCredits(fetchImpl: typeof fetch = fetch): Promise<{ ok: boolean; credits?: string; error?: string }> {
   const key = await secret("SENDMODE_ACCESS_KEY");
@@ -83,8 +91,11 @@ export async function getCredits(fetchImpl: typeof fetch = fetch): Promise<{ ok:
     if (!res.ok) return { ok: false, error: `SendMode ${res.status}: ${text.slice(0, 200)}` };
     let credits = text;
     try {
-      const j = JSON.parse(text);
-      credits = String(j.credits ?? j.balance ?? j.remainingCredits ?? JSON.stringify(j));
+      const j = JSON.parse(text) as Record<string, unknown>;
+      // SendMode answers 200 even for a bad key, e.g. { status: "INVALID_ACCESS_KEY", statusCode: 14, error: "..." }
+      const failed = j.error || /INVALID|ERROR|DENIED/i.test(String(j.status ?? "")) || (j.statusCode != null && Number(j.statusCode) !== 0);
+      if (failed) return { ok: false, error: sendmodeError(j) };
+      credits = String(j.credits ?? j.balance ?? j.remainingCredits ?? j.Credits ?? JSON.stringify(j));
     } catch {
       // plain-text balance
     }
