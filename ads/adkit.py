@@ -24,6 +24,10 @@ THEMES = {
                      ink=(255, 255, 255), muted=(255, 225, 215), accent=(255, 255, 255), accent2=(255, 220, 120), card=(255, 255, 255), card_ink=(30, 20, 30), grid=False, light=False),
     "clean":    dict(bg=((255, 255, 255), (244, 245, 248)), blobs=[(540, 700, 700, (120, 140, 255), 0.06)], ink=(12, 14, 20), muted=(110, 115, 130),
                      accent=(37, 99, 235), accent2=(124, 58, 237), card=(255, 255, 255), card_ink=(12, 14, 20), grid=True, light=True),
+    "blueprint": dict(bg=((20, 58, 108), (10, 32, 66)), blobs=[(540, 800, 700, (60, 140, 220), 0.12)], ink=(240, 248, 255), muted=(150, 186, 220),
+                     accent=(120, 220, 255), accent2=(255, 206, 90), card=(16, 46, 88), card_ink=(240, 248, 255), grid=False, light=False),
+    "sage":     dict(bg=((44, 62, 52), (20, 30, 25)), blobs=[(540, 760, 640, (214, 168, 112), 0.14), (180, 1500, 460, (120, 160, 130), 0.16)], ink=(246, 240, 228), muted=(176, 186, 170),
+                     accent=(214, 168, 112), accent2=(240, 214, 170), card=(54, 74, 62), card_ink=(246, 240, 228), grid=False, light=False),
     "clinic":   dict(bg=((252, 253, 253), (236, 242, 244)), blobs=[(540, 900, 700, (0, 170, 160), 0.05)], ink=(14, 30, 42), muted=(110, 128, 140),
                      accent=(0, 160, 150), accent2=(0, 110, 200), card=(255, 255, 255), card_ink=(14, 30, 42), grid=True, light=True),
     "ivory":    dict(bg=((252, 248, 241), (241, 233, 222)), blobs=[(540, 700, 700, (232, 196, 170), 0.18), (900, 1600, 500, (214, 180, 120), 0.14)], ink=(46, 38, 34), muted=(140, 124, 112),
@@ -669,7 +673,7 @@ class Video:
     def add(self, dur, fn, events=()): self.scenes.append((dur, fn, list(events))); return self
     def render(self, out, transition="whip", tr_frames=5, bpm=120, music=True, sfx=True, preview_times=None, lufs=-14.0, tp=-1.0,
                voice=None, voice_at=0.0, duck_db=18.0, pause_db=8.0, sfx_duck_db=6.0, audio_only=False, punch=False, drift=0.0):
-        """transition: whip | fade | flash | cut. preview_times=[sec,...] writes a contact sheet <out>_preview.png
+        """transition: whip | fade | flash | cut | wipe. preview_times=[sec,...] writes a contact sheet <out>_preview.png
         lufs/tp: master loudness with a two-pass ffmpeg loudnorm (None = skip)
         voice: voiceover file, placed at voice_at seconds. Music sits duck_db under the voice while words are spoken
         and pause_db under it in the gaps; SFX dip sfx_duck_db under speech. The voice itself is never limited.
@@ -693,6 +697,9 @@ class Video:
                     if last: q = (i - (n - tr_frames) + 1) / tr_frames; im = vblur(zoom(im, 1 + 0.18 * q * q), 90 * q)
                     if first: q = 1 - (i + 1) / (tr_frames + 1); im = vblur(zoom(im, 1 + 0.14 * q), 90 * q)
                 elif transition == "fade" and first and prev is not None: im = Image.blend(prev, im, eio((i + 1) / (tr_frames + 1)))
+                elif transition == "wipe" and first and prev is not None:  # before/after style: a divider sweeps across
+                    x = int(W * eio((i + 1) / (tr_frames + 1))); pv = prev.copy(); pv.paste(im.crop((0, 0, x, H)), (0, 0)); im = pv
+                    d_ = ImageDraw.Draw(im); d_.rectangle((x - 3, 0, x + 3, H), fill=WHITE); d_.ellipse((x - 34, H / 2 - 34, x + 34, H / 2 + 34), fill=WHITE)
                 elif transition == "flash" and first: im = Image.blend(im, Image.new("RGB", im.size, WHITE), 0.4 * (tr_frames - i) / tr_frames)
                 p.stdin.write(im.tobytes())
                 if i == n - 1: prev = im
@@ -728,7 +735,7 @@ class Video:
             self.duck_report = duck_check(vo, mus * k * mg, words)
             mix = vo + bed; mix /= max(1.0, np.abs(mix).max() / 0.99); bed_limit = None   # plain gain, no limiter on the voice
         with wave.open(apath, "wb") as wf: wf.setnchannels(1); wf.setsampwidth(2); wf.setframerate(SR); wf.writeframes((mix * 32767).astype(np.int16).tobytes())
-        if lufs is not None: apath = master_checked(apath, lufs, tp, bed_limit, voice is not None)
+        if lufs is not None: apath = master_checked(apath, lufs, tp, bed_limit, True)  # peak catch: transients only, never a squash
         if audio_only:
             subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", apath, "-c:a", "aac", "-b:a", "256k", "-ar", "48000", out], check=True); return total
         subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", vpath, "-i", apath, "-c:v", "copy", "-c:a", "aac", "-b:a", "256k", "-ar", "48000", "-shortest", "-movflags", "+faststart", out], check=True)
