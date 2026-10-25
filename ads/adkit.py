@@ -24,6 +24,10 @@ THEMES = {
                      ink=(255, 255, 255), muted=(255, 225, 215), accent=(255, 255, 255), accent2=(255, 220, 120), card=(255, 255, 255), card_ink=(30, 20, 30), grid=False, light=False),
     "clean":    dict(bg=((255, 255, 255), (244, 245, 248)), blobs=[(540, 700, 700, (120, 140, 255), 0.06)], ink=(12, 14, 20), muted=(110, 115, 130),
                      accent=(37, 99, 235), accent2=(124, 58, 237), card=(255, 255, 255), card_ink=(12, 14, 20), grid=True, light=True),
+    "clinic":   dict(bg=((252, 253, 253), (236, 242, 244)), blobs=[(540, 900, 700, (0, 170, 160), 0.05)], ink=(14, 30, 42), muted=(110, 128, 140),
+                     accent=(0, 160, 150), accent2=(0, 110, 200), card=(255, 255, 255), card_ink=(14, 30, 42), grid=True, light=True),
+    "ivory":    dict(bg=((252, 248, 241), (241, 233, 222)), blobs=[(540, 700, 700, (232, 196, 170), 0.18), (900, 1600, 500, (214, 180, 120), 0.14)], ink=(46, 38, 34), muted=(140, 124, 112),
+                     accent=(170, 132, 74), accent2=(206, 146, 136), card=(255, 253, 249), card_ink=(46, 38, 34), grid=False, light=True),
     "mint":     dict(bg=((10, 30, 34), (4, 12, 16)), blobs=[(540, 820, 640, (40, 220, 190), 0.16), (180, 300, 420, (90, 170, 255), 0.12)], ink=(240, 252, 250), muted=(140, 170, 172),
                      accent=(40, 220, 190), accent2=(150, 240, 255), card=(16, 40, 46), card_ink=(240, 252, 250), grid=True, light=False),
     "plum":     dict(bg=((40, 18, 36), (10, 5, 12)), blobs=[(540, 800, 640, (236, 200, 140), 0.12), (900, 1500, 460, (240, 150, 170), 0.14)], ink=(252, 246, 240), muted=(190, 164, 176),
@@ -80,7 +84,20 @@ def dark_bg(): return mesh_bg((22, 20, 19), (8, 8, 8), [(540, 900, 600, TH["acce
 FD = "/usr/share/fonts/opentype/inter/"
 FW = {"r": "Inter-Regular.otf", "m": "Inter-Medium.otf", "sb": "Inter-SemiBold.otf", "b": "Inter-Bold.otf", "xb": "Inter-ExtraBold.otf", "bl": "Inter-Black.otf"}
 _fc = {}
+BRAND_FONTS = os.path.join(os.path.dirname(os.path.abspath(__file__)), "brand", "fonts")
+EXTRA_FONTS = {  # serif (Playfair Display, variable weight) + mono, by weight key
+    "pf": ("PlayfairDisplay.ttf", "Regular"), "pfm": ("PlayfairDisplay.ttf", "Medium"), "pfb": ("PlayfairDisplay.ttf", "Bold"), "pfx": ("PlayfairDisplay.ttf", "Black"),
+    "pfi": ("PlayfairDisplay-Italic.ttf", "Italic"), "pfbi": ("PlayfairDisplay-Italic.ttf", "Bold Italic"),
+    "mono": ("/usr/share/fonts/truetype/jetbrains-mono/JetBrainsMono-Medium.ttf", None), "monob": ("/usr/share/fonts/truetype/jetbrains-mono/JetBrainsMono-ExtraBold.ttf", None)}
+
 def font(w, s):
+    if w in EXTRA_FONTS and (w, s) not in _fc:
+        path, var = EXTRA_FONTS[w]; path = path if os.path.isabs(path) else os.path.join(BRAND_FONTS, path)
+        try:
+            f = ImageFont.truetype(path, s)
+            if var: f.set_variation_by_name(var)
+            _fc[(w, s)] = f
+        except OSError: _fc[(w, s)] = ImageFont.truetype("DejaVuSerif-Bold.ttf", s)
     if (w, s) not in _fc:
         for name in (FW.get(w, w), FW["xb"]):
             for path in (FD + name, name):
@@ -711,7 +728,7 @@ class Video:
             self.duck_report = duck_check(vo, mus * k * mg, words)
             mix = vo + bed; mix /= max(1.0, np.abs(mix).max() / 0.99); bed_limit = None   # plain gain, no limiter on the voice
         with wave.open(apath, "wb") as wf: wf.setnchannels(1); wf.setsampwidth(2); wf.setframerate(SR); wf.writeframes((mix * 32767).astype(np.int16).tobytes())
-        if lufs is not None: apath = master(apath, lufs, tp, bed_limit, peak_catch=voice is not None)
+        if lufs is not None: apath = master_checked(apath, lufs, tp, bed_limit, voice is not None)
         if audio_only:
             subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", apath, "-c:a", "aac", "-b:a", "256k", "-ar", "48000", out], check=True); return total
         subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", vpath, "-i", apath, "-c:v", "copy", "-c:a", "aac", "-b:a", "256k", "-ar", "48000", "-shortest", "-movflags", "+faststart", out], check=True)
@@ -797,6 +814,19 @@ def reframe_4x5(src, out, top=200, bottom=1700):
           f"[b]crop={W}:{h}:0:{top},scale={fw}:1350[fg];[bg][fg]overlay=(W-w)/2:0,setsar=1[v]")
     subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", src, "-filter_complex", fc, "-map", "[v]", "-map", "0:a?",
                     "-c:v", "libx264", "-preset", "medium", "-crf", "17", "-pix_fmt", "yuv420p", "-c:a", "copy", "-movflags", "+faststart", out], check=True)
+    return out
+
+def master_checked(wav, lufs=-14.0, tp=-1.0, bed_limit=0.35, peak_catch=False, tries=4):
+    """master, then encode a test AAC and measure; if the encoded true peak is over tp, re-master with the target
+    lowered by the overshoot. Returns the wav that encodes under tp."""
+    t_tp = tp
+    for _ in range(tries):
+        out = master(wav, lufs, t_tp, bed_limit, peak_catch=peak_catch)
+        test = os.path.splitext(out)[0] + "_test.m4a"
+        subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", out, "-c:a", "aac", "-b:a", "256k", "-ar", "48000", test], check=True)
+        got = float(loudness(test, lufs, tp)["input_tp"])
+        if got <= tp - 0.1: return out
+        t_tp -= (got - tp) + 0.3
     return out
 
 def contact_sheet(video, times, width=260):
