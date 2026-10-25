@@ -72,6 +72,9 @@ async function stored(): Promise<Map<string, string>> {
   return values;
 }
 
+/** Why saved keys couldn't be read last time (null = fine). Shown on the API keys page. */
+export const keysReadError = () => lastReadError;
+
 /** The value to use: the host's env var if set, otherwise the one saved in the app. */
 export async function secret(name: KeyName): Promise<string | undefined> {
   return process.env[name] || (await stored()).get(name) || undefined;
