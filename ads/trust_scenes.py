@@ -173,29 +173,48 @@ def scene_question(dur=3.3, type_from=0.45, cps=30):
     return dur, fn, [(0.0, "pop", 0.8)] + [(type_from + i / cps, "tick", 0.22) for i in range(0, n_all, 2)]
 
 
-def scene_short(dur=5.2, boost_at=2.8, tap_at=3.25):
-    """slow-mo push on Ryan: 'Short answer? YEAH. when they're done properly.' then a 'Boost post' button gets tapped
-    and struck out: 'isn't the same thing.'"""
-    s1, s2, s3, s4 = T("Short answer?", 84), T("Yeah.", 230, ACC), T("when they're done properly.", 70), T("isn't the same thing.", 76)
-    def bb(d, s): ctext(d, 280 * s, 70 * s, "Boost post", A.font("bl", 58 * s), INK)
-    BOOST = card(560, 140, bb, fill=(232, 234, 238), r=70)
+def scene_short(dur=7.9, s1_at=0.2, yeah_at=1.3, props_at=1.75, post_at=3.6, comments_at=(4.3, 4.8, 5.3), calls_at=5.6, cap_at=(5.9, 6.7)):
+    """'Short answer? YEAH. when they're done properly.' then a job post goes up on your page: hearts and 'Great job!'
+    comments pile on while the calls counter stays at 0, gets circled: 'Posting and hoping / isn't the same thing.'"""
+    s1, s2, s3 = T("Short answer?", 84), T("Yeah.", 230, ACC), T("when they're done properly.", 70)
+    c1, c2 = T("Posting and hoping", 84), T("isn't the same thing.", 84)
+    import kitchen_scenes as K
+    pic = K.rounded(K.kitchen_art(680, 400, True, 2), 18)
+    def pb(d, s):
+        d.ellipse((30 * s, 26 * s, 90 * s, 86 * s), fill=ACC); d.text((110 * s, 30 * s), "Your page", font=A.font("bl", 34 * s), fill=INK)
+        d.text((110 * s, 70 * s), "Just finished this one!", font=A.font("m", 26 * s), fill=MUTED)
+    POST = card(760, 640, pb, r=30); POST.alpha_composite(pic, (50 + 40, 50 + 116))
+    coms = [A.pill(c, 38, WHITE, INK, w="b") for c in ("Great job!", "Lovely work", "Fair play!")]
+
     def fn(t):
-        dk = 0.5 + 0.2 * clamp((t - boost_at) / 0.3)
+        dk = 0.5 + 0.2 * clamp((t - post_at + 0.3) / 0.3)
         im = vignette(view(7.0 + 0.55 * t, 1.3 + 0.12 * eio(t / dur), *FACE, dark=dk)); sh = 0
-        fo = boost_at
-        rise(im, s1, W / 2, 520, t, 0.1, fo); pop(im, s2, W / 2, 760, t, 0.75, 1.6) if t < fo else None
-        if t >= fo and t < fo + 0.25: put(im, s2, W / 2, 760, 1 - (t - fo) / 0.25)
-        rise(im, s3, W / 2, 960, t, 1.4, fo)
-        if t < fo: under(im, "when they're done properly.", 70, W / 2, 960, "done properly", (t - 1.8) / 0.4)
-        if 0.75 <= t < 0.9: sh = 10
-        if t >= boost_at:
-            pop(im, BOOST, W / 2, 900, t, boost_at + 0.1, 1.3); finger(im, W / 2 + 160, 900, t, tap_at)
-            p = eo((t - tap_at - 0.25) / 0.3)
-            if p > 0: ImageDraw.Draw(im).line((W / 2 - 300, 960, W / 2 - 300 + 600 * p, 840), fill=ACC, width=16)
-            rise(im, s4, W / 2, 1120, t, tap_at + 0.5)
+        fo = post_at - 0.15; a_ = 1 - clamp((t - fo) / 0.25)
+        if a_ > 0:
+            rise(im, s1, W / 2, 520, t, s1_at, fo)
+            if t >= yeah_at: put(im, s2, W / 2, 760, a_ * clamp((t - yeah_at) / 0.15), 1.6 - 0.6 * back((t - yeah_at) / 0.35))
+            rise(im, s3, W / 2, 960, t, props_at, fo)
+            if t < fo: under(im, "when they're done properly.", 70, W / 2, 960, "done properly", (t - props_at - 0.5) / 0.4)
+            if yeah_at <= t < yeah_at + 0.15: sh = 10
+        if t >= post_at:
+            k = spring((t - post_at) / 0.6, f=1.4, d=6); py = 900 + 700 * (1 - k); put(im, POST, W / 2, py, clamp((t - post_at) / 0.15))
+            d = ImageDraw.Draw(im); ry = py + 320 - 70
+            likes = int(round(47 * eo((t - post_at - 0.3) / 1.8))) if t > post_at + 0.3 else 0
+            hx = W / 2 - 330; d.ellipse((hx, ry - 14, hx + 22, ry + 8), fill=(240, 70, 100)); d.ellipse((hx + 16, ry - 14, hx + 38, ry + 8), fill=(240, 70, 100))
+            d.polygon([(hx + 1, ry), (hx + 37, ry), (hx + 19, ry + 22)], fill=(240, 70, 100)); d.text((hx + 52, ry - 20), f"{likes}", font=A.font("bl", 36), fill=INK)
+            d.text((hx + 140, ry - 20), f"{sum(t >= c for c in comments_at)} comments", font=A.font("sb", 32), fill=MUTED)
+            calls = A.pill("0 calls", 36, INK, WHITE, w="bl"); cx = W / 2 + 240
+            put(im, calls, cx, ry, 1, 1 + 0.12 * math.sin(max(0, t - calls_at) * 9) * (1 - clamp((t - calls_at) / 0.8)) if t >= calls_at else 1)
+            if t >= calls_at:  # circle the 0 calls
+                p = eo((t - calls_at) / 0.4); d = ImageDraw.Draw(im)
+                d.arc((cx - 130, ry - 62, cx + 130, ry + 62), 200, 200 + 355 * p, fill=ACC, width=8)
+            for i, (c, ct) in enumerate(zip(coms, comments_at)):
+                pop(im, c, W / 2 + (-200 if i % 2 == 0 else 200), 300 + i * 80, t, ct, 1.3)
+            rise(im, c1, W / 2, 1380, t, cap_at[0]); rise(im, c2, W / 2, 1490, t, cap_at[1])
         return im, sh
-    return dur, fn, [(0.1, "swish", 0.4), (0.75, "hit", 0.8), (1.4, "swish", 0.4), (1.8, "swish", 0.5), (boost_at + 0.1, "pop", 0.6),
-                     (tap_at, "click", 0.8), (tap_at + 0.25, "swish", 0.7), (tap_at + 0.5, "swish", 0.4)]
+    ev = [(s1_at, "swish", 0.4), (yeah_at, "hit", 0.8), (props_at, "swish", 0.4), (props_at + 0.5, "swish", 0.5), (post_at, "whoosh", 0.6)] + \
+         [(post_at + 0.3 + i * 0.15, "tick", 0.25) for i in range(10)] + [(c, "pop", 0.5) for c in comments_at] + [(calls_at, "swish", 0.6), (cap_at[0], "swish", 0.4), (cap_at[1], "hit", 0.6)]
+    return dur, fn, ev
 
 
 def scene_title(num, lines, src, zoom, fx, fy, dur=2.3, chips=None, hi_chip=None):
@@ -219,52 +238,52 @@ def scene_title(num, lines, src, zoom, fx, fy, dur=2.3, chips=None, hi_chip=None
     return dur, fn, [(0.0, "hit", 1.0)] + [(0.3 + i * 0.1, "pop", 0.3) for i in range(n)]
 
 
-def scene_what(dur=4.6):
+def scene_what(dur=4.6, s0_at=0.1, pills_at=(0.45, 0.75), s1_at=1.4, pin_at=2.6, s3_at=2.9):
     """fly into the monitors; 'We run' + Facebook / Instagram pills + 'ads for trades & local businesses' + pin 'in Ireland & the UK'"""
-    s0 = T("We run", 84); s1, s2 = T("ads for trades &", 84), T("local businesses", 84); s3 = T("in Ireland & the UK.", 84)
+    s0 = T("We run", 84); s1 = T("ads for trades across", 84); s3 = T("Ireland & the UK.", 84)
     pf, pi = A.pill("Facebook", 50, WHITE, INK, w="bl"), A.pill("Instagram", 50, WHITE, INK, w="bl"); plus = T("+", 80, ACC)
     def fn(t):
         im = vignette(view(0.5 + 0.8 * t, 1.5 + 0.35 * eio(t / dur), *MON, dark=0.4))
-        rise(im, s0, W / 2, 470, t, 0.1)
-        pop(im, pf, W / 2 - 220, 630, t, 0.45); pop(im, plus, W / 2 + 10, 630, t, 0.62); pop(im, pi, W / 2 + 240, 630, t, 0.75)
-        rise(im, s1, W / 2, 840, t, 1.4); rise(im, s2, W / 2, 950, t, 1.6)
-        k = (t - 2.6) / 0.45
+        rise(im, s0, W / 2, 470, t, s0_at)
+        pop(im, pf, W / 2 - 220, 630, t, pills_at[0]); pop(im, plus, W / 2 + 10, 630, t, pills_at[0] + 0.15); pop(im, pi, W / 2 + 240, 630, t, pills_at[1])
+        rise(im, s1, W / 2, 880, t, s1_at)
+        k = (t - pin_at) / 0.45
         if k > 0:  # location pin drops in
             py = 1150 - 220 * (1 - spring(k, f=1.5, d=6)); d = ImageDraw.Draw(im)
             d.ellipse((W / 2 - 44, py - 104, W / 2 + 44, py - 16), fill=ACC); d.polygon([(W / 2 - 34, py - 48), (W / 2 + 34, py - 48), (W / 2, py + 4)], fill=ACC)
-            d.ellipse((W / 2 - 16, py - 76, W / 2 + 16, py - 44), fill=WHITE); ring(im, W / 2, 1150, (t - 2.9) / 1.0, col=ACC, maxr=260, width=5, r0=30)
-        rise(im, s3, W / 2, 1290, t, 2.9)
+            d.ellipse((W / 2 - 16, py - 76, W / 2 + 16, py - 44), fill=WHITE); ring(im, W / 2, 1150, (t - pin_at - 0.3) / 1.0, col=ACC, maxr=260, width=5, r0=30)
+        rise(im, s3, W / 2, 1290, t, s3_at)
         return im, 0
-    return dur, fn, [(0.1, "swish", 0.4), (0.45, "pop", 0.6), (0.75, "pop", 0.6), (1.4, "swish", 0.4), (1.6, "swish", 0.4), (2.6, "pop", 0.7), (2.9, "swish", 0.4)]
+    return dur, fn, [(s0_at, "swish", 0.4), (pills_at[0], "pop", 0.6), (pills_at[1], "pop", 0.6), (s1_at, "swish", 0.4), (pin_at, "pop", 0.7), (s3_at, "swish", 0.4)]
 
 
-def scene_trades(dur=3.6, gap=0.5):
+def scene_trades(dur=3.6, times=(0.15, 0.65, 1.15, 1.65, 2.15)):
     """trade chips slide in from alternating sides and stack; the newest one is blue"""
     names = ["Plumbers", "Builders", "Electricians", "Kitchen fitters", "Bathroom fitters"]
     W0 = [A.pill(n, 56, WHITE, INK, w="bl") for n in names]; W1 = [A.pill(n, 56, ACC, WHITE, w="bl") for n in names]
     def fn(t):
         im = view(4.2 + 0.5 * t, 1.15, 0.5, 0.5, blur=9, dark=0.55)
-        last = int(clamp((t - 0.15) / gap, -1, len(names) - 1)) if t >= 0.15 else -1
+        last = sum(t >= x for x in times) - 1
         for i in range(len(names)):
-            k = (t - 0.15 - i * gap) / 0.4
+            k = (t - times[i]) / 0.4
             if k <= 0: continue
             side = -1 if i % 2 == 0 else 1
             put(im, W1[i] if i == last else W0[i], W / 2 + side * 700 * (1 - eo(k)), 620 + i * 170, 1, 1, side * 6 * (1 - eo(k)))
         return im, 0
-    return dur, fn, [(0.15 + i * gap, "click", 0.7) for i in range(5)]
+    return dur, fn, [(x, "click", 0.7) for x in times]
 
 
-def scene_aim(dur=4.4, ring_at=0.9, pings_at=1.7):
-    """'The aim's simple: people in your area asking you for a quote.' radius map with quote pings"""
-    h0 = T("The aim's simple:", 64, (200, 210, 230)); h1, h2 = T("people in your area", 84), T("asking you for a quote.", 84)
+def scene_aim(dur=4.4, ring_at=0.9, pings_at=1.7, lines_at=(0.05, 0.25, 0.45)):
+    """'The goal's simple: people near you asking for a quote.' radius map with quote pings"""
+    h0 = T("The goal's simple:", 64, (200, 210, 230)); h1, h2 = T("people near you", 84), T("asking for a quote.", 84)
     MX, MY, R = W / 2, 1180, 300
     rng = np.random.default_rng(5); houses = [(MX + rng.uniform(-420, 420), MY + rng.uniform(-330, 330)) for _ in range(70)]
     inside = [h for h in houses if math.hypot(h[0] - MX, h[1] - MY) < R - 20]; pings = inside[:5]
     bub = A.pill("Quote request", 26, WHITE, INK, w="bl")
     def fn(t):
         im = view(1.0 + 0.6 * t, 1.1, 0.5, 0.5, blur=9, dark=0.62)
-        rise(im, h0, W / 2, 400, t, 0.05); rise(im, h1, W / 2, 500, t, 0.25); rise(im, h2, W / 2, 605, t, 0.45)
-        under(im, "asking you for a quote.", 84, W / 2, 605, "asking you for a quote", (t - 0.8) / 0.5)
+        rise(im, h0, W / 2, 400, t, lines_at[0]); rise(im, h1, W / 2, 500, t, lines_at[1]); rise(im, h2, W / 2, 605, t, lines_at[2])
+        under(im, "asking for a quote.", 84, W / 2, 605, "asking for a quote", (t - lines_at[2] - 0.35) / 0.5)
         k = eo((t - 0.3) / 0.4); o = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(o)
         d.rounded_rectangle((MX - 460, MY - 370, MX + 460, MY + 370), 40, fill=(20, 24, 32, int(230 * k)))
         r = R * eo((t - ring_at) / 0.7)
@@ -277,7 +296,7 @@ def scene_aim(dur=4.4, ring_at=0.9, pings_at=1.7):
             pk = (t - pings_at - i * 0.35) / 0.35
             if pk > 0: put(im, bub, x, y - 50, clamp(pk / 0.2), 0.6 + 0.4 * back(pk)); ring(im, x, y, pk / 1.6, col=ACC, maxr=80, width=4, r0=10)
         return im, 0
-    return dur, fn, [(0.05, "swish", 0.4), (0.25, "swish", 0.4), (0.8, "swish", 0.5), (ring_at, "whoosh", 0.5)] + [(pings_at + i * 0.35, "ping", 0.45) for i in range(5)]
+    return dur, fn, [(lines_at[0], "swish", 0.4), (lines_at[1], "swish", 0.4), (lines_at[2] + 0.35, "swish", 0.5), (ring_at, "whoosh", 0.5)] + [(pings_at + i * 0.35, "ping", 0.45) for i in range(5)]
 
 
 def scene_how(dur=7.0, fly_at=3.5):
@@ -314,14 +333,14 @@ def scene_how(dur=7.0, fly_at=3.5):
                      (fly_at - 0.1, "whoosh", 0.7), (fly_at + 0.6, "swish", 0.4), (fly_at + 0.85, "swish", 0.4), (fly_at + 1.3, "swish", 0.5)]
 
 
-def scene_questions(dur=4.6, rows_at=(0.8, 1.4, 2.0)):
+def scene_questions(dur=4.6, rows_at=(0.8, 1.4, 2.0), h2_at=0.3, know_at=None):
     """'Before anyone gets in touch, a few quick questions.' form card; each answer chip pops in with a tick"""
     h1, h2 = T("Before anyone gets in touch,", 74), T("a few quick questions.", 84)
     qa = [("WHAT'S THE JOB?", "Kitchen refit"), ("WHERE?", "Lucan"), ("WHEN?", "Next month")]
-    FORM = card(880, 600); chips = [A.pill(a + "  ✓", 40, ACC, WHITE, w="bl") for _, a in qa]
+    FORM = card(880, 600); chips = [A.pill(a + "  ✓", 40, ACC, WHITE, w="bl") for _, a in qa]; know = A.pill("You know the job before you ring", 42, WHITE, INK, w="bl")
     def fn(t):
         im = view(6.0 + 0.5 * t, 1.1, 0.5, 0.5, blur=9, dark=0.6)
-        rise(im, h1, W / 2, 420, t, 0.05); rise(im, h2, W / 2, 530, t, 0.3); under(im, "a few quick questions.", 84, W / 2, 530, "quick questions", (t - 0.6) / 0.4)
+        rise(im, h1, W / 2, 420, t, 0.05); rise(im, h2, W / 2, 530, t, h2_at); under(im, "a few quick questions.", 84, W / 2, 530, "quick questions", (t - h2_at - 0.3) / 0.4)
         k = spring((t - 0.3) / 0.6, f=1.4, d=6); fy = 1050 + 500 * (1 - k); put(im, FORM, W / 2, fy, clamp((t - 0.3) / 0.15))
         if t > 0.5:
             d = ImageDraw.Draw(im)
@@ -331,39 +350,52 @@ def scene_questions(dur=4.6, rows_at=(0.8, 1.4, 2.0)):
                 ck = (t - rows_at[i]) / 0.35
                 if ck > 0: put(im, chips[i], W / 2 + 380 - chips[i].width / 2, y + 45, clamp(ck / 0.2), 0.6 + 0.4 * back(ck))
                 else: d.rounded_rectangle((W / 2 - 380, y + 15, W / 2 + 380, y + 75), 20, outline=(220, 222, 228), width=3)
+        if know_at is not None: pop(im, know, W / 2, 1490, t, know_at, 1.3)
         return im, 0
-    return dur, fn, [(0.05, "swish", 0.4), (0.3, "whoosh", 0.4), (0.6, "swish", 0.5)] + [(r, "pop", 0.6) for r in rows_at]
+    return dur, fn, [(0.05, "swish", 0.4), (0.3, "whoosh", 0.4), (h2_at, "swish", 0.5)] + [(r, "pop", 0.6) for r in rows_at] + ([(know_at, "hit", 0.6)] if know_at else [])
 
 
-def scene_phone(dur=3.8, note_at=0.9, call_at=2.0, tap_at=2.5):
-    """'Straight to your phone.' a phone rises, the enquiry drops in with a buzz, 'Call back' is tapped, rings pulse"""
-    h = T("Straight to your phone.", 84); ph = A.phone("Monday 3 November", "09:41", wall=((28, 34, 46), (8, 10, 14), ACC))
+def scene_phone(dur=3.8, note_at=0.9, call_at=2.0, tap_at=2.5, quote_at=None, book_at=None, tools_at=None):
+    """'Straight to your phone.' a phone rises, the enquiry drops in with a buzz, 'Call back' is tapped, rings pulse.
+    Then the phone slides left and the steps tick in on the right: Quote sent -> Booked -> Back to the tools."""
+    h = T("Straight to your phone.", 84); h2 = T("Back to what you do best.", 80); ph = A.phone("Monday 3 November", "09:41", wall=((28, 34, 46), (8, 10, 14), ACC))
     def nd(d, s):
         d.rounded_rectangle((30 * s, 36 * s, 118 * s, 124 * s), 24 * s, fill=ACC); ctext(d, 74 * s, 80 * s, "S", A.font("bl", 54 * s), WHITE)
         d.text((146 * s, 32 * s), "NEW ENQUIRY", font=A.font("sb", 26 * s), fill=MUTED); d.text((146 * s, 70 * s), "Kitchen refit · Lucan", font=A.font("bl", 40 * s), fill=INK)
         d.text((146 * s, 124 * s), "Mary · next month", font=A.font("m", 30 * s), fill=(70, 74, 82))
     NOTE = card(840, 180, nd, fill=(250, 250, 252), r=44)
     CALL = A.pill("Call back", 54, ACC, WHITE, w="bl"); CALLING = A.pill("Calling Mary…", 54, WHITE, INK, w="bl")
+    steps = [(quote_at, A.pill("Quote sent  ✓", 46, WHITE, INK, w="bl")), (book_at, A.pill("Booked in  ✓", 46, WHITE, INK, w="bl")), (tools_at, A.pill("Back to the tools", 46, ACC, WHITE, w="bl"))]
     def fn(t):
-        im = view(8.0 + 0.4 * t, 1.1, 0.5, 0.5, blur=9, dark=0.6); rise(im, h, W / 2, 400, t, 0.05)
+        im = view(8.0 + 0.4 * t, 1.1, 0.5, 0.5, blur=9, dark=0.6)
+        sw = eio((t - quote_at) / 0.5) if quote_at else 0; px, ps = W / 2 - 240 * sw, 0.55 - 0.1 * sw  # phone slides left for the steps
+        if tools_at and t >= tools_at - 0.1:
+            o = clamp((t - tools_at + 0.1) / 0.25); put(im, h, W / 2, 400 - 40 * o, 1 - o); rise(im, h2, W / 2, 400, t, tools_at)
+        else: rise(im, h, W / 2, 400, t, 0.05)
         k = eo(t / 0.5); buzz = 8 * math.sin((t - note_at) * 140) if 0 <= t - note_at < 0.25 else 0
-        put(im, ph, W / 2 + buzz, 1150 + 700 * (1 - k), k, 0.55)
+        put(im, ph, px + buzz, 1150 + 700 * (1 - k), k, ps)
         nk = (t - note_at) / 0.45
-        if nk > 0: put(im, NOTE, W / 2 + buzz, 960 - 180 * (1 - spring(nk, f=1.5, d=6)), clamp(nk / 0.15), 0.9 + 0.1 * back(nk))
+        if nk > 0: put(im, NOTE, px + buzz, 960 - 180 * (1 - spring(nk, f=1.5, d=6)), clamp(nk / 0.15) * (1 - sw), (0.9 + 0.1 * back(nk)) * (1 - 0.3 * sw))
         if t >= call_at:
-            pop(im, CALLING if t >= tap_at + 0.1 else CALL, W / 2, 1420, t, call_at, 1.3); finger(im, W / 2 + 140, 1420, t, tap_at)
-            if t >= tap_at:
+            pop(im, CALLING if t >= tap_at + 0.1 else CALL, px, 1420, t, call_at, 1.3) if sw < 0.5 else put(im, CALLING, px, 1420, 2 * (1 - sw))
+            finger(im, W / 2 + 140, 1420, t, tap_at)
+            if t >= tap_at and sw == 0:
                 for j in range(3): ring(im, W / 2, 1150, ((t - tap_at) - j * 0.4) / 1.2, col=ACC, maxr=420, width=5, r0=120)
+        for i, (st, sp) in enumerate(steps):
+            if st is not None and t >= st:
+                kk = (t - st) / 0.4; put(im, sp, W / 2 + 230 + 300 * (1 - eo(kk)), 900 + i * 190, clamp(kk / 0.2), 0.8 + 0.2 * back(kk))
         return im, 0
-    return dur, fn, [(0.05, "swish", 0.4), (0.1, "whoosh", 0.5), (note_at, "ping", 0.8), (call_at, "pop", 0.6), (tap_at, "click", 0.8), (tap_at + 0.1, "shimmer", 0.4)]
+    ev = [(0.05, "swish", 0.4), (0.1, "whoosh", 0.5), (note_at, "ping", 0.8), (call_at, "pop", 0.6), (tap_at, "click", 0.8), (tap_at + 0.1, "shimmer", 0.4)]
+    ev += [(x, "pop", 0.7) for x in (quote_at, book_at) if x] + ([(quote_at - 0.05, "whoosh", 0.4)] if quote_at else []) + ([(tools_at, "hit", 0.8), (tools_at, "swish", 0.4)] if tools_at else [])
+    return dur, fn, ev
 
 
-def scene_wom(dur=6.2, bubbles_at=(0.7, 1.3, 1.9), dry_at=2.5, swap=3.0, help_at=4.8):
+def scene_wom(dur=6.2, bubbles_at=(0.7, 1.3, 1.9), dry_at=2.5, swap=3.0, ul_at=3.6, help_at=4.8):
     """'Tradesmen still relying on word of mouth…' - referral speech bubbles pop in left/right, then go grey and drift
     up and away (it dries up). '…and struggling to get booked out?' - a two-week calendar, nearly empty, the empty days
     pulsing. 'That's who we help.'"""
     a1, a2 = T("Tradesmen still relying", 76), T("on word of mouth…", 84)
-    b1, b2 = T("…and struggling", 84), T("to get booked out?", 84); hp = T("That's who we help.", 96)
+    b1, b2 = T("Good at the job, but", 84), T("struggling to stay booked out.", 84); hp = T("That's who we help.", 96)
     says = [("Know a good plumber?", -1), ("Ask Mick, he's sound.", 1), ("Grand, I'll get his number.", -1)]
     def bubble(s_, side, grey=False):
         f = A.font("b", 46); w_, h_ = int(f.getlength(s_) + 80), 120
@@ -399,7 +431,7 @@ def scene_wom(dur=6.2, bubbles_at=(0.7, 1.3, 1.9), dry_at=2.5, swap=3.0, help_at
         if t >= swap:
             u = t - swap; dx = 1100 * (1 - eio(u / 0.3))
             rise(im, b1, W / 2 + dx, 420, t, swap + 0.05); rise(im, b2, W / 2 + dx, 525, t, swap + 0.25)
-            under(im, "to get booked out?", 84, W / 2 + dx, 525, "booked out", (u - 0.6) / 0.4)
+            under(im, "struggling to stay booked out.", 84, W / 2 + dx, 525, "booked out", (t - ul_at) / 0.4)
             for r in range(2):
                 put(im, wk[r], W / 2 - 330 + dx, 700 + r * 230, eo((u - 0.2) / 0.3))
                 for c in range(5):
@@ -409,11 +441,11 @@ def scene_wom(dur=6.2, bubbles_at=(0.7, 1.3, 1.9), dry_at=2.5, swap=3.0, help_at
             pop(im, hp, W / 2, 1400, t, help_at, 1.4); under(im, "That's who we help.", 96, W / 2, 1400, "who we help", (t - help_at - 0.35) / 0.4)
         return im, 0
     ev = [(0.05, "swish", 0.4), (0.3, "swish", 0.4), (0.7, "swish", 0.5)] + [(b_, "pop", 0.5) for b_ in bubbles_at] + [(dry_at, "whoosh", 0.4),
-          (swap, "whoosh", 0.6), (swap + 0.25, "swish", 0.4), (swap + 0.6, "swish", 0.5), (help_at, "hit", 0.8), (help_at + 0.35, "swish", 0.5)]
+          (swap, "whoosh", 0.6), (swap + 0.25, "swish", 0.4), (ul_at, "swish", 0.5), (help_at, "hit", 0.8), (help_at + 0.35, "swish", 0.5)]
     return dur, fn, ev
 
 
-def scene_end(dur=4.4, card_at=2.5):
+def scene_end(dur=4.4, card_at=2.5, lines_at=(0.05, 0.7, 1.35)):
     """'That's it. No magic. Just ads done properly.' over a slow push; then the logo end card"""
     s1, s2, s3 = T("That's it.", 100), T("No magic.", 100), T("Just ads done properly.", 84)
     lg = A.logo().resize((220, 220), Image.LANCZOS); b1, b2 = T("Southline Agency", 70), T("Meta ads for trades in Ireland & the UK", 38, (190, 198, 212), "m")
@@ -421,11 +453,11 @@ def scene_end(dur=4.4, card_at=2.5):
         out = clamp((t - card_at) / 0.35)
         im = vignette(view(6.5 + 0.8 * t, 1.0 + 0.12 * eio(t / dur), 0.7, 0.5, dark=0.25 + 0.5 * out))
         a = 1 - out
-        for sp, y, t0 in ((s1, 620, 0.05), (s2, 760, 0.7), (s3, 910, 1.35)):
+        for sp, y, t0 in zip((s1, s2, s3), (620, 760, 910), lines_at):
             if t >= t0: put(im, sp, W / 2, y - 60 * out, a * clamp((t - t0) / 0.15), 1.25 - 0.25 * back((t - t0) / 0.35))
-        if a > 0: under(im, "Just ads done properly.", 84, W / 2, 910 - 60 * out, "done properly", (t - 1.8) / 0.4)
+        if a > 0: under(im, "Just ads done properly.", 84, W / 2, 910 - 60 * out, "done properly", (t - lines_at[2] - 0.45) / 0.4)
         if t >= card_at:
             k = (t - card_at) / 0.5; put(im, lg, W / 2, 900, clamp(k / 0.2), 0.6 + 0.4 * back(k)); ring(im, W / 2, 900, k / 1.6, col=ACC, maxr=360, width=5, r0=110)
             rise(im, b1, W / 2, 1110, t, card_at + 0.3); rise(im, b2, W / 2, 1190, t, card_at + 0.5)
         return im, 0
-    return dur, fn, [(0.05, "hit", 0.6), (0.7, "hit", 0.6), (1.35, "hit", 0.7), (1.8, "swish", 0.5), (card_at, "whoosh", 0.5), (card_at + 0.1, "pop", 0.8), (card_at + 0.2, "shimmer", 0.6)]
+    return dur, fn, [(lines_at[0], "hit", 0.6), (lines_at[1], "hit", 0.6), (lines_at[2], "hit", 0.7), (lines_at[2] + 0.45, "swish", 0.5), (card_at, "whoosh", 0.5), (card_at + 0.1, "pop", 0.8), (card_at + 0.2, "shimmer", 0.6)]
