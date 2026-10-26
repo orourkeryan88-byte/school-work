@@ -47,7 +47,7 @@ def bag(im, cx, cy, s=1.0, t=0.0, open_=(1, 1, 1), plugged=(0, 0, 0), fill=0.25,
     c = coin(int(18 * s))
     if pour:  # coins dropping into the bag
         for j in range(6):
-            p = ((t * 1.3) + j / 6) % 1; put(im, c, cx + 40 * s * math.sin(j * 2.1), y0 - 420 * s + 400 * s * p * p, clamp((1 - p) * 4) * clamp(p * 6), 1, p * 300)
+            p = ((t * 1.3) + j / 6) % 1; put(im, c, cx + 40 * s * math.sin(j * 2.1), y0 - 200 * s + 180 * s * p * p, clamp((1 - p) * 4) * clamp(p * 6), 1, p * 300)
     for i, (hx, hy) in enumerate(HOLES):  # leaks
         if open_[i] and plugged[i] == 0 and t >= leak_from:
             for j in range(4):
@@ -81,23 +81,23 @@ def letters_bounce(im, s, size, cx, cy, t, t0=0.0, col=WHITE, stagger=0.05, fram
 
 
 # ======================================================================= hook: your store has 3 leaks
-def scene_hook(dur=6.0, bag_at=1.3, pay_at=3.3):
+def scene_hook(dur=6.0, bag_at=1.3, pay_at=3.3, intro=True, cap=("Your store has 3 leaks.", "3 leaks"), pay=("And you're probably", "paying for all of them.", "paying")):
     """frame 0: 'E-commerce brands,' with a per-letter bounce; it lifts away and the store-bag drops in, coins pouring
     in the top and leaking out of three holes: 'Your store has 3 leaks.' '…and you're paying for all of them.'"""
-    c1 = T("Your store has 3 leaks.", 90); c2, c3 = T("And you're probably", 72), T("paying for all of them.", 72)
+    c1 = T(cap[0], 84); c2, c3 = T(pay[0], 72), T(pay[1], 72)
     def fn(t):
         im = vignette(view(t * 0.8, 1.0 + 0.4 * (1 - eo(t / 0.9)), 0.5, 0.5, dark=0.35 + 0.25 * clamp((t - bag_at) / 0.4)))
-        sh = 14 if t < 0.14 else 0; o = eio((t - bag_at + 0.15) / 0.35)
-        if o < 1:
+        sh = 14 if (t < 0.14 and intro) else 0; o = eio((t - bag_at + 0.15) / 0.35)
+        if o < 1 and intro:
             lay = Image.new("RGBA", (W, H), (0, 0, 0, 0))
             letters_bounce(lay, "E-commerce", 150, W / 2, 600, t); letters_bounce(lay, "brands,", 150, W / 2, 780, t, 0.3, GOLD)
             if o > 0: lay.putalpha(lay.split()[3].point(lambda v: int(v * (1 - o))))
             im.alpha_composite(lay, (0, int(-500 * o * o)))
         if t >= bag_at:
-            k = spring((t - bag_at) / 0.7, f=1.4, d=6); bag(im, W / 2, 1000 + 700 * (1 - k), 1.05, t, fill=0.25, leak_from=bag_at + 0.5)
+            k = spring((t - bag_at) / 0.7, f=1.4, d=6); bag(im, W / 2, 1020 + 700 * (1 - k), 1.3, t, fill=0.25, leak_from=bag_at + 0.5)
             if bag_at + 0.4 <= t < bag_at + 0.55: sh = 9
-        rise(im, c1, W / 2, 440, t, bag_at + 0.1); under(im, "Your store has 3 leaks.", 90, W / 2, 440, "3 leaks", (t - bag_at - 0.6) / 0.4)
-        rise(im, c2, W / 2, 1480, t, pay_at); rise(im, c3, W / 2, 1575, t, pay_at + 0.4); under(im, "paying for all of them.", 72, W / 2, 1575, "paying", (t - pay_at - 0.9) / 0.4)
+        rise(im, c1, W / 2, 440, t, bag_at + 0.1); under(im, cap[0], 84, W / 2, 440, cap[1], (t - bag_at - 0.6) / 0.4)
+        rise(im, c2, W / 2, 1480, t, pay_at); rise(im, c3, W / 2, 1575, t, pay_at + 0.4); under(im, pay[1], 72, W / 2, 1575, pay[2], (t - pay_at - 0.9) / 0.4)
         return im, sh
     ev = [(0.0, "hit", 1.0)] + [(i * 0.05, "tick", 0.3) for i in range(0, 17, 2)] + [(bag_at - 0.15, "whoosh", 0.5), (bag_at + 0.45, "hit", 0.8), (bag_at + 0.5, "coin", 0.5),
           (bag_at + 1.2, "coin", 0.4), (pay_at, "swish", 0.4), (pay_at + 0.4, "swish", 0.4), (pay_at + 0.9, "coin", 0.5)]
@@ -105,10 +105,10 @@ def scene_hook(dur=6.0, bag_at=1.3, pay_at=3.3):
 
 
 # ======================================================================= who / what
-def scene_ryan(dur=4.5, chips_at=(1.2, 1.6), sub_at=2.4):
+def scene_ryan(dur=4.5, chips_at=(1.2, 1.6), sub_at=2.4, sub="for online brands."):
     """'I'm Ryan, I run Southline.' the two services flip in like cards: Meta ads, Email marketing; 'for online brands'
     types out; the logo stamps in"""
-    s1 = T("I'm Ryan.", 130); sub = "for online brands."
+    s1 = T("I'm Ryan.", 130)
     def chip(lab):
         def dr(d, s): ctext(d, 200 * s, 60 * s, lab, A.font("bl", 46 * s), NAVY)
         return card(400, 120, dr, fill=GOLD, r=60)
@@ -130,12 +130,12 @@ def scene_ryan(dur=4.5, chips_at=(1.2, 1.6), sub_at=2.4):
 
 
 # ======================================================================= leak 1: ads burn out
-def scene_burnout(dur=8.0, flat_at=3.6, meter_at=4.2, test_at=5.6):
+def scene_burnout(dur=8.0, flat_at=3.6, meter_at=4.2, test_at=5.6, pill_text="…and nobody's testing new ones"):
     """heartbeat monitor of your ad: beats shrink week by week and flatline (beep); a flip-digit 'cost per sale'
     counter climbs (example); 'if nobody's testing new ones'"""
     h1, h2 = T("Leak 1:", 70, GOLD), T("your ads burn out.", 92)
     MX0, MY0, MX1, MY1 = 90, 640, 990, 1080
-    pill = A.pill("…and nobody's testing new ones", 40, WHITE, INK, w="bl"); ex = T("example", 24, (170, 176, 190), "mono")
+    pill = A.pill(pill_text, 40, WHITE, INK, w="bl"); ex = T("example", 24, (170, 176, 190), "mono")
     def digit(ch, sq=1.0):
         sp = T(ch, 110, NAVY); return sp if sq > 0.98 else sp.resize((sp.width, max(1, int(sp.height * sq))))
     def fn(t):
@@ -293,10 +293,10 @@ def scene_fix(dur=12.8, split_at=0.9, keep_at=8.0, plug_at=(9.4, 9.9, 10.4)):
 
 
 # ======================================================================= CTA: letters drop into a comment bubble
-def scene_cta(dur=5.2, ask_at=0.1, drop_at=1.0):
+def scene_cta(dur=5.2, ask_at=0.1, drop_at=1.0, ask="Store leaking?", caps=("Comment it, and I'll send you", "how we'd plug it.", "plug it")):
     """'Is your store leaking?' 'LEADS' - each letter drops into a big gold comment bubble; 'Comment it, and I'll send
     you how we'd plug it.'"""
-    q = T("Store leaking?", 100); cap1, cap2 = T("Comment it, and I'll send you", 64), T("how we'd plug it.", 64)
+    q = T(ask, 100); cap1, cap2 = T(caps[0], 64), T(caps[1], 64)
     BW, BH = 760, 300
     def bb(d, s, im_):
         d.rounded_rectangle((0, 0, BW * s - 1, (BH - 50) * s), 60 * s, fill=GOLD)
@@ -313,6 +313,52 @@ def scene_cta(dur=5.2, ask_at=0.1, drop_at=1.0):
             if kk > 0: put(im, T(ch, 150, NAVY), x + wch / 2, 860 - 600 * (1 - spring(kk, f=1.6, d=6)), clamp(kk / 0.1), 1, 15 * (1 - eo(kk)) * (1 if i % 2 else -1))
             x += wch
             if t0 + 0.3 <= t < t0 + 0.38: sh = 6
-        rise(im, cap1, W / 2, 1230, t, drop_at + 1.4); rise(im, cap2, W / 2, 1320, t, drop_at + 1.7); under(im, "how we'd plug it.", 64, W / 2, 1320, "plug it", (t - drop_at - 2.2) / 0.4)
+        rise(im, cap1, W / 2, 1230, t, drop_at + 1.4); rise(im, cap2, W / 2, 1320, t, drop_at + 1.7); under(im, caps[1], 64, W / 2, 1320, caps[2], (t - drop_at - 2.2) / 0.4)
         return im, sh
     return dur, fn, [(ask_at, "hit", 0.7), (drop_at - 0.4, "whoosh", 0.5)] + [(drop_at + 0.5 + i * 0.16, "hit", 0.5) for i in range(5)] + [(drop_at + 1.4, "swish", 0.4), (drop_at + 2.2, "swish", 0.5)]
+
+
+# ======================================================================= opening callout: who it's for
+def scene_callout(dur=3.4, you_at=1.5):
+    """frame 0: 'Run an / online store?' with a per-letter bounce; 'This one's for you.' pops in gold with an arrow
+    pointing out of the screen at the viewer"""
+    you = T("This one's for you.", 96, GOLD)
+    def fn(t):
+        im = vignette(view(t * 0.8, 1.0 + 0.35 * (1 - eo(t / 0.8)), 0.5, 0.5, dark=0.55)); sh = 14 if t < 0.14 else 0
+        letters_bounce(im, "Run an", 130, W / 2, 620, t); letters_bounce(im, "online store?", 130, W / 2, 790, t, 0.2)
+        if t >= you_at:
+            pop(im, you, W / 2, 1060, t, you_at, 1.4); under(im, "This one's for you.", 96, W / 2, 1060, "for you", (t - you_at - 0.4) / 0.4)
+            k = eo((t - you_at - 0.2) / 0.4); d = ImageDraw.Draw(im); y = 1260 + 20 * math.sin(t * 6)
+            if k > 0: d.polygon([(W / 2 - 50 * k, y), (W / 2 + 50 * k, y), (W / 2, y + 70 * k)], fill=GOLD); d.rectangle((W / 2 - 16 * k, y - 80 * k, W / 2 + 16 * k, y), fill=GOLD)
+            if you_at <= t < you_at + 0.14: sh = 9
+        return im, sh
+    return dur, fn, [(0.0, "hit", 1.0)] + [(i * 0.05, "tick", 0.3) for i in range(0, 18, 2)] + [(you_at, "hit", 0.9), (you_at + 0.4, "swish", 0.5)]
+
+
+# ======================================================================= who it's for: a checklist that ticks itself
+def scene_who(dur=7.2, rows_at=(1.4, 3.8), help_at=5.6):
+    """'Sound like you?' two checklist rows; each box draws its tick as the line is said; 'That's who we help.'"""
+    hd = T("Sound like you?", 96); hp = T("That's who we help.", 96, GOLD)
+    rows = ["Spending on ads, but sales feel flat", "No emails going out to customers"]
+    def row(s_):
+        def dr(d, sc):
+            d.rounded_rectangle((34 * sc, 37 * sc, 110 * sc, 113 * sc), 18 * sc, outline=NAVY, width=6 * sc); d.text((140 * sc, 52 * sc), s_, font=A.font("bl", 38 * sc), fill=INK)
+        return card(900, 150, dr, r=30)
+    R = [row(s_) for s_ in rows]; Y = [820, 1010]
+    def fn(t):
+        im = view(2.0 + 0.5 * t, 1.12, 0.5, 0.5, blur=6, dark=0.62); sh = 0
+        pop(im, hd, W / 2, 520, t, 0.1, 1.4)
+        for i, (r_, y, t0) in enumerate(zip(R, Y, rows_at)):
+            k = (t - t0 + 0.5) / 0.4
+            if k <= 0: continue
+            put(im, r_, W / 2 + 800 * (1 - eo(k)), y)
+            p = eo((t - t0) / 0.35)
+            if p > 0:  # the tick draws itself
+                x0 = W / 2 - 450 + 72; d = ImageDraw.Draw(im); pts = [(x0 - 22, y), (x0 - 6, y + 18), (x0 + 26, y - 20)]
+                d.rounded_rectangle((x0 - 38, y - 38, x0 + 38, y + 38), 18, fill=GOLD)
+                if p < 0.5: d.line([pts[0], (pts[0][0] + (pts[1][0] - pts[0][0]) * p * 2, pts[0][1] + (pts[1][1] - pts[0][1]) * p * 2)], fill=NAVY, width=9)
+                else: d.line([pts[0], pts[1], (pts[1][0] + (pts[2][0] - pts[1][0]) * (p - 0.5) * 2, pts[1][1] + (pts[2][1] - pts[1][1]) * (p - 0.5) * 2)], fill=NAVY, width=9, joint="curve")
+            if t0 <= t < t0 + 0.12: sh = 6
+        if t >= help_at: pop(im, hp, W / 2, 1300, t, help_at, 1.4); under(im, "That's who we help.", 96, W / 2, 1300, "who we help", (t - help_at - 0.4) / 0.4)
+        return im, sh
+    return dur, fn, [(0.1, "hit", 0.7)] + [(x - 0.5, "whoosh", 0.4) for x in rows_at] + [(x, "click", 0.9) for x in rows_at] + [(help_at, "hit", 0.9), (help_at + 0.4, "swish", 0.5)]
