@@ -13,6 +13,7 @@ import broll as B
 A.set_theme("midnight", accent=S.ACC, accent2=S.ACC, bg=((8, 10, 14), (4, 5, 8)), blobs=[], grid=False)
 VO, VO_TRIM = "footage/ryan_vo.m4a", 0.68  # the recording starts with 0.68s of silence: cut it so the first word lands at 0.3s
 w = S.with_shot
+THUMB = "brand/southline_thumb_square.webp"  # brand card held at the end = clean Instagram thumbnail
 CHIPS = [["Plumbers", "Electricians", "Builders"], ["Kitchen & bathroom fitters"]]
 
 # (scene over its B-roll shot, the line Ryan says over it). Durations and beat times (seconds into each scene) come from
@@ -40,6 +41,7 @@ SCENES = [
     (w(S.scene_wom(dur=6.35, bubbles_at=(0.6, 1.0, 1.4), dry_at=1.9, swap=2.4, ul_at=4.2, help_at=5.4), B.site),
      "Tradesmen still relying on word of mouth. Good at the job, but struggling to stay booked out. That's who we help."),
     (w(S.scene_end(dur=5.45, card_at=3.9, lines_at=(0.3, 0.95, 2.05)), B.van_road), "That's it. No magic. Just ads done properly."),
+    (S.scene_thumb(THUMB, dur=2.5), "(end card / thumbnail, no voice)"),
 ]
 
 if "--stills" in sys.argv:
@@ -109,6 +111,7 @@ total = v.render(raw, transition="whip", tr_frames=4, preview_times=ends, music=
 song_bed(total, MUSIC, bed) if MUSIC else music_bed(total, bed)
 mix_onto(raw, raw, bed, out); os.remove(bed)
 os.replace(raw.replace(".mp4", "_preview.png"), out.replace(".mp4", "_preview.png")); os.remove(raw)
+S.thumb_frame(THUMB).convert("RGB").save("out/southline_trust_ryan_cover.png")
 print(f"rendered {total:.2f}s")
 cue, t = [], 0.0
 for (d, _, _), line in SCENES: cue.append(f"{int(t // 60)}:{t % 60:05.2f}  {line}"); t += round(d * A.FPS) / A.FPS

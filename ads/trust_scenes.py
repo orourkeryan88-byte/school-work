@@ -461,3 +461,26 @@ def scene_end(dur=4.4, card_at=2.5, lines_at=(0.05, 0.7, 1.35)):
             rise(im, b1, W / 2, 1110, t, card_at + 0.3); rise(im, b2, W / 2, 1190, t, card_at + 0.5)
         return im, 0
     return dur, fn, [(lines_at[0], "hit", 0.6), (lines_at[1], "hit", 0.6), (lines_at[2], "hit", 0.7), (lines_at[2] + 0.45, "swish", 0.5), (card_at, "whoosh", 0.5), (card_at + 0.1, "pop", 0.8), (card_at + 0.2, "shimmer", 0.6)]
+
+
+def thumb_frame(path):
+    """square brand card placed in the middle of a 9:16 frame; the navy above and below is extended from its own
+    top/bottom edge colours and blended in, so it reads as one clean full-screen image (Instagram cover / thumbnail)"""
+    sq = Image.open(path).convert("RGB").resize((W, W), Image.LANCZOS); a = np.asarray(sq).astype(np.float32)
+    top, bot = a[:20].reshape(-1, 3).mean(0), a[-20:].reshape(-1, 3).mean(0)
+    g = np.linspace(0, 1, H)[:, None, None]; bg = top * (1 - g) + bot * g; bg = np.repeat(bg, W, axis=1)
+    y0 = (H - W) // 2; F = 170  # feather the square's top and bottom edges into the extension
+    m = np.ones((W, 1, 1), np.float32); ramp = np.linspace(0, 1, F)[:, None, None]; m[:F] = ramp; m[-F:] = ramp[::-1]
+    bg[y0:y0 + W] = bg[y0:y0 + W] * (1 - m) + a * m
+    return Image.fromarray(np.clip(bg, 0, 255).astype(np.uint8)).convert("RGBA")
+
+
+def scene_thumb(path, dur=2.5):
+    """clean end card held still: settles in over 0.4s, then not a single pixel moves (pick any frame as the cover)"""
+    card_ = thumb_frame(path)
+    def fn(t):
+        s = 1.04 - 0.04 * eo(t / 0.4)
+        if s <= 1.0005: return card_.copy(), 0
+        im = card_.resize((int(W * s), int(H * s)), Image.BICUBIC); x, y = (im.width - W) // 2, (im.height - H) // 2
+        return im.crop((x, y, x + W, y + H)), 0
+    return dur, fn, [(0.0, "shimmer", 0.5)]
