@@ -358,48 +358,59 @@ def scene_phone(dur=3.8, note_at=0.9, call_at=2.0, tap_at=2.5):
     return dur, fn, [(0.05, "swish", 0.4), (0.1, "whoosh", 0.5), (note_at, "ping", 0.8), (call_at, "pop", 0.6), (tap_at, "click", 0.8), (tap_at + 0.1, "shimmer", 0.4)]
 
 
-def scene_waves(dur=5.4, draw=(0.5, 2.6), help_at=3.3):
-    """'If work comes in waves…' a busy/quiet wave draws across the year with a glow; '…that's who we help.'"""
-    h1 = T("If work comes in waves…", 84); h2 = T("…that's who we help.", 84)
-    X0, X1, Y0, Y1 = 110, 970, 820, 1220; months = "JFMAMJJASOND"
-    pts = [(X0 + (X1 - X0) * i / 200, (Y0 + Y1) / 2 - 150 * math.sin(i / 200 * 2 * math.pi * 2.5 + 0.4)) for i in range(201)]
-    busy, quiet = A.pill("Busy", 34, WHITE, INK, w="bl"), A.pill("Quiet", 34, (60, 66, 80), WHITE, w="bl")
-    peaks = [(i, p) for i, p in enumerate(pts[1:-1], 1) if (p[1] < pts[i - 1][1] and p[1] <= pts[i + 1][1]) or (p[1] > pts[i - 1][1] and p[1] >= pts[i + 1][1])]
+def scene_wom(dur=6.2, bubbles_at=(0.7, 1.3, 1.9), dry_at=2.5, swap=3.0, help_at=4.8):
+    """'Tradesmen still relying on word of mouth…' - referral speech bubbles pop in left/right, then go grey and drift
+    up and away (it dries up). '…and struggling to get booked out?' - a two-week calendar, nearly empty, the empty days
+    pulsing. 'That's who we help.'"""
+    a1, a2 = T("Tradesmen still relying", 76), T("on word of mouth…", 84)
+    b1, b2 = T("…and struggling", 84), T("to get booked out?", 84); hp = T("That's who we help.", 96)
+    says = [("Know a good plumber?", -1), ("Ask Mick, he's sound.", 1), ("Grand, I'll get his number.", -1)]
+    def bubble(s_, side, grey=False):
+        f = A.font("b", 46); w_, h_ = int(f.getlength(s_) + 80), 120
+        def dr(d, s, im_):
+            fill = (210, 212, 218) if grey else WHITE
+            d.rounded_rectangle((0, 0, w_ * s - 1, (h_ - 24) * s), 40 * s, fill=fill)
+            tx = 60 if side < 0 else w_ - 60; d.polygon([((tx - 20) * s, (h_ - 30) * s), ((tx + 20) * s, (h_ - 30) * s), ((tx - 30 * side) * s, h_ * s - 1)], fill=fill)
+            d.text((40 * s, 22 * s), s_, font=A.font("b", 46 * s), fill=MUTED if grey else INK)
+        return shadowed(sprite(w_, h_, dr), blur=18, dy=10, alpha=140, pad=40)
+    BB = [(bubble(s_, sd), bubble(s_, sd, True)) for s_, sd in says]
+    days = ["Mon", "Tue", "Wed", "Thu", "Fri"]; booked = {1: "Leak fix", 7: "Quote"}
+    def cell(i):
+        def dr(d, s, im_):
+            ctext(d, 75 * s, 30 * s, days[i % 5], A.font("sb", 26 * s), (170, 178, 194))
+            if i in booked:
+                d.rounded_rectangle((12 * s, 58 * s, 138 * s, 128 * s), 18 * s, fill=ACC); ctext(d, 75 * s, 93 * s, booked[i], A.font("bl", 24 * s), WHITE)
+            else: d.rounded_rectangle((12 * s, 58 * s, 138 * s, 128 * s), 18 * s, outline=(110, 118, 136), width=3 * s)
+        return sprite(150, 140, dr)
+    CELLS = [cell(i) for i in range(10)]; wk = [T("Week 1", 34, (170, 178, 194), "b"), T("Week 2", 34, (170, 178, 194), "b")]
+
     def fn(t):
-        im = view(1.5 + 0.6 * t, 1.15, 0.6, 0.5, blur=4, dark=0.62); rise(im, h1, W / 2, 470, t, 0.05)
-        d = ImageDraw.Draw(im)
-        for i, m in enumerate(months): ctext(d, X0 + (X1 - X0) * (i + 0.5) / 12, 1320, m, A.font("monob", 30), (170, 176, 190))
-        n = int(200 * eio((t - draw[0]) / (draw[1] - draw[0])))
-        if n > 1:
-            gl = Image.new("RGBA", (W, H), (0, 0, 0, 0)); ImageDraw.Draw(gl).line(pts[:n + 1], fill=ACC + (255,), width=24, joint="curve")
-            im.alpha_composite(gl.filter(ImageFilter.GaussianBlur(14))); d = ImageDraw.Draw(im); d.line(pts[:n + 1], fill=WHITE, width=9, joint="curve")
-            x, y = pts[n]; d.ellipse((x - 14, y - 14, x + 14, y + 14), fill=WHITE)
-        for i, (x, y) in peaks:
-            if i <= n: lab = busy if y < (Y0 + Y1) / 2 else quiet; pop(im, lab, x, y + (-70 if lab is busy else 70), t, draw[0] + (draw[1] - draw[0]) * i / 200, 1.4)
-        rise(im, h2, W / 2, 1490, t, help_at); under(im, "…that's who we help.", 84, W / 2, 1490, "who we help", (t - help_at - 0.35) / 0.4)
+        im = view(1.5 + 0.6 * t, 1.15, 0.6, 0.5, blur=6, dark=0.62)
+        if t < swap + 0.3:
+            o = eio((t - swap) / 0.3); dx = -1100 * o
+            rise(im, a1, W / 2 + dx, 410, t, 0.05); rise(im, a2, W / 2 + dx, 515, t, 0.3)
+            under(im, "on word of mouth…", 84, W / 2 + dx, 515, "word of mouth", (t - 0.7) / 0.4)
+            dry = eio((t - dry_at) / 0.6)
+            for i, ((sp0, sp1), (_, sd)) in enumerate(zip(BB, says)):
+                k = (t - bubbles_at[i]) / 0.4
+                if k <= 0: continue
+                x = W / 2 + sd * 90 + dx; y = 780 + i * 200 - 160 * dry
+                put(im, sp1 if dry > 0.3 else sp0, x, y, clamp(k / 0.15) * (1 - 0.75 * dry), (0.6 + 0.4 * back(k)) * (1 - 0.15 * dry))
+        if t >= swap:
+            u = t - swap; dx = 1100 * (1 - eio(u / 0.3))
+            rise(im, b1, W / 2 + dx, 420, t, swap + 0.05); rise(im, b2, W / 2 + dx, 525, t, swap + 0.25)
+            under(im, "to get booked out?", 84, W / 2 + dx, 525, "booked out", (u - 0.6) / 0.4)
+            for r in range(2):
+                put(im, wk[r], W / 2 - 330 + dx, 700 + r * 230, eo((u - 0.2) / 0.3))
+                for c in range(5):
+                    i = r * 5 + c; x = W / 2 + (c - 2) * 162 + dx; y = 800 + r * 230
+                    pulse = 1 + (0.03 * math.sin(t * 5 + i) if i not in booked else 0)
+                    put(im, CELLS[i], x, y, eo((u - 0.3 - i * 0.04) / 0.3), pulse)
+            pop(im, hp, W / 2, 1400, t, help_at, 1.4); under(im, "That's who we help.", 96, W / 2, 1400, "who we help", (t - help_at - 0.35) / 0.4)
         return im, 0
-    ev = [(0.05, "swish", 0.4), (draw[0], "whoosh", 0.5)] + [(draw[0] + (draw[1] - draw[0]) * i / 200, "pop", 0.35) for i, _ in peaks] + [(help_at, "swish", 0.5), (help_at + 0.35, "swish", 0.5)]
+    ev = [(0.05, "swish", 0.4), (0.3, "swish", 0.4), (0.7, "swish", 0.5)] + [(b_, "pop", 0.5) for b_ in bubbles_at] + [(dry_at, "whoosh", 0.4),
+          (swap, "whoosh", 0.6), (swap + 0.25, "swish", 0.4), (swap + 0.6, "swish", 0.5), (help_at, "hit", 0.8), (help_at + 0.35, "swish", 0.5)]
     return dur, fn, ev
-
-
-def scene_solid(dur=3.6, fill=(0.4, 1.5), honest_at=1.9):
-    """'Booked solid all year?' twelve month tiles fill up, then the honest line: 'You probably don't need us.'"""
-    h = T("Booked solid all year?", 84); hn = T("You probably don't need us.", 74)
-    MO = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
-    def tile(m, full):
-        def dr(d, s):
-            ctext(d, 100 * s, 50 * s, m, A.font("bl", 40 * s), WHITE if full else INK)
-            ctext(d, 100 * s, 100 * s, "FULL" if full else "", A.font("monob", 24 * s), WHITE)
-        return card(200, 140, dr, fill=ACC if full else (238, 240, 244), r=22)
-    T0 = [tile(m, False) for m in MO]; T1 = [tile(m, True) for m in MO]
-    def fn(t):
-        im = view(9.0 + 0.3 * t, 1.1, 0.5, 0.5, blur=9, dark=0.62); rise(im, h, W / 2, 430, t, 0.05)
-        for i in range(12):
-            r, c = divmod(i, 4); x, y = W / 2 + (c - 1.5) * 230, 720 + r * 170; ft = fill[0] + (fill[1] - fill[0]) * i / 11
-            put(im, T1[i] if t >= ft else T0[i], x, y, eo((t - 0.1 - i * 0.02) / 0.3), 1 + 0.12 * (1 - eo((t - ft) / 0.25)) if t >= ft else 1)
-        pop(im, hn, W / 2, 1310, t, honest_at, 1.25)
-        return im, 0
-    return dur, fn, [(0.05, "swish", 0.4)] + [(fill[0] + (fill[1] - fill[0]) * i / 11, "tick", 0.4) for i in range(12)] + [(honest_at, "hit", 0.7)]
 
 
 def scene_end(dur=4.4, card_at=2.5):

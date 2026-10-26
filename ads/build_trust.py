@@ -12,7 +12,12 @@ import broll as B
 A.set_theme("midnight", accent=S.ACC, accent2=S.ACC, bg=((8, 10, 14), (4, 5, 8)), blobs=[], grid=False)
 
 # (scene, script line it carries) - durations = the line read at a relaxed pace + a breath
-w = S.with_shot
+SPEED = 1.1  # everything runs 10% quicker than the relaxed read (Ryan asked for a touch faster)
+
+def w(scene, shots):
+    """scene over its B-roll shot, sped up by SPEED: shorter duration, animations and SFX times compressed evenly"""
+    dur, fn, ev = S.with_shot(scene, shots)
+    return dur / SPEED, (lambda t: fn(t * SPEED)), [(a_ / SPEED, n_, g_) for a_, n_, g_ in ev]
 # (scene over its B-roll shot, script line it carries) - durations = the line read at a relaxed pace + a breath
 SCENES = [
     (w(S.scene_intro(dur=4.8), B.van_road), "Tradesmen in Ireland and the UK. I'm Ryan. I run a marketing agency,"),
@@ -28,8 +33,7 @@ SCENES = [
     (w(S.scene_questions(dur=4.6), B.phone_feed), "Before anyone gets in touch, they answer a few quick questions about the job."),
     (w(S.scene_phone(dur=3.8), B.desk), "Then it lands straight on your phone, and you ring them back."),
     (w(S.scene_title("03", ["And who's", "it for?"], 2.0, 1.2, 0.5, 0.5, dur=1.8, chips=[["Plumbers", "Electricians", "Builders"], ["Kitchen & bathroom fitters"]], hi_chip="Electricians"), B.map_), "And who's it for?"),
-    (w(S.scene_waves(dur=5.4), B.site), "If work comes in waves, busy one month and quiet the next, that's who we help."),
-    (w(S.scene_solid(dur=3.6), B.planner), "If you're booked solid all year, you probably don't need us."),
+    (w(S.scene_wom(dur=6.2), B.site), "Tradesmen still relying on word of mouth, and struggling to get booked out. That's who we help."),
     (w(S.scene_end(dur=4.4), B.van_road), "That's it. No magic, just ads done properly."),
 ]
 
