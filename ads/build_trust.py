@@ -1,6 +1,7 @@
 """Southline TRUST video: code-drawn B-roll (broll.py) under every line + animations, timed to the voiceover script
-(read at a natural pace, ~64s). No voice baked in: Ryan records the VO over it. Soft music bed + quiet SFX, mastered
-low (-21 LUFS) so a voiceover sits on top. python3 build_trust.py [--stills]"""
+(read at a natural pace, ~64s). No voice baked in: Ryan records the VO over it. Music bed (--music <file>, else a soft
+synth bed) + quiet SFX, mastered low (-22 LUFS) so a voiceover sits on top.
+python3 build_trust.py [--stills] [--music song.mp4] [--remix = audio only, onto the existing video]"""
 import sys, os, subprocess, wave
 import numpy as np
 from PIL import Image
@@ -63,16 +64,37 @@ def music_bed(dur, path, bpm=84):
     with wave.open(path, "wb") as wf: wf.setnchannels(1); wf.setsampwidth(2); wf.setframerate(sr); wf.writeframes((out * 32767).astype(np.int16).tobytes())
 
 
+def song_bed(total, src, path, start=1.5, end=40.5, xf=4.0):
+    """background song from a file: the clean stretch [start, end] looped once with a long crossfade, cut to the
+    video length, faded in and out"""
+    seg = f"atrim={start}:{end},asetpts=PTS-STARTPTS"
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", src, "-i", src, "-filter_complex",
+                    f"[0:a]{seg}[a];[1:a]{seg}[b];[a][b]acrossfade=d={xf}:c1=tri:c2=tri,atrim=0:{total},afade=t=in:d=1.2,afade=t=out:st={total - 3}:d=3,aformat=channel_layouts=mono[m]",
+                    "-map", "[m]", "-ar", str(A.SR), path], check=True)
+
+
+def mix_onto(video_in, sfx_in, bed, out):
+    """music under, SFX quieter on top; the whole bed is mastered low so Ryan's voiceover sits clearly above it"""
+    subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", video_in, "-i", sfx_in, "-i", bed, "-filter_complex",
+                    "[1:a]volume=0.4[s];[2:a]volume=1.0[m];[s][m]amix=inputs=2:normalize=0,lowpass=f=15000,loudnorm=I=-22:TP=-3:LRA=11,aresample=48000[a]",
+                    "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", out], check=True)
+
+
+# --music <file>: use that song as the bed (e.g. the clean audio from a screen recording); default = the synth bed
+MUSIC = sys.argv[sys.argv.index("--music") + 1] if "--music" in sys.argv else None
 v = A.Video(); [v.add(*s) for s, _ in SCENES]
-raw = "out/_trust_raw.mp4"; out = "out/southline_trust_ryan.mp4"
+out = "out/southline_trust_ryan.mp4"; bed = "out/_trust_music.wav"
+if "--remix" in sys.argv:  # audio only: rebuild the SFX + music and swap them onto the existing video (no frame render)
+    total = v.render("out/_trust_sfx.m4a", music=False, lufs=None, audio_only=True)
+    song_bed(total, MUSIC, bed) if MUSIC else music_bed(total, bed)
+    tmp = out.replace(".mp4", "_tmp.mp4"); mix_onto(out, "out/_trust_sfx.m4a", bed, tmp); os.replace(tmp, out)
+    os.remove("out/_trust_sfx.m4a"); os.remove(bed); print(f"remixed {total:.2f}s"); sys.exit()
+raw = "out/_trust_raw.mp4"
 ends, t = [], 0
 for (d, _, _), _ in SCENES: t += round(d * A.FPS) / A.FPS; ends.append(t - 0.4)
 total = v.render(raw, transition="whip", tr_frames=4, preview_times=ends, music=False, lufs=None, punch=False, drift=0.0)
-bed = "out/_trust_music.wav"; music_bed(total, bed)
-# music under, SFX quieter on top; whole bed mastered low so Ryan's voiceover sits clearly above it
-subprocess.run(["ffmpeg", "-y", "-loglevel", "error", "-i", raw, "-i", bed, "-filter_complex",
-                "[0:a]volume=0.45[s];[1:a]volume=1.0[m];[s][m]amix=inputs=2:normalize=0,lowpass=f=15000,loudnorm=I=-21:TP=-3:LRA=11,aresample=48000[a]",
-                "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "192k", "-movflags", "+faststart", out], check=True)
+song_bed(total, MUSIC, bed) if MUSIC else music_bed(total, bed)
+mix_onto(raw, raw, bed, out); os.remove(bed)
 os.replace(raw.replace(".mp4", "_preview.png"), out.replace(".mp4", "_preview.png")); os.remove(raw)
 print(f"rendered {total:.2f}s")
 cue, t = [], 0.0
