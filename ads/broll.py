@@ -245,3 +245,76 @@ def planner(ts):
     im = _pl["p"].crop((ox, oy, ox + W, oy + H)); a = np.asarray(im, np.float32); yy, xx = np.mgrid[0:H, 0:W]
     fall = 1 - 0.35 * np.clip(np.sqrt(((xx - 300) / 1200.0) ** 2 + ((yy - 400) / 1600.0) ** 2), 0, 1)
     return img(a * fall[..., None])
+
+
+# ======================================================================= e-commerce: product + parcels + product page
+def product(d, cx, cy, s=1.0, body=(232, 220, 204), label=(28, 34, 52), accent=(226, 178, 92)):
+    """a simple skincare-style bottle: cap, shoulders, body with a label band"""
+    w, h = 150 * s, 300 * s
+    d.rounded_rectangle((cx - 34 * s, cy - h / 2 - 70 * s, cx + 34 * s, cy - h / 2 + 4 * s), 10 * s, fill=label)
+    d.rounded_rectangle((cx - 50 * s, cy - h / 2 - 6 * s, cx + 50 * s, cy - h / 2 + 30 * s), 14 * s, fill=body)
+    d.rounded_rectangle((cx - w / 2, cy - h / 2 + 20 * s, cx + w / 2, cy + h / 2), 34 * s, fill=body)
+    d.rectangle((cx - w / 2, cy - 30 * s, cx + w / 2, cy + 70 * s), fill=label)
+    d.rectangle((cx - w / 2, cy + 52 * s, cx + w / 2, cy + 60 * s), fill=accent)
+    d.rounded_rectangle((cx - w / 2 + 14 * s, cy - h / 2 + 34 * s, cx - w / 2 + 30 * s, cy + h / 2 - 30 * s), 8 * s, fill=(255, 255, 255))
+
+
+_pc = {}
+def parcels(ts):
+    """warehouse at night: racks of stock drifting past behind, a conveyor carrying taped parcels across the front"""
+    LW = W * 3
+    if not _pc:
+        a = vgrad(W, H, (20, 24, 34), (8, 9, 12)); a[1300:] = vgrad(W, H - 1300, (26, 26, 30), (12, 12, 14))
+        for x in (180, 540, 900): a = glow(a, x, 160, 260, (255, 226, 170), 0.18)
+        base = img(a); d = ImageDraw.Draw(base)
+        for x in (180, 540, 900): d.rounded_rectangle((x - 90, 120, x + 90, 140), 8, fill=(255, 240, 210))
+        racks = Image.new("RGBA", (LW, H), (0, 0, 0, 0)); d = ImageDraw.Draw(racks); rng = np.random.default_rng(9)
+        for x0 in range(0, LW, 420):
+            for x in (x0 + 10, x0 + 400): d.rectangle((x, 330, x + 14, 1300), fill=(70, 74, 84))
+            for y in (560, 830, 1100): d.rectangle((x0 + 10, y, x0 + 414, y + 16), fill=(90, 70, 40))
+            for y in (560, 830, 1100):
+                x = x0 + 30
+                while x < x0 + 390:
+                    bw, bh = int(rng.uniform(70, 130)), int(rng.uniform(90, 200)); c = tuple(int(v * rng.uniform(0.75, 1.0)) for v in (176, 132, 86))
+                    if x + bw < x0 + 400: d.rectangle((x, y - bh, x + bw, y), fill=c); d.rectangle((x + bw / 2 - 6, y - bh, x + bw / 2 + 6, y), fill=(196, 160, 112))
+                    x += bw + 8
+        rk = racks.filter(ImageFilter.GaussianBlur(2)); fade = Image.new("RGBA", (LW, H), (12, 14, 20, 90)); rk.alpha_composite(Image.composite(fade, Image.new("RGBA", (LW, H), (0, 0, 0, 0)), rk.split()[3]))
+        _pc.update(base=base, racks=rk)
+    im = _pc["base"].copy().convert("RGBA"); ox = int(ts * 22) % (LW - W); im.alpha_composite(_pc["racks"].crop((ox, 0, ox + W, H)))
+    d = ImageDraw.Draw(im)
+    d.rectangle((0, 1440, W, 1560), fill=(34, 36, 42)); d.rectangle((0, 1430, W, 1446), fill=(80, 84, 92)); d.rectangle((0, 1556, W, 1570), fill=(60, 62, 70))
+    off = (ts * 160) % 60
+    for x in range(-60, W + 60, 60): d.line((x + off, 1450, x + off, 1550), fill=(46, 48, 56), width=4)
+    off = (ts * 160) % 380; sizes = [(240, 180), (200, 150), (280, 200)]
+    for i, x in enumerate(range(-380, W + 380, 380)):
+        bw, bh = sizes[i % 3]; x0 = x + off; y1 = 1432
+        d.rectangle((x0, y1 - bh, x0 + bw, y1), fill=(186, 140, 92)); d.rectangle((x0, y1 - bh, x0 + bw, y1 - bh + 18), fill=(166, 122, 78))
+        d.rectangle((x0 + bw / 2 - 10, y1 - bh, x0 + bw / 2 + 10, y1), fill=(212, 190, 150))
+        d.rectangle((x0 + 24, y1 - bh + 50, x0 + 110, y1 - bh + 100), fill=(240, 238, 232)); d.rectangle((x0 + 32, y1 - bh + 60, x0 + 92, y1 - bh + 66), fill=(60, 60, 60))
+    return im.convert("RGB")
+
+
+_ck = {}
+def checkout(ts):
+    """a phone on a product page over warm bokeh: product shot, stars, price, 'Add to basket' pulsing, gentle scroll"""
+    if not _ck:
+        phone_feed(0.0)
+        SW_, SH_ = 600, 1600; p = Image.new("RGB", (SW_, SH_), (255, 255, 255)); d = ImageDraw.Draw(p)
+        d.rectangle((0, 0, SW_, 120), fill=(248, 248, 250)); d.rounded_rectangle((200, 70, 400, 92), 10, fill=(30, 34, 48))
+        p.paste(Image.fromarray(vgrad(SW_, 560, (244, 238, 230), (226, 218, 206)).astype(np.uint8)), (0, 130))
+        product(ImageDraw.Draw(p), 300, 430, 1.2)
+        d.rounded_rectangle((40, 720, 420, 752), 12, fill=(30, 34, 48)); d.rounded_rectangle((40, 770, 300, 790), 10, fill=(200, 204, 212))
+        for i in range(5):
+            x = 52 + i * 44; d.polygon([(x, 812), (x + 9, 832), (x + 30, 832), (x + 13, 845), (x + 20, 866), (x, 853), (x - 20, 866), (x - 13, 845), (x - 30, 832), (x - 9, 832)], fill=(226, 178, 92))
+        d.text((40, 890), "€34.00", font=A.font("bl", 56), fill=(20, 24, 34))
+        for i in range(6): d.rounded_rectangle((40, 1150 + i * 60, 560 - (i % 3) * 90, 1172 + i * 60), 10, fill=(226, 228, 234))
+        _ck["page"] = p
+    im = _pf["bk"].crop((0, int(ts * 12) % 600, W, int(ts * 12) % 600 + H)).copy()
+    sc = _ck["page"].crop((0, int(40 + 40 * math.sin(ts * 0.6)), 600, int(40 + 40 * math.sin(ts * 0.6)) + 1260)); d = ImageDraw.Draw(sc)
+    by = 1000 - int(40 + 40 * math.sin(ts * 0.6)); pulse = 0.5 + 0.5 * math.sin(ts * 4)
+    d.rounded_rectangle((40 - 4 * pulse, by - 4 * pulse, 560 + 4 * pulse, by + 96 + 4 * pulse), 26, fill=(20, 24, 34))
+    f = A.font("bl", 40); tw = f.getlength("Add to basket"); d.text((300 - tw / 2, by + 24), "Add to basket", font=f, fill=(255, 255, 255))
+    sh = _pf["shell"]; im.alpha_composite(sh, (int(W / 2 - sh.width / 2), int(H / 2 - sh.height / 2)))
+    im.paste(sc, (int(W / 2 - 300), int(H / 2 - 630)), _pf["mask"])
+    ImageDraw.Draw(im).rounded_rectangle((W / 2 - 90, H / 2 - 612, W / 2 + 90, H / 2 - 572), 20, fill=(10, 10, 12))
+    return im.convert("RGB")
