@@ -14,19 +14,19 @@ A.set_theme("midnight", accent=S.ACC, accent2=S.ACC, bg=((8, 10, 14), (4, 5, 8))
 w = S.with_shot
 # (scene over its B-roll shot, script line it carries) - durations = the line read at a relaxed pace + a breath
 SCENES = [
-    (w(S.scene_intro(dur=4.2), B.van_road), "Hey, I'm Ryan, and I run a marketing agency in 2026."),
-    (w(S.scene_common(dur=3.4), B.van_road), "And the most common question I get asked is…"),
+    (w(S.scene_intro(dur=4.8), B.van_road), "Tradesmen in Ireland and the UK. I'm Ryan. I run a marketing agency,"),
+    (w(S.scene_common(dur=3.0), B.van_road), "and the biggest question I get asked is…"),
     (w(S.scene_question(dur=3.3), B.desk), "'Do Facebook ads actually work for tradesmen?'"),
     (w(S.scene_short(dur=5.2), B.phone_feed), "Short answer? Yeah, when they're done properly. Boosting a post isn't the same thing."),
     (w(S.scene_title("01", ["So what do we", "actually do?"], 9.0, 1.3, 0.6, 0.6, dur=2.3), B.van_road), "So what do we actually do?"),
-    (w(S.scene_what(dur=4.6), B.dashboard), "We run Facebook and Instagram ads for trades and local businesses around Ireland."),
+    (w(S.scene_what(dur=4.6), B.dashboard), "We run Facebook and Instagram ads for trades and local businesses in Ireland and the UK."),
     (w(S.scene_trades(dur=3.6), B.van_road), "Plumbers, builders, electricians, kitchen and bathroom fitters."),
     (w(S.scene_aim(dur=4.4), B.map_), "The aim's simple: get people in your area asking you for a quote."),
     (w(S.scene_title("02", ["So how do we", "actually do it?"], 5.0, 1.3, 0.5, 0.45, dur=2.3), B.dashboard), "So how do we actually do it?"),
     (w(S.scene_how(dur=7.0), [(0.0, B.site), (3.5, B.desk)]), "We take your real work, your photos and your before-and-afters, and show it to homeowners in the area you cover."),
     (w(S.scene_questions(dur=4.6), B.phone_feed), "Before anyone gets in touch, they answer a few quick questions about the job."),
     (w(S.scene_phone(dur=3.8), B.desk), "Then it lands straight on your phone, and you ring them back."),
-    (w(S.scene_title("03", ["And who's", "it for?"], 2.0, 1.2, 0.5, 0.5, dur=1.8), B.map_), "And who's it for?"),
+    (w(S.scene_title("03", ["And who's", "it for?"], 2.0, 1.2, 0.5, 0.5, dur=1.8, chips=[["Plumbers", "Electricians", "Builders"], ["Kitchen & bathroom fitters"]], hi_chip="Electricians"), B.map_), "And who's it for?"),
     (w(S.scene_waves(dur=5.4), B.site), "If work comes in waves, busy one month and quiet the next, that's who we help."),
     (w(S.scene_solid(dur=3.6), B.planner), "If you're booked solid all year, you probably don't need us."),
     (w(S.scene_end(dur=4.4), B.van_road), "That's it. No magic, just ads done properly."),

@@ -85,32 +85,69 @@ def finger(im, x, y, t, t_tap):
 
 
 # ======================================================================= scenes
-def scene_intro(dur=4.2):
-    """push-in on the desk; 'Hey, I'm Ryan.' pops; lower-third name card slides in with the logo"""
-    logo = A.logo().resize((120, 120), Image.LANCZOS)
-    def lt(d, s): d.text((170 * s, 34 * s), "Ryan", font=A.font("bl", 58 * s), fill=INK); d.text((172 * s, 104 * s), "Founder · Southline Agency", font=A.font("m", 30 * s), fill=MUTED)
-    LT = card(700, 170, lt, alpha=240); LT.alpha_composite(logo, (50 + 26, 50 + 25))
-    h1, h2 = T("Hey, I'm Ryan.", 120), T("I run a marketing agency.", 70)
+def scene_intro(dur=4.8, places_at=(0.55, 0.85), clear_at=2.1, ryan_at=2.3, line_at=3.1, logo_at=3.6):
+    """hook: fast pull-out from the van; 'TRADESMEN' slams on frame 0, 'Ireland' & 'the UK' pins pop in; the callout
+    flies up and away, 'I'm Ryan.' slams with a pen circle drawn round 'Ryan', 'I run a marketing agency,' rises,
+    the logo flips in like a coin with 'Southline Agency'"""
+    big = T("Tradesmen", 200); inn = T("in", 70, (200, 210, 230))
+    def place(s_):
+        f = A.font("bl", 88); tw = f.getlength(s_); w_, h_ = int(tw + 150), 140
+        def dr(d, s, im_):
+            d.rounded_rectangle((0, 0, w_ * s - 1, h_ * s - 1), 70 * s, fill=WHITE)
+            d.ellipse((34 * s, 40 * s, 94 * s, 100 * s), fill=ACC); d.ellipse((54 * s, 60 * s, 74 * s, 80 * s), fill=WHITE)
+            d.text((112 * s, 26 * s), s_, font=A.font("bl", 88 * s), fill=INK)
+        return shadowed(sprite(w_, h_, dr), blur=20, dy=10, alpha=150, pad=40)
+    IRL, UK = place("Ireland"), place("the UK"); amp = T("&", 90, ACC)
+    im_, ryan = T("I'm", 150), T("Ryan.", 150); l2 = T("I run a marketing agency,", 76)
+    gap = A.font("bl", 150).getlength(" ") * 0.5; rw = im_.width + ryan.width - 72 + gap - 36
+    lg = A.logo().resize((150, 150), Image.LANCZOS); brand = A.pill("Southline Agency", 44, WHITE, INK, w="bl")
+
     def fn(t):
-        im = vignette(view(0.2 + t * 0.9, 1.0 + 0.1 * eio(t / dur), 0.5, 0.5, dark=0.15))
-        pop(im, h1, W / 2, 520, t, 0.1); rise(im, h2, W / 2, 660, t, 1.5)
-        k = eo((t - 0.7) / 0.5); put(im, LT, -400 + (W / 2 + 400) * k, 1440, k)
-        return im, 0
-    return dur, fn, [(0.1, "pop", 0.6), (0.7, "swish", 0.5), (1.5, "swish", 0.4)]
+        z = 1.0 + 0.6 * (1 - eo(t / 0.8)); im = vignette(view(0.2 + t * 0.9, z, 0.5, 0.62, dark=0.2 + 0.25 * clamp((t - clear_at) / 0.4)))
+        sh = 14 if t < 0.14 else 0
+        out = eio((t - clear_at) / 0.35); a_ = 1 - out; dy = -500 * out * out  # callout flies up and away
+        if a_ > 0:
+            put(im, big, W / 2, 560 + dy, a_, 1.12 - 0.12 * back(t / 0.3))
+            if t >= places_at[0]:
+                put(im, inn, W / 2, 735 + dy, a_ * clamp((t - places_at[0]) / 0.15))
+                pop(im, IRL, W / 2, 880 + dy, t, places_at[0]) if out == 0 else put(im, IRL, W / 2, 880 + dy, a_)
+            if t >= places_at[1]:
+                put(im, amp, W / 2, 1010 + dy, a_ * clamp((t - places_at[1]) / 0.15))
+                pop(im, UK, W / 2, 1140 + dy, t, places_at[1] + 0.1) if out == 0 else put(im, UK, W / 2, 1140 + dy, a_)
+            for i, t0 in enumerate(places_at): ring(im, W / 2, 880 + 260 * i, (t - t0) / 1.0, col=ACC, maxr=300, width=5, r0=60)
+        if t >= ryan_at:
+            k = (t - ryan_at) / 0.3; x0 = W / 2 - rw / 2; s_ = 1.4 - 0.4 * back(k); y2 = 640
+            put(im, im_, x0 + (im_.width - 36) / 2, y2, clamp(k / 0.15), s_)
+            rx = x0 + im_.width - 36 + gap + (ryan.width - 36) / 2; put(im, ryan, rx, y2, clamp(k / 0.15), s_)
+            if ryan_at <= t < ryan_at + 0.14: sh = 12
+            p = eo((t - ryan_at - 0.35) / 0.45)  # pen circle round 'Ryan'
+            if p > 0:
+                ew, eh = (ryan.width - 40) * 0.62, 105
+                ImageDraw.Draw(im).arc((rx - ew, y2 - eh, rx + ew, y2 + eh), 200, 200 + 350 * p, fill=ACC, width=10)
+        if t >= line_at: rise(im, l2, W / 2, 830, t, line_at)
+        if t >= logo_at:  # coin flip
+            k = (t - logo_at) / 0.6; ang = (1 - eo(k)) * math.pi * 3; sx = abs(math.cos(ang))
+            if sx > 0.04: put(im, lg.resize((max(1, int(150 * sx)), 150), Image.LANCZOS), W / 2 - brand.width / 2 - 20, 1060, clamp(k / 0.15))
+            pk = (t - logo_at - 0.35) / 0.35
+            if pk > 0: put(im, brand, W / 2 + 85, 1060, clamp(pk / 0.2), 0.7 + 0.3 * back(pk))
+        return im, sh
+    ev = [(0.0, "hit", 1.0), (0.0, "whoosh", 0.4), (places_at[0], "pop", 0.7), (places_at[1] + 0.1, "pop", 0.7), (clear_at, "whoosh", 0.6),
+          (ryan_at, "hit", 0.9), (ryan_at + 0.35, "swish", 0.6), (line_at, "swish", 0.4), (logo_at, "swish", 0.6), (logo_at + 0.35, "pop", 0.7)]
+    return dur, fn, ev
 
 
-def scene_common(dur=3.4):
-    """blurred backdrop + the clip floating in a rounded frame; 'The most common question I get asked…'"""
+def scene_common(dur=3.0):
+    """blurred backdrop + the clip floating in a rounded frame; 'and the biggest question I get asked is…'"""
     FW_, FH_ = 600, 1068
     mask = sprite(FW_, FH_, lambda d, s, im: d.rounded_rectangle((0, 0, FW_ * s - 1, FH_ * s - 1), 44 * s, fill=(255, 255, 255, 255))).split()[3]
     shadow = shadowed(Image.new("RGBA", (FW_ + 16, FH_ + 16), (255, 255, 255, 255)), blur=30, dy=20, alpha=150, pad=60)
-    h1, h2 = T("The most common", 84), T("question I get asked…", 84)
+    h1, h2 = T("And the biggest", 84), T("question I get asked is…", 84)
     def fn(t):
         ts = 3.5 + t; im = view(ts, 1.2, 0.5, 0.5, blur=8, dark=0.55)
         fr = frame(ts).resize((FW_, FH_), Image.BICUBIC).convert("RGBA"); fr.putalpha(mask)
         k = spring(t / 0.8, f=1.4, d=6); rot = -4 + 2 * math.sin(t * 1.6) + 10 * (1 - eo(t / 0.6))
         sh = shadow.copy(); sh.alpha_composite(fr, (68, 68)); put(im, sh, W / 2, 1180 + 600 * (1 - k), 1, 0.92 + 0.02 * math.sin(t * 2), rot)
-        rise(im, h1, W / 2, 380, t, 0.15); rise(im, h2, W / 2, 490, t, 0.4); under(im, "question I get asked…", 84, W / 2, 490, "question", (t - 0.8) / 0.4)
+        rise(im, h1, W / 2, 380, t, 0.15); rise(im, h2, W / 2, 490, t, 0.4); under(im, "question I get asked is…", 84, W / 2, 490, "question", (t - 0.8) / 0.4)
         return im, 0
     return dur, fn, [(0.0, "whoosh", 0.5), (0.15, "swish", 0.4), (0.4, "swish", 0.4), (0.8, "swish", 0.5)]
 
@@ -161,9 +198,11 @@ def scene_short(dur=5.2, boost_at=2.8, tap_at=3.25):
                      (tap_at, "click", 0.8), (tap_at + 0.25, "swish", 0.7), (tap_at + 0.5, "swish", 0.4)]
 
 
-def scene_title(num, lines, src, zoom, fx, fy, dur=2.3):
-    """section card: freeze frame, darkened; big accent number slams, the question pops in word by word"""
+def scene_title(num, lines, src, zoom, fx, fy, dur=2.3, chips=None, hi_chip=None):
+    """section card: freeze frame, darkened; big accent number slams, the question pops in word by word.
+    chips = optional rows of labels that pop in underneath (hi_chip is drawn in the accent colour)"""
     nsp = T(num, 150, ACC, "monob"); words = [[T(w_, 92) for w_ in l.split(" ")] for l in lines]
+    CH_ = [[A.pill(c, 44, ACC if c == hi_chip else WHITE, WHITE if c == hi_chip else INK, w="bl") for c in row] for row in (chips or [])]
     sp = A.font("bl", 92).getlength(" ")
     def fn(t):
         im = view(src, zoom + 0.08 * eio(t / dur), fx, fy, blur=3, dark=0.62)
@@ -172,14 +211,17 @@ def scene_title(num, lines, src, zoom, fx, fy, dur=2.3):
             tot = sum(w_.width - 72 for w_ in ws) + sp * (len(ws) - 1); x = W / 2 - tot / 2
             for w_ in ws:
                 pop(im, w_, x + (w_.width - 72) / 2, 930 + j * 120, t, k, 1.5); x += w_.width - 72 + sp; k += 0.1
+        for r, row in enumerate(CH_):
+            tot = sum(c.width for c in row) + 20 * (len(row) - 1); x = W / 2 - tot / 2
+            for c in row: pop(im, c, x + c.width / 2, 1250 + r * 110, t, k, 1.4); x += c.width + 20; k += 0.12
         return im, (12 if t < 0.12 else 0)
     n = sum(len(l.split(" ")) for l in lines)
     return dur, fn, [(0.0, "hit", 1.0)] + [(0.3 + i * 0.1, "pop", 0.3) for i in range(n)]
 
 
 def scene_what(dur=4.6):
-    """fly into the monitors; 'We run' + Facebook / Instagram pills + 'ads for trades & local businesses' + pin 'around Ireland'"""
-    s0 = T("We run", 84); s1, s2 = T("ads for trades &", 84), T("local businesses", 84); s3 = T("around Ireland.", 84)
+    """fly into the monitors; 'We run' + Facebook / Instagram pills + 'ads for trades & local businesses' + pin 'in Ireland & the UK'"""
+    s0 = T("We run", 84); s1, s2 = T("ads for trades &", 84), T("local businesses", 84); s3 = T("in Ireland & the UK.", 84)
     pf, pi = A.pill("Facebook", 50, WHITE, INK, w="bl"), A.pill("Instagram", 50, WHITE, INK, w="bl"); plus = T("+", 80, ACC)
     def fn(t):
         im = vignette(view(0.5 + 0.8 * t, 1.5 + 0.35 * eio(t / dur), *MON, dark=0.4))
@@ -363,7 +405,7 @@ def scene_solid(dur=3.6, fill=(0.4, 1.5), honest_at=1.9):
 def scene_end(dur=4.4, card_at=2.5):
     """'That's it. No magic. Just ads done properly.' over a slow push; then the logo end card"""
     s1, s2, s3 = T("That's it.", 100), T("No magic.", 100), T("Just ads done properly.", 84)
-    lg = A.logo().resize((220, 220), Image.LANCZOS); b1, b2 = T("Southline Agency", 70), T("Meta ads for Irish trades", 38, (190, 198, 212), "m")
+    lg = A.logo().resize((220, 220), Image.LANCZOS); b1, b2 = T("Southline Agency", 70), T("Meta ads for trades in Ireland & the UK", 38, (190, 198, 212), "m")
     def fn(t):
         out = clamp((t - card_at) / 0.35)
         im = vignette(view(6.5 + 0.8 * t, 1.0 + 0.12 * eio(t / dur), 0.7, 0.5, dark=0.25 + 0.5 * out))
