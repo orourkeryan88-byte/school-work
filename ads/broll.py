@@ -10,6 +10,7 @@ import adkit as A
 
 W, H = 1080, 1920
 ACC = (56, 140, 255)
+KIND = "trades"  # "ecom" swaps the kitchen/house content in desk, phone_feed and dashboard for products and orders
 
 
 def vgrad(w, h, top, bottom, stops=None):
@@ -51,8 +52,11 @@ def desk(ts):
     d.rectangle((0, 0, SW_, 40), fill=(228, 230, 236)); [d.ellipse((16 + i * 24, 13, 30 + i * 24, 27), fill=c) for i, c in enumerate([(240, 96, 90), (245, 190, 70), (90, 200, 110)])]
     d.rounded_rectangle((40, 62, 440, 520), 18, fill=(255, 255, 255)); d.ellipse((60, 78, 100, 118), fill=ACC)
     d.rounded_rectangle((112, 84, 260, 98), 7, fill=(210, 212, 218)); d.rounded_rectangle((112, 104, 200, 114), 5, fill=(226, 228, 232))
-    f = 0.5 + 0.42 * math.sin(ts * 1.4); sc.paste(K.before_after(_desk["b"], _desk["a"], f).convert("RGB"), (60, 130))
-    d.rounded_rectangle((60, 430, 420, 480), 12, fill=ACC); d.text((180, 440), "Get a quote", font=A.font("bl", 26), fill=(255, 255, 255))
+    if KIND == "ecom":
+        pr = Image.fromarray(vgrad(360, 280, (244, 238, 230), (226, 218, 206)).astype(np.uint8)); product(ImageDraw.Draw(pr), 180 + 30 * math.sin(ts * 0.8), 150, 0.75); sc.paste(pr, (60, 130))
+    else:
+        f = 0.5 + 0.42 * math.sin(ts * 1.4); sc.paste(K.before_after(_desk["b"], _desk["a"], f).convert("RGB"), (60, 130))
+    d.rounded_rectangle((60, 430, 420, 480), 12, fill=ACC); d.text((180 if KIND != "ecom" else 196, 440), "Get a quote" if KIND != "ecom" else "Shop now", font=A.font("bl", 26), fill=(255, 255, 255))
     d.rounded_rectangle((480, 62, 840, 270), 18, fill=(255, 255, 255))
     pts = [(500 + i * 16, 230 - 90 * (0.5 + 0.5 * math.sin(i * 0.5 + ts * 0.8)) * (i / 20)) for i in range(21)]; d.line(pts, fill=ACC, width=5)
     d.rounded_rectangle((480, 290, 840, 520), 18, fill=(255, 255, 255))
@@ -80,8 +84,11 @@ def phone_feed(ts, speed=150):
         for i in range(6):
             p = Image.new("RGB", (SW_, 720), (255, 255, 255)); d = ImageDraw.Draw(p)
             d.ellipse((20, 20, 76, 76), fill=ACC if i % 2 == 0 else (230, 140, 60)); d.rounded_rectangle((92, 30, 300, 46), 8, fill=(210, 212, 218)); d.rounded_rectangle((92, 56, 220, 66), 5, fill=(228, 230, 234))
-            pic = K.kitchen_art(560, 500, i % 3 != 1, i).convert("RGB") if i % 2 == 0 else Image.fromarray(vgrad(560, 500, (120, 170, 220), (240, 210, 180)).astype(np.uint8))
-            if i % 2 == 1:
+            if KIND == "ecom":
+                bgc = [((244, 238, 230), (226, 218, 206)), ((230, 236, 244), (208, 216, 230)), ((240, 228, 228), (222, 206, 204))][i % 3]
+                pic = Image.fromarray(vgrad(560, 500, *bgc).astype(np.uint8)); product(ImageDraw.Draw(pic), 280, 270, 1.1, body=[(232, 220, 204), (210, 226, 216), (236, 214, 210)][i % 3])
+            else: pic = K.kitchen_art(560, 500, i % 3 != 1, i).convert("RGB") if i % 2 == 0 else Image.fromarray(vgrad(560, 500, (120, 170, 220), (240, 210, 180)).astype(np.uint8))
+            if i % 2 == 1 and KIND != "ecom":
                 dd = ImageDraw.Draw(pic); dd.rectangle((0, 400, 560, 500), fill=(110, 140, 90)); dd.rectangle((120, 220, 440, 400), fill=(236, 230, 220), outline=(40, 40, 40), width=5)
                 dd.polygon([(100, 224), (280, 110), (460, 224)], fill=(150, 70, 60)); dd.rectangle((250, 300, 310, 400), fill=(80, 60, 50)); [dd.rectangle((x, 260, x + 60, 320), fill=(170, 210, 240)) for x in (150, 350)]
             p.paste(pic, (20, 92)); [d.ellipse((24 + j * 56, 612, 60 + j * 56, 648), outline=(40, 40, 40), width=4) for j in range(3)]
@@ -173,14 +180,14 @@ def dashboard(ts):
         b = Image.new("RGB", (W, H), (15, 17, 23)); d = ImageDraw.Draw(b)
         d.rectangle((0, 0, 190, H), fill=(22, 25, 33))
         for i in range(7): d.rounded_rectangle((55, 220 + i * 120, 135, 300 + i * 120), 20, fill=(34, 38, 50) if i else ACC)
-        d.text((240, 210), "Campaigns", font=A.font("bl", 64), fill=(240, 242, 248)); d.text((240, 300), "Kitchens · Bathrooms · Extensions", font=A.font("m", 32), fill=(130, 138, 156))
-        for i, lab in enumerate(["Enquiries", "Cost per enquiry"]):
+        d.text((240, 210), "Campaigns", font=A.font("bl", 64), fill=(240, 242, 248)); d.text((240, 300), "Kitchens · Bathrooms · Extensions" if KIND != "ecom" else "Skincare · Clothing · Gifts", font=A.font("m", 32), fill=(130, 138, 156))
+        for i, lab in enumerate(["Enquiries", "Cost per enquiry"] if KIND != "ecom" else ["Orders", "Cost per order"]):
             x = 240 + i * 410; d.rounded_rectangle((x, 380, x + 380, 560), 24, fill=(24, 27, 36)); d.text((x + 30, 410), lab, font=A.font("sb", 30), fill=(140, 148, 166))
             d.rounded_rectangle((x + 30, 470, x + 220, 510), 12, fill=(44, 50, 66))
         d.rounded_rectangle((240, 600, 1040, 1120), 24, fill=(24, 27, 36))
         for i in range(5): d.line((280, 680 + i * 95, 1000, 680 + i * 95), fill=(36, 40, 52), width=2)
         d.rounded_rectangle((240, 1160, 1040, 1500), 24, fill=(24, 27, 36)); d.rounded_rectangle((240, 1540, 1040, 1880), 24, fill=(24, 27, 36))
-        for i, n in enumerate(["Kitchen refit · Lucan", "Bathroom · Swords", "Extension · Naas"]):
+        for i, n in enumerate(["Kitchen refit · Lucan", "Bathroom · Swords", "Extension · Naas"] if KIND != "ecom" else ["New drop · new customers", "Abandoned basket · email", "Best sellers · repeat"]):
             y = 1590 + i * 100; d.ellipse((280, y + 8, 304, y + 32), fill=(90, 210, 130) if i != 1 else ACC); d.text((330, y), n, font=A.font("sb", 34), fill=(220, 224, 234))
             d.rounded_rectangle((820, y + 8, 990, y + 30), 10, fill=(44, 50, 66))
         _db["b"] = b

@@ -71,6 +71,37 @@ def rise(im, sp, x, y, t, t0, fade_out=None):
     if a >= 1: put_rise(im, sp, x, y, eo((t - t0) / 0.3))
     else: put(im, sp, x, y - 40 * (1 - a), a)
 
+def _kitchen_pics():
+    import kitchen_scenes as K
+    b, a = K.kitchen_art(380, 320, False), K.kitchen_art(380, 320, True, 1)
+    return [a, K.before_after(b, a, 0.5), K.kitchen_art(380, 320, True, 3)]
+
+def _kitchen_post():
+    import kitchen_scenes as K
+    return K.rounded(K.kitchen_art(680, 400, True, 2), 18)
+
+# every caption / label in the scenes, so one video's wording can be swapped for another (S.TXT.update({...})).
+# Defaults = the trades trust video.
+TXT = dict(
+    intro_big="Tradesmen", question=["Do Facebook ads actually", "work for tradesmen?"],
+    post_name="Your page", post_sub="Just finished this one!", post_pic=_kitchen_post, comments=("Great job!", "Lovely work", "Fair play!"),
+    zero="0 calls", cap1="Posting and hoping", cap2="isn't the same thing.",
+    what_pills=("Facebook", "Instagram"), what_mid="ads for trades across", what_end="Ireland & the UK.",
+    trades=["Plumbers", "Builders", "Electricians", "Kitchen fitters", "Bathroom fitters"],
+    aim0="The goal's simple:", aim1="people near you", aim2="asking for a quote.", aim_key="asking for a quote", ping="Quote request",
+    how_head="Your real work.", how_pics=_kitchen_pics, how_caps=("Your photos", "Before & afters", "Finished jobs"), how_tag="→ turned into ads",
+    how_b1="Shown to homeowners", how_b2="in the area you cover.", how_key="the area you cover",
+    q_h1="Before anyone gets in touch,", q_h2="a few quick questions.", q_key="quick questions",
+    q_rows=[("WHAT'S THE JOB?", "Kitchen refit"), ("WHERE?", "Lucan"), ("WHEN?", "Next month")], q_know="You know the job before you ring",
+    ph_h="Straight to your phone.", ph_h2="Back to what you do best.", ph_kind="NEW ENQUIRY", ph_title="Kitchen refit · Lucan", ph_sub="Mary · next month",
+    ph_call="Call back", ph_calling="Calling Mary…", ph_steps=("Quote sent  ✓", "Booked in  ✓", "Back to the tools"),
+    wom_a1="Tradesmen still relying", wom_a2="on word of mouth…", wom_akey="word of mouth",
+    wom_b1="Good at the job, but", wom_b2="struggling to stay booked out.", wom_bkey="booked out",
+    wom_says=[("Know a good plumber?", -1), ("Ask Mick, he's sound.", 1), ("Grand, I'll get his number.", -1)], wom_booked={1: "Leak fix", 7: "Quote"},
+    end3="Just ads done properly.", end_key="done properly", end_sub="Meta ads for trades in Ireland & the UK",
+)
+
+
 def ctext(d, x, y, s, f, col):
     tw, th, ox, oy = A.tsize(s, f); d.text((x - tw / 2 - ox, y - th / 2 - oy), s, font=f, fill=col)
 
@@ -89,7 +120,7 @@ def scene_intro(dur=4.8, places_at=(0.55, 0.85), clear_at=2.1, ryan_at=2.3, line
     """hook: fast pull-out from the van; 'TRADESMEN' slams on frame 0, 'Ireland' & 'the UK' pins pop in; the callout
     flies up and away, 'I'm Ryan.' slams with a pen circle drawn round 'Ryan', 'I run a marketing agency,' rises,
     the logo flips in like a coin with 'Southline Agency'"""
-    big = T("Tradesmen", 200); inn = T("in", 70, (200, 210, 230))
+    big = T(TXT["intro_big"], 200); inn = T("in", 70, (200, 210, 230))
     def place(s_):
         f = A.font("bl", 88); tw = f.getlength(s_); w_, h_ = int(tw + 150), 140
         def dr(d, s, im_):
@@ -154,7 +185,7 @@ def scene_common(dur=3.0):
 
 def scene_question(dur=3.3, type_from=0.45, cps=30):
     """the question as an 'ask me anything' sticker, typed out, over a blurred push into the monitor"""
-    q = ["Do Facebook ads actually", "work for tradesmen?"]; n_all = sum(len(x) for x in q)
+    q = TXT["question"]; n_all = sum(len(x) for x in q)
     CWd, CHd = 900, 420
     def base(d, s):
         d.rounded_rectangle((0, 0, CWd * s - 1, 110 * s), 34 * s, fill=ACC); d.rectangle((0, 70 * s, CWd * s, 110 * s), fill=ACC)
@@ -177,14 +208,13 @@ def scene_short(dur=7.9, s1_at=0.2, yeah_at=1.3, props_at=1.75, post_at=3.6, com
     """'Short answer? YEAH. when they're done properly.' then a job post goes up on your page: hearts and 'Great job!'
     comments pile on while the calls counter stays at 0, gets circled: 'Posting and hoping / isn't the same thing.'"""
     s1, s2, s3 = T("Short answer?", 84), T("Yeah.", 230, ACC), T("when they're done properly.", 70)
-    c1, c2 = T("Posting and hoping", 84), T("isn't the same thing.", 84)
-    import kitchen_scenes as K
-    pic = K.rounded(K.kitchen_art(680, 400, True, 2), 18)
+    c1, c2 = T(TXT["cap1"], 84), T(TXT["cap2"], 84)
+    pic = TXT["post_pic"]()
     def pb(d, s):
-        d.ellipse((30 * s, 26 * s, 90 * s, 86 * s), fill=ACC); d.text((110 * s, 30 * s), "Your page", font=A.font("bl", 34 * s), fill=INK)
-        d.text((110 * s, 70 * s), "Just finished this one!", font=A.font("m", 26 * s), fill=MUTED)
+        d.ellipse((30 * s, 26 * s, 90 * s, 86 * s), fill=ACC); d.text((110 * s, 30 * s), TXT["post_name"], font=A.font("bl", 34 * s), fill=INK)
+        d.text((110 * s, 70 * s), TXT["post_sub"], font=A.font("m", 26 * s), fill=MUTED)
     POST = card(760, 640, pb, r=30); POST.alpha_composite(pic, (50 + 40, 50 + 116))
-    coms = [A.pill(c, 38, WHITE, INK, w="b") for c in ("Great job!", "Lovely work", "Fair play!")]
+    coms = [A.pill(c, 38, WHITE, INK, w="b") for c in TXT["comments"]]
 
     def fn(t):
         dk = 0.5 + 0.2 * clamp((t - post_at + 0.3) / 0.3)
@@ -203,7 +233,7 @@ def scene_short(dur=7.9, s1_at=0.2, yeah_at=1.3, props_at=1.75, post_at=3.6, com
             hx = W / 2 - 330; d.ellipse((hx, ry - 14, hx + 22, ry + 8), fill=(240, 70, 100)); d.ellipse((hx + 16, ry - 14, hx + 38, ry + 8), fill=(240, 70, 100))
             d.polygon([(hx + 1, ry), (hx + 37, ry), (hx + 19, ry + 22)], fill=(240, 70, 100)); d.text((hx + 52, ry - 20), f"{likes}", font=A.font("bl", 36), fill=INK)
             d.text((hx + 140, ry - 20), f"{sum(t >= c for c in comments_at)} comments", font=A.font("sb", 32), fill=MUTED)
-            calls = A.pill("0 calls", 36, INK, WHITE, w="bl"); cx = W / 2 + 240
+            calls = A.pill(TXT["zero"], 36, INK, WHITE, w="bl"); cx = W / 2 + 240
             put(im, calls, cx, ry, 1, 1 + 0.12 * math.sin(max(0, t - calls_at) * 9) * (1 - clamp((t - calls_at) / 0.8)) if t >= calls_at else 1)
             if t >= calls_at:  # circle the 0 calls
                 p = eo((t - calls_at) / 0.4); d = ImageDraw.Draw(im)
@@ -240,8 +270,8 @@ def scene_title(num, lines, src, zoom, fx, fy, dur=2.3, chips=None, hi_chip=None
 
 def scene_what(dur=4.6, s0_at=0.1, pills_at=(0.45, 0.75), s1_at=1.4, pin_at=2.6, s3_at=2.9):
     """fly into the monitors; 'We run' + Facebook / Instagram pills + 'ads for trades & local businesses' + pin 'in Ireland & the UK'"""
-    s0 = T("We run", 84); s1 = T("ads for trades across", 84); s3 = T("Ireland & the UK.", 84)
-    pf, pi = A.pill("Facebook", 50, WHITE, INK, w="bl"), A.pill("Instagram", 50, WHITE, INK, w="bl"); plus = T("+", 80, ACC)
+    s0 = T("We run", 84); s1 = T(TXT["what_mid"], 84); s3 = T(TXT["what_end"], 84)
+    pf, pi = A.pill(TXT["what_pills"][0], 50, WHITE, INK, w="bl"), A.pill(TXT["what_pills"][1], 50, WHITE, INK, w="bl"); plus = T("+", 80, ACC)
     def fn(t):
         im = vignette(view(0.5 + 0.8 * t, 1.5 + 0.35 * eio(t / dur), *MON, dark=0.4))
         rise(im, s0, W / 2, 470, t, s0_at)
@@ -259,7 +289,7 @@ def scene_what(dur=4.6, s0_at=0.1, pills_at=(0.45, 0.75), s1_at=1.4, pin_at=2.6,
 
 def scene_trades(dur=3.6, times=(0.15, 0.65, 1.15, 1.65, 2.15)):
     """trade chips slide in from alternating sides and stack; the newest one is blue"""
-    names = ["Plumbers", "Builders", "Electricians", "Kitchen fitters", "Bathroom fitters"]
+    names = TXT["trades"]
     W0 = [A.pill(n, 56, WHITE, INK, w="bl") for n in names]; W1 = [A.pill(n, 56, ACC, WHITE, w="bl") for n in names]
     def fn(t):
         im = view(4.2 + 0.5 * t, 1.15, 0.5, 0.5, blur=9, dark=0.55)
@@ -275,15 +305,15 @@ def scene_trades(dur=3.6, times=(0.15, 0.65, 1.15, 1.65, 2.15)):
 
 def scene_aim(dur=4.4, ring_at=0.9, pings_at=1.7, lines_at=(0.05, 0.25, 0.45)):
     """'The goal's simple: people near you asking for a quote.' radius map with quote pings"""
-    h0 = T("The goal's simple:", 64, (200, 210, 230)); h1, h2 = T("people near you", 84), T("asking for a quote.", 84)
+    h0 = T(TXT["aim0"], 64, (200, 210, 230)); h1, h2 = T(TXT["aim1"], 84), T(TXT["aim2"], 84)
     MX, MY, R = W / 2, 1180, 300
     rng = np.random.default_rng(5); houses = [(MX + rng.uniform(-420, 420), MY + rng.uniform(-330, 330)) for _ in range(70)]
     inside = [h for h in houses if math.hypot(h[0] - MX, h[1] - MY) < R - 20]; pings = inside[:5]
-    bub = A.pill("Quote request", 26, WHITE, INK, w="bl")
+    bub = A.pill(TXT["ping"], 26, WHITE, INK, w="bl")
     def fn(t):
         im = view(1.0 + 0.6 * t, 1.1, 0.5, 0.5, blur=9, dark=0.62)
         rise(im, h0, W / 2, 400, t, lines_at[0]); rise(im, h1, W / 2, 500, t, lines_at[1]); rise(im, h2, W / 2, 605, t, lines_at[2])
-        under(im, "asking for a quote.", 84, W / 2, 605, "asking for a quote", (t - lines_at[2] - 0.35) / 0.5)
+        under(im, TXT["aim2"], 84, W / 2, 605, TXT["aim_key"], (t - lines_at[2] - 0.35) / 0.5)
         k = eo((t - 0.3) / 0.4); o = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(o)
         d.rounded_rectangle((MX - 460, MY - 370, MX + 460, MY + 370), 40, fill=(20, 24, 32, int(230 * k)))
         r = R * eo((t - ring_at) / 0.7)
@@ -302,14 +332,12 @@ def scene_aim(dur=4.4, ring_at=0.9, pings_at=1.7, lines_at=(0.05, 0.25, 0.45)):
 def scene_how(dur=7.0, fly_at=3.5):
     """phase A: 'Your real work' - three photo prints fly in and fan out, then slide together: 'turned into ads'.
     phase B: the camera flies into the real ad on the monitor: 'shown to homeowners in the area you cover.'"""
-    import kitchen_scenes as K
-    b, a = K.kitchen_art(380, 320, False), K.kitchen_art(380, 320, True, 1); a2 = K.kitchen_art(380, 320, True, 3)
     def print_(img, cap):
         def dr(d, s): ctext(d, 210 * s, 400 * s, cap, A.font("b", 32 * s), INK)
         c = card(420, 450, dr, r=18); c.alpha_composite(img.convert("RGBA"), (50 + 20, 50 + 20)); return c
-    P = [print_(a, "Your photos"), print_(K.before_after(b, a, 0.5), "Before & afters"), print_(a2, "Finished jobs")]
-    hA = T("Your real work.", 96); tag = A.pill("→ turned into ads", 46, ACC, WHITE, w="bl")
-    hB1, hB2 = T("Shown to homeowners", 84), T("in the area you cover.", 84)
+    P = [print_(im_, cap) for im_, cap in zip(TXT["how_pics"](), TXT["how_caps"])]
+    hA = T(TXT["how_head"], 96); tag = A.pill(TXT["how_tag"], 46, ACC, WHITE, w="bl")
+    hB1, hB2 = T(TXT["how_b1"], 84), T(TXT["how_b2"], 84)
     fan = [(-300, -8), (0, 2), (300, 9)]
     def fn(t):
         if t < fly_at:
@@ -327,7 +355,7 @@ def scene_how(dur=7.0, fly_at=3.5):
         if u < 0.12: im.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(160 * (1 - u / 0.12)))))
         for j in range(3): ring(im, W / 2, 900, ((u - 0.9) - j * 0.45) % 1.35 / 1.35 if u > 0.9 else 0, col=ACC, maxr=500, width=5, r0=60)
         rise(im, hB1, W / 2, 1380, t, fly_at + 0.6); rise(im, hB2, W / 2, 1490, t, fly_at + 0.85)
-        under(im, "in the area you cover.", 84, W / 2, 1490, "the area you cover", (u - 1.3) / 0.5)
+        under(im, TXT["how_b2"], 84, W / 2, 1490, TXT["how_key"], (u - 1.3) / 0.5)
         return im, 0
     return dur, fn, [(0.1, "swish", 0.4)] + [(0.4 + i * 0.45 + 0.3, "hit", 0.45) for i in range(3)] + [(2.3, "swish", 0.5), (2.6, "pop", 0.6),
                      (fly_at - 0.1, "whoosh", 0.7), (fly_at + 0.6, "swish", 0.4), (fly_at + 0.85, "swish", 0.4), (fly_at + 1.3, "swish", 0.5)]
@@ -335,12 +363,12 @@ def scene_how(dur=7.0, fly_at=3.5):
 
 def scene_questions(dur=4.6, rows_at=(0.8, 1.4, 2.0), h2_at=0.3, know_at=None):
     """'Before anyone gets in touch, a few quick questions.' form card; each answer chip pops in with a tick"""
-    h1, h2 = T("Before anyone gets in touch,", 74), T("a few quick questions.", 84)
-    qa = [("WHAT'S THE JOB?", "Kitchen refit"), ("WHERE?", "Lucan"), ("WHEN?", "Next month")]
-    FORM = card(880, 600); chips = [A.pill(a + "  ✓", 40, ACC, WHITE, w="bl") for _, a in qa]; know = A.pill("You know the job before you ring", 42, WHITE, INK, w="bl")
+    h1, h2 = T(TXT["q_h1"], 74), T(TXT["q_h2"], 84)
+    qa = TXT["q_rows"]
+    FORM = card(880, 600); chips = [A.pill(a + "  ✓", 40, ACC, WHITE, w="bl") for _, a in qa]; know = A.pill(TXT["q_know"], 42, WHITE, INK, w="bl")
     def fn(t):
         im = view(6.0 + 0.5 * t, 1.1, 0.5, 0.5, blur=9, dark=0.6)
-        rise(im, h1, W / 2, 420, t, 0.05); rise(im, h2, W / 2, 530, t, h2_at); under(im, "a few quick questions.", 84, W / 2, 530, "quick questions", (t - h2_at - 0.3) / 0.4)
+        rise(im, h1, W / 2, 420, t, 0.05); rise(im, h2, W / 2, 530, t, h2_at); under(im, TXT["q_h2"], 84, W / 2, 530, TXT["q_key"], (t - h2_at - 0.3) / 0.4)
         k = spring((t - 0.3) / 0.6, f=1.4, d=6); fy = 1050 + 500 * (1 - k); put(im, FORM, W / 2, fy, clamp((t - 0.3) / 0.15))
         if t > 0.5:
             d = ImageDraw.Draw(im)
@@ -358,14 +386,14 @@ def scene_questions(dur=4.6, rows_at=(0.8, 1.4, 2.0), h2_at=0.3, know_at=None):
 def scene_phone(dur=3.8, note_at=0.9, call_at=2.0, tap_at=2.5, quote_at=None, book_at=None, tools_at=None):
     """'Straight to your phone.' a phone rises, the enquiry drops in with a buzz, 'Call back' is tapped, rings pulse.
     Then the phone slides left and the steps tick in on the right: Quote sent -> Booked -> Back to the tools."""
-    h = T("Straight to your phone.", 84); h2 = T("Back to what you do best.", 80); ph = A.phone("Monday 3 November", "09:41", wall=((28, 34, 46), (8, 10, 14), ACC))
+    h = T(TXT["ph_h"], 84); h2 = T(TXT["ph_h2"], 80); ph = A.phone("Monday 3 November", "09:41", wall=((28, 34, 46), (8, 10, 14), ACC))
     def nd(d, s):
         d.rounded_rectangle((30 * s, 36 * s, 118 * s, 124 * s), 24 * s, fill=ACC); ctext(d, 74 * s, 80 * s, "S", A.font("bl", 54 * s), WHITE)
-        d.text((146 * s, 32 * s), "NEW ENQUIRY", font=A.font("sb", 26 * s), fill=MUTED); d.text((146 * s, 70 * s), "Kitchen refit · Lucan", font=A.font("bl", 40 * s), fill=INK)
-        d.text((146 * s, 124 * s), "Mary · next month", font=A.font("m", 30 * s), fill=(70, 74, 82))
+        d.text((146 * s, 32 * s), TXT["ph_kind"], font=A.font("sb", 26 * s), fill=MUTED); d.text((146 * s, 70 * s), TXT["ph_title"], font=A.font("bl", 40 * s), fill=INK)
+        d.text((146 * s, 124 * s), TXT["ph_sub"], font=A.font("m", 30 * s), fill=(70, 74, 82))
     NOTE = card(840, 180, nd, fill=(250, 250, 252), r=44)
-    CALL = A.pill("Call back", 54, ACC, WHITE, w="bl"); CALLING = A.pill("Calling Mary…", 54, WHITE, INK, w="bl")
-    steps = [(quote_at, A.pill("Quote sent  ✓", 46, WHITE, INK, w="bl")), (book_at, A.pill("Booked in  ✓", 46, WHITE, INK, w="bl")), (tools_at, A.pill("Back to the tools", 46, ACC, WHITE, w="bl"))]
+    CALL = A.pill(TXT["ph_call"], 54, ACC, WHITE, w="bl"); CALLING = A.pill(TXT["ph_calling"], 54, WHITE, INK, w="bl")
+    st_ = TXT["ph_steps"]; steps = [(quote_at, A.pill(st_[0], 46, WHITE, INK, w="bl")), (book_at, A.pill(st_[1], 46, WHITE, INK, w="bl")), (tools_at, A.pill(st_[2], 46, ACC, WHITE, w="bl"))]
     def fn(t):
         im = view(8.0 + 0.4 * t, 1.1, 0.5, 0.5, blur=9, dark=0.6)
         sw = eio((t - quote_at) / 0.5) if quote_at else 0; px, ps = W / 2 - 240 * sw, 0.55 - 0.1 * sw  # phone slides left for the steps
@@ -394,9 +422,9 @@ def scene_wom(dur=6.2, bubbles_at=(0.7, 1.3, 1.9), dry_at=2.5, swap=3.0, ul_at=3
     """'Tradesmen still relying on word of mouth…' - referral speech bubbles pop in left/right, then go grey and drift
     up and away (it dries up). '…and struggling to get booked out?' - a two-week calendar, nearly empty, the empty days
     pulsing. 'That's who we help.'"""
-    a1, a2 = T("Tradesmen still relying", 76), T("on word of mouth…", 84)
-    b1, b2 = T("Good at the job, but", 84), T("struggling to stay booked out.", 84); hp = T("That's who we help.", 96)
-    says = [("Know a good plumber?", -1), ("Ask Mick, he's sound.", 1), ("Grand, I'll get his number.", -1)]
+    a1, a2 = T(TXT["wom_a1"], 76), T(TXT["wom_a2"], 84)
+    b1, b2 = T(TXT["wom_b1"], 84), T(TXT["wom_b2"], 84); hp = T("That's who we help.", 96)
+    says = TXT["wom_says"]
     def bubble(s_, side, grey=False):
         f = A.font("b", 46); w_, h_ = int(f.getlength(s_) + 80), 120
         def dr(d, s, im_):
@@ -406,7 +434,7 @@ def scene_wom(dur=6.2, bubbles_at=(0.7, 1.3, 1.9), dry_at=2.5, swap=3.0, ul_at=3
             d.text((40 * s, 22 * s), s_, font=A.font("b", 46 * s), fill=MUTED if grey else INK)
         return shadowed(sprite(w_, h_, dr), blur=18, dy=10, alpha=140, pad=40)
     BB = [(bubble(s_, sd), bubble(s_, sd, True)) for s_, sd in says]
-    days = ["Mon", "Tue", "Wed", "Thu", "Fri"]; booked = {1: "Leak fix", 7: "Quote"}
+    days = ["Mon", "Tue", "Wed", "Thu", "Fri"]; booked = TXT["wom_booked"]
     def cell(i):
         def dr(d, s, im_):
             ctext(d, 75 * s, 30 * s, days[i % 5], A.font("sb", 26 * s), (170, 178, 194))
@@ -421,7 +449,7 @@ def scene_wom(dur=6.2, bubbles_at=(0.7, 1.3, 1.9), dry_at=2.5, swap=3.0, ul_at=3
         if t < swap + 0.3:
             o = eio((t - swap) / 0.3); dx = -1100 * o
             rise(im, a1, W / 2 + dx, 410, t, 0.05); rise(im, a2, W / 2 + dx, 515, t, 0.3)
-            under(im, "on word of mouth…", 84, W / 2 + dx, 515, "word of mouth", (t - 0.7) / 0.4)
+            under(im, TXT["wom_a2"], 84, W / 2 + dx, 515, TXT["wom_akey"], (t - 0.7) / 0.4)
             dry = eio((t - dry_at) / 0.6)
             for i, ((sp0, sp1), (_, sd)) in enumerate(zip(BB, says)):
                 k = (t - bubbles_at[i]) / 0.4
@@ -431,7 +459,7 @@ def scene_wom(dur=6.2, bubbles_at=(0.7, 1.3, 1.9), dry_at=2.5, swap=3.0, ul_at=3
         if t >= swap:
             u = t - swap; dx = 1100 * (1 - eio(u / 0.3))
             rise(im, b1, W / 2 + dx, 420, t, swap + 0.05); rise(im, b2, W / 2 + dx, 525, t, swap + 0.25)
-            under(im, "struggling to stay booked out.", 84, W / 2 + dx, 525, "booked out", (t - ul_at) / 0.4)
+            under(im, TXT["wom_b2"], 84, W / 2 + dx, 525, TXT["wom_bkey"], (t - ul_at) / 0.4)
             for r in range(2):
                 put(im, wk[r], W / 2 - 330 + dx, 700 + r * 230, eo((u - 0.2) / 0.3))
                 for c in range(5):
@@ -447,15 +475,15 @@ def scene_wom(dur=6.2, bubbles_at=(0.7, 1.3, 1.9), dry_at=2.5, swap=3.0, ul_at=3
 
 def scene_end(dur=4.4, card_at=2.5, lines_at=(0.05, 0.7, 1.35)):
     """'That's it. No magic. Just ads done properly.' over a slow push; then the logo end card"""
-    s1, s2, s3 = T("That's it.", 100), T("No magic.", 100), T("Just ads done properly.", 84)
-    lg = A.logo().resize((220, 220), Image.LANCZOS); b1, b2 = T("Southline Agency", 70), T("Meta ads for trades in Ireland & the UK", 38, (190, 198, 212), "m")
+    s1, s2, s3 = T("That's it.", 100), T("No magic.", 100), T(TXT["end3"], 84)
+    lg = A.logo().resize((220, 220), Image.LANCZOS); b1, b2 = T("Southline Agency", 70), T(TXT["end_sub"], 38, (190, 198, 212), "m")
     def fn(t):
         out = clamp((t - card_at) / 0.35)
         im = vignette(view(6.5 + 0.8 * t, 1.0 + 0.12 * eio(t / dur), 0.7, 0.5, dark=0.25 + 0.5 * out))
         a = 1 - out
         for sp, y, t0 in zip((s1, s2, s3), (620, 760, 910), lines_at):
             if t >= t0: put(im, sp, W / 2, y - 60 * out, a * clamp((t - t0) / 0.15), 1.25 - 0.25 * back((t - t0) / 0.35))
-        if a > 0: under(im, "Just ads done properly.", 84, W / 2, 910 - 60 * out, "done properly", (t - lines_at[2] - 0.45) / 0.4)
+        if a > 0: under(im, TXT["end3"], 84, W / 2, 910 - 60 * out, TXT["end_key"], (t - lines_at[2] - 0.45) / 0.4)
         if t >= card_at:
             k = (t - card_at) / 0.5; put(im, lg, W / 2, 900, clamp(k / 0.2), 0.6 + 0.4 * back(k)); ring(im, W / 2, 900, k / 1.6, col=ACC, maxr=360, width=5, r0=110)
             rise(im, b1, W / 2, 1110, t, card_at + 0.3); rise(im, b2, W / 2, 1190, t, card_at + 0.5)
