@@ -1,46 +1,41 @@
-"""TRUST video scenes ('Ryan explains Southline'): the owner's 10.7s desk clip, cut into many different shots
-(push-ins, slow-mo, freeze frames, a floating framed clip, blurred backgrounds, a fly-in to the real ad on the monitor),
+"""TRUST video scenes ('Ryan explains Southline'): code-drawn B-roll (broll.py) behind every line, shot in many ways
+(push-ins, freeze frames, a floating framed shot, blurred backgrounds, a fly-in to the ad on the monitor),
 with a different animation on every line of the voiceover script. White type with soft shadows, one blue accent.
 Every factory returns (duration, fn, events). fn(t) -> (RGBA image, shake_px)."""
-import math, subprocess
+import math
 import numpy as np
 from PIL import Image, ImageDraw, ImageFilter
 import adkit as A
 from adkit import W, H, put, put_rise, text, fit_size, eo, eio, back, spring, clamp, ring, sprite, shadowed
 
 ACC = (56, 140, 255); WHITE = (255, 255, 255); INK = (16, 18, 24); MUTED = (120, 126, 138)
-CW, CH, CFPS = 480, 854, 30
-_F = None
 
 
-# ======================================================================= the clip
-def load_clip(path):
-    """decode the clip once (480x854), lift the shadows a little - it was filmed in a dark room"""
-    global _F
-    raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-i", path, "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], capture_output=True, check=True).stdout
-    f = np.frombuffer(raw, np.uint8).reshape(-1, CH, CW, 3).astype(np.float32) / 255
-    _F = np.clip((f ** 0.78) * 1.06 * 255, 0, 255).astype(np.uint8)
-    return len(_F) / CFPS
+# ======================================================================= B-roll
+SHOT = None  # the B-roll shot currently behind the animations: fn(ts) -> RGB 1080x1920 (see broll.py)
 
-def src_time(ts):
-    """ping-pong inside the clip so any source time is valid"""
-    L = (len(_F) - 1) / CFPS; ts = ts % (2 * L)
-    return ts if ts <= L else 2 * L - ts
+def with_shot(scene, shots):
+    """run a scene over B-roll. shots = fn, or [(t_from, fn), ...] to cut between shots inside the scene"""
+    dur, fn, ev = scene; shots = shots if isinstance(shots, list) else [(0.0, shots)]
+    def f2(t):
+        global SHOT
+        SHOT = [s_ for t0, s_ in shots if t >= t0][-1]; return fn(t)
+    return dur, f2, ev
 
 def frame(ts):
-    return Image.fromarray(_F[int(round(src_time(ts) * CFPS))])
+    return SHOT(ts)
 
 def view(ts, zoom=1.0, fx=0.5, fy=0.5, blur=0, dark=0.0):
-    """full-screen shot of the clip at source time ts: zoom into (fx, fy), optional blur / darken"""
-    im = frame(ts)
-    if blur: im = im.filter(ImageFilter.GaussianBlur(blur))  # blur at low res = cheap and soft
-    cw, ch = CW / zoom, CH / zoom; x0 = clamp(fx * CW - cw / 2, 0, CW - cw); y0 = clamp(fy * CH - ch / 2, 0, CH - ch)
-    out = im.resize((W, H), Image.BICUBIC, box=(x0, y0, x0 + cw, y0 + ch)).convert("RGBA")
+    """full-screen B-roll at time ts: zoom into (fx, fy), optional blur (done small = cheap and soft) / darken"""
+    im = frame(ts); k = 1.0
+    if blur: im = im.resize((360, 640), Image.BILINEAR).filter(ImageFilter.GaussianBlur(blur * 0.75)); k = 360 / W
+    cw, ch = W / zoom, H / zoom; x0 = clamp(fx * W - cw / 2, 0, W - cw); y0 = clamp(fy * H - ch / 2, 0, H - ch)
+    out = im.resize((W, H), Image.BICUBIC, box=(x0 * k, y0 * k, (x0 + cw) * k, (y0 + ch) * k)).convert("RGBA")
     if dark > 0: out.alpha_composite(Image.new("RGBA", (W, H), (6, 8, 12, int(255 * clamp(dark)))))
     return out
 
-MON = (0.28, 0.57)   # the ad on the left monitor
-FACE = (0.84, 0.47)  # Ryan
+MON = (0.5, 0.427)   # the ad on the B-roll monitor (broll.desk)
+FACE = (0.5, 0.5)    # centre of frame
 
 _VIG = None
 def vignette(im):
@@ -97,7 +92,7 @@ def scene_intro(dur=4.2):
     LT = card(700, 170, lt, alpha=240); LT.alpha_composite(logo, (50 + 26, 50 + 25))
     h1, h2 = T("Hey, I'm Ryan.", 120), T("I run a marketing agency.", 70)
     def fn(t):
-        im = vignette(view(0.2 + t * 0.9, 1.0 + 0.1 * eio(t / dur), 0.62, 0.5))
+        im = vignette(view(0.2 + t * 0.9, 1.0 + 0.1 * eio(t / dur), 0.5, 0.5, dark=0.15))
         pop(im, h1, W / 2, 520, t, 0.1); rise(im, h2, W / 2, 660, t, 1.5)
         k = eo((t - 0.7) / 0.5); put(im, LT, -400 + (W / 2 + 400) * k, 1440, k)
         return im, 0
@@ -148,7 +143,7 @@ def scene_short(dur=5.2, boost_at=2.8, tap_at=3.25):
     def bb(d, s): ctext(d, 280 * s, 70 * s, "Boost post", A.font("bl", 58 * s), INK)
     BOOST = card(560, 140, bb, fill=(232, 234, 238), r=70)
     def fn(t):
-        dk = 0.25 + 0.35 * clamp((t - boost_at) / 0.3)
+        dk = 0.5 + 0.2 * clamp((t - boost_at) / 0.3)
         im = vignette(view(7.0 + 0.55 * t, 1.3 + 0.12 * eio(t / dur), *FACE, dark=dk)); sh = 0
         fo = boost_at
         rise(im, s1, W / 2, 520, t, 0.1, fo); pop(im, s2, W / 2, 760, t, 0.75, 1.6) if t < fo else None
@@ -267,7 +262,7 @@ def scene_how(dur=7.0, fly_at=3.5):
             pop(im, tag, W / 2, 1420, t, 2.6)
             return im, 0
         u = t - fly_at; z = 1.0 + 1.4 * eio(u / 0.7)  # fly into the monitor
-        im = vignette(view(3.6 + 0.35 * u, z, *MON, dark=0.15))
+        im = vignette(view(3.6 + 0.35 * u, z, *MON, dark=0.4))
         if u < 0.12: im.alpha_composite(Image.new("RGBA", (W, H), (255, 255, 255, int(160 * (1 - u / 0.12)))))
         for j in range(3): ring(im, W / 2, 900, ((u - 0.9) - j * 0.45) % 1.35 / 1.35 if u > 0.9 else 0, col=ACC, maxr=500, width=5, r0=60)
         rise(im, hB1, W / 2, 1380, t, fly_at + 0.6); rise(im, hB2, W / 2, 1490, t, fly_at + 0.85)

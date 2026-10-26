@@ -1,4 +1,4 @@
-"""Southline TRUST video: Ryan's 10.7s desk clip cut into many shots + animations, timed to the voiceover script
+"""Southline TRUST video: code-drawn B-roll (broll.py) under every line + animations, timed to the voiceover script
 (read at a natural pace, ~64s). No voice baked in: Ryan records the VO over it. Soft music bed + quiet SFX, mastered
 low (-21 LUFS) so a voiceover sits on top. python3 build_trust.py [--stills]"""
 import sys, os, subprocess, wave
@@ -6,28 +6,30 @@ import numpy as np
 from PIL import Image
 import adkit as A
 import trust_scenes as S
+import broll as B
 
 A.set_theme("midnight", accent=S.ACC, accent2=S.ACC, bg=((8, 10, 14), (4, 5, 8)), blobs=[], grid=False)
-S.load_clip("footage/ryan_desk.mov")
 
 # (scene, script line it carries) - durations = the line read at a relaxed pace + a breath
+w = S.with_shot
+# (scene over its B-roll shot, script line it carries) - durations = the line read at a relaxed pace + a breath
 SCENES = [
-    (S.scene_intro(dur=4.2), "Hey, I'm Ryan, and I run a marketing agency in 2026."),
-    (S.scene_common(dur=3.4), "And the most common question I get asked is…"),
-    (S.scene_question(dur=3.3), "'Do Facebook ads actually work for tradesmen?'"),
-    (S.scene_short(dur=5.2), "Short answer? Yeah, when they're done properly. Boosting a post isn't the same thing."),
-    (S.scene_title("01", ["So what do we", "actually do?"], 9.0, 1.3, 0.75, 0.5, dur=2.3), "So what do we actually do?"),
-    (S.scene_what(dur=4.6), "We run Facebook and Instagram ads for trades and local businesses around Ireland."),
-    (S.scene_trades(dur=3.6), "Plumbers, builders, electricians, kitchen and bathroom fitters."),
-    (S.scene_aim(dur=4.4), "The aim's simple: get people in your area asking you for a quote."),
-    (S.scene_title("02", ["So how do we", "actually do it?"], 5.0, 1.6, *S.MON, dur=2.3), "So how do we actually do it?"),
-    (S.scene_how(dur=7.0), "We take your real work, your photos and your before-and-afters, and show it to homeowners in the area you cover."),
-    (S.scene_questions(dur=4.6), "Before anyone gets in touch, they answer a few quick questions about the job."),
-    (S.scene_phone(dur=3.8), "Then it lands straight on your phone, and you ring them back."),
-    (S.scene_title("03", ["And who's", "it for?"], 2.0, 1.2, 0.6, 0.5, dur=1.8), "And who's it for?"),
-    (S.scene_waves(dur=5.4), "If work comes in waves, busy one month and quiet the next, that's who we help."),
-    (S.scene_solid(dur=3.6), "If you're booked solid all year, you probably don't need us."),
-    (S.scene_end(dur=4.4), "That's it. No magic, just ads done properly."),
+    (w(S.scene_intro(dur=4.2), B.van_road), "Hey, I'm Ryan, and I run a marketing agency in 2026."),
+    (w(S.scene_common(dur=3.4), B.van_road), "And the most common question I get asked is…"),
+    (w(S.scene_question(dur=3.3), B.desk), "'Do Facebook ads actually work for tradesmen?'"),
+    (w(S.scene_short(dur=5.2), B.phone_feed), "Short answer? Yeah, when they're done properly. Boosting a post isn't the same thing."),
+    (w(S.scene_title("01", ["So what do we", "actually do?"], 9.0, 1.3, 0.6, 0.6, dur=2.3), B.van_road), "So what do we actually do?"),
+    (w(S.scene_what(dur=4.6), B.dashboard), "We run Facebook and Instagram ads for trades and local businesses around Ireland."),
+    (w(S.scene_trades(dur=3.6), B.van_road), "Plumbers, builders, electricians, kitchen and bathroom fitters."),
+    (w(S.scene_aim(dur=4.4), B.map_), "The aim's simple: get people in your area asking you for a quote."),
+    (w(S.scene_title("02", ["So how do we", "actually do it?"], 5.0, 1.3, 0.5, 0.45, dur=2.3), B.dashboard), "So how do we actually do it?"),
+    (w(S.scene_how(dur=7.0), [(0.0, B.site), (3.5, B.desk)]), "We take your real work, your photos and your before-and-afters, and show it to homeowners in the area you cover."),
+    (w(S.scene_questions(dur=4.6), B.phone_feed), "Before anyone gets in touch, they answer a few quick questions about the job."),
+    (w(S.scene_phone(dur=3.8), B.desk), "Then it lands straight on your phone, and you ring them back."),
+    (w(S.scene_title("03", ["And who's", "it for?"], 2.0, 1.2, 0.5, 0.5, dur=1.8), B.map_), "And who's it for?"),
+    (w(S.scene_waves(dur=5.4), B.site), "If work comes in waves, busy one month and quiet the next, that's who we help."),
+    (w(S.scene_solid(dur=3.6), B.planner), "If you're booked solid all year, you probably don't need us."),
+    (w(S.scene_end(dur=4.4), B.van_road), "That's it. No magic, just ads done properly."),
 ]
 
 if "--stills" in sys.argv:
