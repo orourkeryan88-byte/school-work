@@ -104,3 +104,56 @@ def scene_invoices(months=6, title="Month after month…", end="They get paid ei
         return im, sh
     ev = [(0.0, "whoosh", 0.6), (0.3, "pop", 0.6)] + [(d + 0.3, "click", 0.7) for d in DR] + [(last + 0.5, "hit", 0.9)]
     return dur, fn, ev
+
+
+def scene_intro_card(dur=3.6, ryan_at=0.1, line_at=0.7, logo_at=1.1, pills_at=1.7, pay_at=2.5):
+    """who's talking and what's for sale, in one card: 'I'm Ryan.' slams, 'I run Southline Agency.' rises, the badge
+    springs in, then the service pills (Meta ads · Email follow-up · for coaches) and 'Paid per booked call.'"""
+    im_, ryan = text("I'm Ryan.", "bl", 140), None
+    l2 = text("I run Southline Agency.", "xb", A.fit_size("I run Southline Agency.", "xb", 76, 960))
+    lg = A.logo().resize((170, 170), Image.LANCZOS)
+    p1, p2 = pill("Meta ads", 46, A.TH["accent"], w="bl"), pill("Email follow-up", 46, A.TH["accent2"], w="bl")
+    l3 = text("for coaches & course creators.", "xb", A.fit_size("for coaches & course creators.", "xb", 64, 960))
+    pay = text("Paid per booked call.", "bl", A.fit_size("Paid per booked call.", "bl", 96, 960), grad=(A.TH["accent"], A.TH["accent2"], 0))
+    def fn(t):
+        im = A.bg(); sh = 0
+        k = (t - ryan_at) / 0.3
+        if k > 0: put(im, im_, W / 2, 520, clamp(k / 0.15), 1.4 - 0.4 * back(k))
+        if ryan_at <= t < ryan_at + 0.14: sh = 12
+        put_rise(im, l2, W / 2, 660, eo((t - line_at) / 0.35))
+        if t >= logo_at:
+            k2 = (t - logo_at) / 0.6; put(im, lg, W / 2, 860, clamp(k2 / 0.2), 0.5 + 0.5 * spring(k2, f=1.8, d=5.5), 25 * (1 - eo(k2)))
+            ring(im, W / 2, 860, k2 / 1.4, maxr=220, width=4, r0=90)
+        gap = 24; tot = p1.width + gap + p2.width
+        a = (t - pills_at) / 0.4
+        if a > 0:
+            put(im, p1, W / 2 - tot / 2 + p1.width / 2, 1060, clamp(a / 0.3), 0.6 + 0.4 * back(a))
+            put(im, p2, W / 2 + tot / 2 - p2.width / 2, 1060, clamp((a - 0.15) / 0.3), 0.6 + 0.4 * back(a - 0.15))
+        put_rise(im, l3, W / 2, 1180, eo((t - pills_at - 0.35) / 0.35))
+        put_rise(im, pay, W / 2, 1360, eo((t - pay_at) / 0.35))
+        A.underline(im, pay, W / 2, 1360 + pay.height / 2 + 4, (t - pay_at - 0.3) / 0.35, h=12)
+        if pay_at <= t < pay_at + 0.14: sh = 8
+        return im, sh
+    return dur, fn, [(ryan_at, "hit", 1.0), (line_at, "whoosh", 0.5), (logo_at, "coin", 0.8), (pills_at, "pop", 0.7),
+                     (pills_at + 0.15, "pop", 0.7), (pay_at, "hit", 0.9), (pay_at + 0.3, "swish", 0.5)]
+
+
+def scene_what_we_do(rows, title="What we actually do", strip="Your ad account · your numbers · you see everything",
+                     dur=4.2, at=(0.5, 1.1, 1.7), strip_at=2.7):
+    """three ticked service rows slide in from the right, then a trust strip pops underneath. rows=[(title, sub)]"""
+    def card(a, b):
+        def dr(d, s):
+            d.ellipse((40 * s, 60 * s, 120 * s, 140 * s), fill=A.GREEN); A.check(d, s, 56, 76, WHITE)
+            d.text((160 * s, 50 * s), a, font=font("b", 42 * s), fill=A.TH["card_ink"])
+            d.text((160 * s, 118 * s), b, font=font("m", 32 * s), fill=A.TH["muted"])
+        return A.card_sprite(940, 200, dr, radius=36)
+    sps = [card(a, b) for a, b in rows]; tsp = text(title, "xb", 84); st = pill(strip, 30, (14, 44, 54), (200, 230, 236), w="b")
+    def fn(t):
+        im = A.bg(); put_rise(im, tsp, W / 2, 440, eo(t / 0.35))
+        for i, sp in enumerate(sps):
+            k = (t - at[i]) / 0.5
+            if k > 0: put(im, sp, W / 2 + 220 * (1 - eo(k)), 680 + i * 250, clamp(k / 0.3), 0.92 + 0.08 * spring(k))
+        k = (t - strip_at) / 0.4
+        if k > 0: put(im, st, W / 2, 1420, clamp(k / 0.3), 0.7 + 0.3 * back(k))
+        return im, 0
+    return dur, fn, [(0.0, "whoosh", 0.6)] + [(a, "swish", 0.6) for a in at] + [(a + 0.25, "tick", 0.6) for a in at] + [(strip_at, "pop", 0.7)]
