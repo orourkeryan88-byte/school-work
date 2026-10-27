@@ -49,8 +49,8 @@ def scene_unreachable(dur=5.6, calls=((0.8, "No answer"), (1.9, "Voicemail"), (3
     """the coach rings three prospects in turn; a 'Calling…' chip flies to each, bounces off with a red tag, and his
     face drops. Then the hook line slams in at the top."""
     calm, sad, cl = man(False), man(True), client()
-    MX, MY = 330, 1060; PX, PY = MX + 100, MY - 70                       # man centre, phone position
-    CY = [700, 980, 1260]; CX = 820                                      # the three prospects
+    MX, MY = 330, 1110; PX, PY = MX + 100, MY - 70                       # man centre, phone position
+    CY = [780, 1040, 1300]; CX = 820                                      # the three prospects
     tags = [pill(txt, 30, RED, WHITE, w="bl") for _, txt in calls]
     calling = pill("Calling…", 26, (52, 200, 170), (6, 20, 24), w="bl")
     tg = pill(tag, 28, A.TH["accent"], w="bl")
@@ -82,4 +82,25 @@ def scene_unreachable(dur=5.6, calls=((0.8, "No answer"), (1.9, "Voicemail"), (3
     ev = [(0.0, "whoosh", 0.6), (0.2, "pop", 0.6)]
     for t0, _ in calls: ev += [(t0, "ping", 0.5), (t0 + 0.55, "click", 0.9), (t0 + 0.6, "glitch", 0.35)]
     ev += [(sad_at, "swish", 0.5), (hook_at, "whoosh", 0.5), (hook_at + 0.2, "hit", 1.0)]
+    return dur, fn, ev
+
+
+def scene_invoices(months=6, title="Month after month…", end="They get paid either way.", dur=4.0, interval=0.4,
+                   counter="Calls booked: 0"):
+    """loss-aversion: agency invoices stack up, each stamped PAID, while a red 'Calls booked: 0' pill sits there and
+    shakes on every invoice. The title swaps to the closing line once the last invoice lands."""
+    cards = [A.job_card("Agency invoice", f"Month {i + 1} · retainer", "PAID", icon="dot", value_col=(150, 160, 170)) for i in range(months)]
+    DR = [0.5 + i * interval for i in range(months)]; last = DR[-1]
+    t1, t2 = text(title, "xb", 84), text(end, "xb", A.fit_size(end, "xb", 84, 960), A.TH["accent"])
+    red = pill(counter, 40, RED, WHITE, w="bl")
+    def fn(t):
+        im = A.bg(); swap = eo((t - last - 0.5) / 0.3)
+        if swap < 1: put_rise(im, t1, W / 2, 480, eo(t / 0.35) * (1 - swap))
+        if swap > 0: put_rise(im, t2, W / 2, 480, swap)
+        sh = A.draw_stack(im, cards, DR, t, 1120, step=70, from_y=1400, rot=6)
+        landed = [d for d in DR if t >= d]; jit = 0
+        if landed and t - landed[-1] < 0.2: jit = 6 * math.sin((t - landed[-1]) * 90)
+        put(im, red, W / 2 + jit, 1460, eo((t - 0.3) / 0.3), 1 + 0.12 * (1 - eo((t - (landed[-1] if landed else 0)) / 0.3)) if landed else 1)
+        return im, sh
+    ev = [(0.0, "whoosh", 0.6), (0.3, "pop", 0.6)] + [(d + 0.3, "click", 0.7) for d in DR] + [(last + 0.5, "hit", 0.9)]
     return dur, fn, ev
