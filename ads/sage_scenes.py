@@ -248,3 +248,36 @@ def scene_cta(dur=3.0, kw="REVIEW", sub="and I'll send you the link.", kw_at=0.3
         put(im, lg, W / 2, 1250, clamp((t - 1.0) / 0.3), 0.9 + 0.1 * back_out((t - 1.0) / 0.5)); put(im, ftext("Southline Agency", "b", 34, INK), W / 2, 1360, clamp((t - 1.1) / 0.3))
         return im, 0
     return dur, fn, [(0.05, "whoosh", 0.4), (kw_at, "pop", 0.8), (kw_at + 0.05, "ping", 0.4), (1.0, "coin", 0.4)]
+
+
+# ======================================================================= extra beats for the no-voiceover cut
+def scene_intro(dur=1.8, l1="Clothing brands,", l2="quick test."):
+    """opener: the callout rises word by word, a terracotta underline draws, the subline lifts in"""
+    L1 = [ftext(w_, "bl", 110, INK) for w_ in l1.split()]; L2 = fitT(l2, 96, ACC, "bl")
+    def fn(t):
+        im = bg(); M.words_rise(im, L1, W / 2, 820, t, 0.05, stagger=0.12, gap=30); M.words_rise(im, [L2], W / 2, 970, t, 0.45)
+        d = ImageDraw.Draw(im); p = quint_out((t - 0.75) / 0.45)
+        if p > 0: d.rounded_rectangle((W / 2 - L2.width / 2, 1040, W / 2 - L2.width / 2 + L2.width * p, 1054), 7, fill=ACC)
+        return im, 0
+    return dur, fn, [(0.05, "whoosh", 0.4), (0.45, "pop", 0.5), (0.75, "swish", 0.3)]
+
+def scene_couldnt(dur=2.2, l1="Couldn't answer", l2="all three?", at=(0.55, 0.75, 0.95)):
+    """three question chips: each '?' flips to a grey cross with a little drop, then the line lands"""
+    L1, L2 = fitT(l1, 92, INK, "bl"), fitT(l2, 92, ACC, "bl")
+    def chip(n, state):
+        def f(d, s, im):
+            d.rounded_rectangle((0, 0, 230 * s - 1, 110 * s - 1), 55 * s, fill=WHITE if state == "?" else SOFT)
+            d.text((36 * s, 22 * s), n, font=M.ffont("bl", 56 * s), fill=INK if state == "?" else MUTED)
+            if state == "?": d.text((160 * s, 18 * s), "?", font=M.ffont("bl", 60 * s), fill=ACC)
+            else: d.line((158 * s, 36 * s, 196 * s, 74 * s), fill=MUTED, width=8 * s); d.line((196 * s, 36 * s, 158 * s, 74 * s), fill=MUTED, width=8 * s)
+        return A.shadowed(A.sprite(230, 110, f), blur=20, dy=10, alpha=20, pad=40)
+    C = [(chip(f"0{i + 1}", "?"), chip(f"0{i + 1}", "x")) for i in range(3)]; xs = [W / 2 - 270, W / 2, W / 2 + 270]
+    def fn(t):
+        im = bg(); M.words_rise(im, [L1], W / 2, 640, t, 0.05); M.words_rise(im, [L2], W / 2, 750, t, 0.2)
+        for i, (q, x_) in enumerate(C):
+            k = (t - at[i]) / 0.3; flip = k > 0.5
+            sc = abs(math.cos(clamp(k) * math.pi)) if 0 < k < 1 else 1   # card flip: squash to 0 width and back
+            sp = x_ if flip else q
+            if sc > 0.02: put(im, sp.resize((max(1, int(sp.width * sc)), sp.height), Image.BICUBIC), xs[i], 1000 + (8 if flip else 0), clamp(t / 0.3))
+        return im, 0
+    return dur, fn, [(0.05, "whoosh", 0.4)] + [(a + 0.15, "click", 0.5) for a in at]
