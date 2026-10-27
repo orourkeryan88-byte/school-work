@@ -50,12 +50,12 @@ def scene_dms(dur=3.4, rows=(("S", "Streetwear brand", "How much should I spend 
 
 # ======================================================================= 2. the budget splits into three jars
 def scene_jars(dur=6.8, budget="€30/day", parts=(("TEST", "new ads", 0.2), ("SCALE", "the winners", 0.6), ("REMIND", "past visitors", 0.2)),
-               pour=(1.1, 4.4), n_coins=30, label_at=(1.4, 2.3, 3.6), done_at=4.9):
+               pour=(1.1, 4.4), n_coins=30, label_at=(1.4, 2.3, 3.6), done_at=4.9, cols=None, pill_col=None):
     """a budget pill at the top pours coins down curved paths into three glass jars; each jar fills with glowing liquid
     to its share and its percentage counts up; the middle (scale) jar takes most of it"""
     xs = [W / 2 - 320, W / 2, W / 2 + 320]; JW, JH, JY = 230, 420, 1180   # jar centre y
-    cols = [A.TH["accent2"], A.TH["accent"], (255, 140, 90)]
-    BP = A.shadowed(pill(budget, 56, A.TH["accent"], w="bl"), blur=24, dy=12, alpha=90, pad=40); EX = text("example split", "m", 26, A.TH["muted"])
+    cols = list(cols or [A.TH["accent2"], A.TH["accent"], (255, 140, 90)])
+    BP = A.shadowed(pill(budget, 56, pill_col or A.TH["accent"], w="bl"), blur=24, dy=12, alpha=90, pad=40); EX = text("example split", "m", 26, A.TH["muted"])
     TT = T("We split it three ways.", "xb", 72)
     lab = [(text(a, "bl", 46, cols[i]), text(b, "sb", 28, A.TH["muted"])) for i, (a, b, _) in enumerate(parts)]
     coin = A.sprite(54, 54, lambda d, s, im: (d.ellipse((0, 0, 54 * s, 54 * s), fill=A.TH["accent2"]), d.ellipse((6 * s, 6 * s, 48 * s, 48 * s), outline=(200, 120, 40), width=3 * s),
@@ -111,16 +111,17 @@ def scene_jars(dur=6.8, budget="€30/day", parts=(("TEST", "new ads", 0.2), ("S
 
 # ======================================================================= 3. the weekly loop
 def scene_loop(dur=4.0, centre=("Every", "week"), nodes=(("New ads tested", "TEST"), ("Winner gets the budget", "SCALE"), ("Weak ads switched off", "CUT")),
-               spin=(0.4, 3.3)):
+               spin=(0.4, 3.3), cols=None):
     """three node cards on a circle; a glowing arc arrow runs round once, and each card lights up as it passes"""
     R_, CX, CY = 330, W / 2, 1000; angs = [-90, 30, 150]
-    def node(a, b, on):
+    cols = list(cols or [A.TH["accent"]] * 3)
+    def node(a, b, on, c):
         w_, h_ = 400, 150
         def dr(d, s):
-            d.text((34 * s, 26 * s), b, font=A.font("bl", 30 * s), fill=A.TH["accent"] if on else A.TH["muted"])
+            d.text((34 * s, 26 * s), b, font=A.font("bl", 30 * s), fill=c if on else A.TH["muted"])
             d.text((34 * s, 72 * s), a, font=A.font("b", A.fit_size(a, "b", 36, 330) * s), fill=A.TH["ink"] if on else A.TH["muted"])
-        return A.card_sprite(w_, h_, dr, radius=30, outline=A.TH["accent"] if on else None)
-    N0 = [node(a, b, False) for a, b in nodes]; N1 = [node(a, b, True) for a, b in nodes]
+        return A.card_sprite(w_, h_, dr, radius=30, outline=c if on else None)
+    N0 = [node(a, b, False, cols[i]) for i, (a, b) in enumerate(nodes)]; N1 = [node(a, b, True, cols[i]) for i, (a, b) in enumerate(nodes)]
     C1, C2 = text(centre[0], "sb", 44, A.TH["muted"]), text(centre[1], "bl", 96, A.TH["ink"])
     TT = T("Then it repeats.", "xb", 72)
     def fn(t):
