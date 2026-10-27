@@ -106,15 +106,16 @@ def scene_invoices(months=6, title="Month after month…", end="They get paid ei
     return dur, fn, ev
 
 
-def scene_intro_card(dur=3.6, ryan_at=0.1, line_at=0.7, logo_at=1.1, pills_at=1.7, pay_at=2.5):
+def scene_intro_card(dur=3.6, ryan_at=0.1, line_at=0.7, logo_at=1.1, pills_at=1.7, pay_at=2.5, pills=("Meta ads", "Email follow-up"),
+                     who="for coaches & course creators.", pay_line="Paid per booked call."):
     """who's talking and what's for sale, in one card: 'I'm Ryan.' slams, 'I run Southline Agency.' rises, the badge
     springs in, then the service pills (Meta ads · Email follow-up · for coaches) and 'Paid per booked call.'"""
     im_, ryan = text("I'm Ryan.", "bl", 140), None
     l2 = text("I run Southline Agency.", "xb", A.fit_size("I run Southline Agency.", "xb", 76, 960))
     lg = A.logo().resize((170, 170), Image.LANCZOS)
-    p1, p2 = pill("Meta ads", 46, A.TH["accent"], w="bl"), pill("Email follow-up", 46, A.TH["accent2"], w="bl")
-    l3 = text("for coaches & course creators.", "xb", A.fit_size("for coaches & course creators.", "xb", 64, 960))
-    pay = text("Paid per booked call.", "bl", A.fit_size("Paid per booked call.", "bl", 96, 960), grad=(A.TH["accent"], A.TH["accent2"], 0))
+    p1, p2 = pill(pills[0], 46, A.TH["accent"], w="bl"), pill(pills[1], 46, A.TH["accent2"], w="bl")
+    l3 = text(who, "xb", A.fit_size(who, "xb", 64, 960))
+    pay = text(pay_line, "bl", A.fit_size(pay_line, "bl", 96, 960), grad=(A.TH["accent"], A.TH["accent2"], 0))
     def fn(t):
         im = A.bg(); sh = 0
         k = (t - ryan_at) / 0.3
