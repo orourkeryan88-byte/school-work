@@ -30,3 +30,14 @@ All four must pass before you open a PR. Add or update tests for any logic you c
 - Keep the Irish context: Europe/Dublin time, +353 numbers, euro.
 - Match the existing style: small, commented, readable code. Mobile-friendly, works in dark mode.
 - Update the README when behaviour or setup changes.
+
+## Southline's offer (ads, videos and outreach emails)
+
+Ryan's own rules for anything that sells Southline (Reels, ad scripts, cold emails, replies):
+
+- Meta ads (Facebook + Instagram) is the main and only core service. Lead with it every time.
+- Email marketing is an upsell, never the headline. Mention it at most once, near the end, as a bonus: "on top of that, we can set up the emails that bring past customers back".
+- Clothing / ecommerce brands: the offer is pay per result, meaning the brand pays per sale our ads bring in, no monthly retainer. Never say "pay per lead" or "pay per new subscriber" for clothing brands.
+- Coaches: pay per booked sales call (they fund the ad spend).
+- Ads run in the client's own ad account, so they see every number.
+- Don't invent prices, guarantees or client results.
