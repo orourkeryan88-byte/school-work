@@ -37,7 +37,7 @@ Ryan's own rules for anything that sells Southline (Reels, ad scripts, cold emai
 
 - Meta ads (Facebook + Instagram) is the main and only core service. Lead with it every time.
 - Email marketing is an upsell, never the headline. Mention it at most once, near the end, as a bonus: "on top of that, we can set up the emails that bring past customers back".
-- Clothing / ecommerce brands: the offer is pay per result, meaning the brand pays per sale our ads bring in, no monthly retainer. Never say "pay per lead" or "pay per new subscriber" for clothing brands.
+- Clothing / ecommerce brands: no monthly retainer; Southline's fee is per result (per sale our ads bring in). The brand still pays its own ad spend, so never say or imply they "only pay per sale", "pay nothing unless it sells" or "no sale, no fee". Say "our fee is tied to the sales we bring in". Don't mention ad spend in ads; it's explained on the call. Never say "pay per lead" or "pay per new subscriber" for clothing brands.
 - Coaches: pay per booked sales call (they fund the ad spend).
 - Ads run in the client's own ad account, so they see every number.
 - Don't invent prices, guarantees or client results.
