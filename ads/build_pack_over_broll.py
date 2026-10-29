@@ -9,38 +9,13 @@ from PIL import Image
 import adkit as A
 import trust_scenes as S
 import pack_scenes as P
+from real_broll import shot, title
 from adkit import W, H, eio, clamp
 
 A.set_theme("midnight", accent=S.ACC, accent2=S.ACC, bg=((8, 10, 14), (4, 5, 8)), blobs=[], grid=False)
 P.MIN_DARK = 0.45
 OUT = "out/animation_pack/southline_animations_over_broll.mp4"
 
-
-_clips = {}
-def frames(n):
-    """all frames of footage/ryan_working_<n>.mp4 at its own size (cached), as one uint8 array"""
-    if n not in _clips:
-        path = f"footage/ryan_working_{n}.mp4"
-        w, h = map(int, subprocess.run(["ffprobe", "-v", "error", "-select_streams", "v:0", "-show_entries", "stream=width,height", "-of", "csv=p=0", path],
-                                       capture_output=True, text=True, check=True).stdout.strip().split(","))
-        raw = subprocess.run(["ffmpeg", "-v", "error", "-i", path, "-r", str(A.FPS), "-f", "rawvideo", "-pix_fmt", "rgb24", "-"], capture_output=True, check=True).stdout
-        _clips[n] = np.frombuffer(raw, np.uint8).reshape(-1, h, w, 3)
-    return _clips[n]
-
-def shot(n, start, zoom=1.0, fx=0.5, fy=0.5, push=0.06, dur=5.0):
-    """B-roll shot: clip n from `start` seconds, cropped to 9:16 and zoomed into (fx, fy), with a slow push-in of
-    `push` over the shot so it never sits still. Holds the last frame if the clip runs out."""
-    def fn(ts):
-        fr = frames(n); i = int(clamp((start + ts) * A.FPS, 0, len(fr) - 1)); im = Image.fromarray(fr[i])
-        z = zoom * (1 + push * eio(ts / dur)); sw, sh = im.size
-        cw = min(sw, sh * W / H) / z; ch = cw * H / W
-        x0 = clamp(fx * sw - cw / 2, 0, sw - cw); y0 = clamp(fy * sh - ch / 2, 0, sh - ch)
-        return im.resize((W, H), Image.BICUBIC, box=(x0, y0, x0 + cw, y0 + ch))
-    return fn
-
-def title(num, lines, n, at, zoom=1.15, fx=0.5, fy=0.5, dur=1.7):
-    """section card on a blurred freeze frame of clip n at `at` seconds"""
-    return S.with_shot(S.scene_title(num, lines, 0.0, 1.0, 0.5, 0.5, dur=dur), shot(n, at, zoom, fx, fy, push=0))
 
 w = S.with_shot
 # clip 1 (20s): side view at the laptop, then writing in a notebook. clip 2 (6.6s): front-on, typing.

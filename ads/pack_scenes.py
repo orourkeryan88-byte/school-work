@@ -137,15 +137,16 @@ def scene_what(dur=4.6, s0_at=0.1, pills_at=(0.45, 0.75), s1_at=1.4, acct_at=2.2
                      (acct_at + 0.4, "swish", 0.4)] + [(eye_at + i * 0.15, "tick", 0.35) for i in range(3)] + [(eye_at + 0.4, "swish", 0.5)]
 
 
-def scene_test(dur=4.8, head_at=0.1, cards_at=(0.7, 1.0, 1.3, 1.6), cap_at=2.4):
+def scene_test(dur=4.8, head_at=0.1, cards_at=(0.7, 1.0, 1.3, 1.6), cap_at=2.4, tag="STEP 1", head=("Several ads for", "your best seller."), key="best seller",
+               cap=("Each one from a", "different angle.")):
     """step 1: 'Several ads for your best seller' - four different ads (close-up, try-on, review, gift) fan in"""
-    n1 = T("STEP 1", 44, ACC, "monob"); h1, h2 = T("Several ads for", 84), T("your best seller.", 84)
-    cards = [ad_card(*k) for k in AD_KINDS]; c1, c2 = T("Each one from a", 70, (210, 216, 228), "b"), T("different angle.", 70, (210, 216, 228), "b")
+    n1 = T(tag, 44, ACC, "monob"); h1, h2 = T(head[0], 84), T(head[1], 84)
+    cards = [ad_card(*k) for k in AD_KINDS]; c1, c2 = T(cap[0], 70, (210, 216, 228), "b"), T(cap[1], 70, (210, 216, 228), "b")
     slots = [(W / 2 - 230, 830, -8), (W / 2 + 230, 830, 7), (W / 2 - 230, 1190, 6), (W / 2 + 230, 1190, -6)]
     def fn(t):
         im = back_view(t, 0.3)
         rise(im, n1, W / 2, 260, t, head_at); rise(im, h1, W / 2, 360, t, head_at + 0.1); rise(im, h2, W / 2, 465, t, head_at + 0.3)
-        under(im, "your best seller.", 84, W / 2, 465, "best seller", (t - head_at - 0.7) / 0.4)
+        under(im, head[1], 84, W / 2, 465, key, (t - head_at - 0.7) / 0.4)
         for c, (x, y, r), t0 in zip(cards, slots, cards_at):
             k = (t - t0) / 0.55
             if k > 0:
@@ -157,17 +158,18 @@ def scene_test(dur=4.8, head_at=0.1, cards_at=(0.7, 1.0, 1.3, 1.6), cap_at=2.4):
     return dur, fn, [(head_at, "swish", 0.4), (head_at + 0.3, "swish", 0.4)] + [(x, "pop", 0.6) for x in cards_at] + [(cap_at, "swish", 0.4)]
 
 
-def scene_winner(dur=5.0, head_at=0.1, bars_at=0.7, win_at=2.3, budget_at=3.0):
+def scene_winner(dur=5.0, head_at=0.1, bars_at=0.7, win_at=2.3, budget_at=3.0, tag="STEP 2", head=("Real buyers pick", "the winner."), key="winner",
+                 cap="The budget goes behind it.", cap_key="behind it", cap_size=72):
     """step 2: the four ads race as bars of sales; one pulls ahead, turns blue, gets a WINNER tag;
     'The budget goes behind it' - coins slide off the other bars onto the winner"""
-    n1 = T("STEP 2", 44, ACC, "monob"); h1, h2 = T("Real buyers pick", 84), T("the winner.", 84)
+    n1 = T(tag, 44, ACC, "monob"); h1, h2 = T(head[0], 84), T(head[1], 84)
     labels = [k[0] for k in AD_KINDS]; final = [0.42, 0.92, 0.55, 0.36]; WI = 1
     lab_sp = [T(l, 46, WHITE, "b") for l in labels]; tag = A.pill("WINNER", 34, ACC, WHITE, w="bl")
-    cap = T("The budget goes behind it.", 72); X0, X1, Y0, DY = 150, 930, 760, 190
+    cap_sp = T(cap, cap_size); X0, X1, Y0, DY = 150, 930, 760, 190
     def fn(t):
         im = back_view(t, 0.3); d = ImageDraw.Draw(im)
         rise(im, n1, W / 2, 260, t, head_at); rise(im, h1, W / 2, 360, t, head_at + 0.1); rise(im, h2, W / 2, 465, t, head_at + 0.3)
-        under(im, "the winner.", 84, W / 2, 465, "winner", (t - win_at) / 0.4)
+        under(im, head[1], 84, W / 2, 465, key, (t - win_at) / 0.4)
         grow = eio((t - bars_at) / 1.5); shift = eo((t - budget_at) / 0.9)
         for i, sp in enumerate(lab_sp):
             y = Y0 + i * DY; put(im, sp, X0 + sp.width / 2 - 36, y - 52, clamp((t - bars_at + 0.2) / 0.3))
@@ -188,8 +190,8 @@ def scene_winner(dur=5.0, head_at=0.1, bars_at=0.7, win_at=2.3, budget_at=3.0):
                         sx, sy = X0 + 220, Y0 + i * DY + 35; ex, ey = X0 + 600, Y0 + WI * DY + 35
                         x = sx + (ex - sx) * eio(p); y = sy + (ey - sy) * eio(p) - 120 * math.sin(math.pi * p)
                         d.ellipse((x - 20, y - 20, x + 20, y + 20), fill=(255, 200, 70), outline=(200, 140, 30), width=4)
-            rise(im, cap, W / 2, 1600, t, budget_at + 0.3)
-            under(im, "The budget goes behind it.", 72, W / 2, 1600, "behind it", (t - budget_at - 0.8) / 0.4)
+            rise(im, cap_sp, W / 2, 1600, t, budget_at + 0.3)
+            under(im, cap, cap_size, W / 2, 1600, cap_key, (t - budget_at - 0.8) / 0.4)
         return im, (10 if win_at <= t < win_at + 0.12 else 0)
     return dur, fn, [(head_at, "swish", 0.4), (head_at + 0.3, "swish", 0.4), (bars_at, "whoosh", 0.4)] + [(bars_at + 0.2 * i, "tick", 0.3) for i in range(7)] + \
         [(win_at, "hit", 0.8), (win_at + 0.05, "pop", 0.7)] + [(budget_at + 0.35 + 0.12 * i, "coin", 0.35) for i in range(5)] + [(budget_at + 0.3, "swish", 0.4)]
