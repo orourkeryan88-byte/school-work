@@ -68,5 +68,15 @@ if "--stills" in sys.argv:
 
 v = A.Video(); [v.add(*sc) for sc in SCENES]; t = 0.0; marks = []
 for dur, _, _ in SCENES: marks.append(t + dur * 0.7); t += dur
-total = v.render(OUT, transition="whip", music=False, sfx=True, lufs=-20.0, preview_times=marks)
+RAW = OUT.replace(".mp4", "_sfx_only.mp4")
+total = v.render(RAW, transition="whip", music=False, sfx=True, lufs=-20.0, preview_times=marks)
+
+# slight background music: the soft synth bed from the trust videos, about 8 dB under the SFX; the mix is then
+# brought up to -16 LUFS so it isn't quiet next to other Reels
+import os, build_trust_audio as BA
+bed = "/tmp/pack_bed.wav"; BA.music_bed(total, bed)  # the bed comes out at about -20.6 LUFS
+subprocess.run(["ffmpeg", "-y", "-v", "error", "-i", RAW, "-i", bed, "-filter_complex",
+                "[1:a]volume=-7.5dB,aresample=48000[m];[0:a][m]amix=inputs=2:duration=first:normalize=0,loudnorm=I=-16:TP=-1.5:LRA=11[a]",
+                "-map", "0:v", "-map", "[a]", "-c:v", "copy", "-c:a", "aac", "-b:a", "256k", "-movflags", "+faststart", OUT], check=True)
+os.remove(RAW); os.replace(RAW.replace(".mp4", "_preview.png"), OUT.replace(".mp4", "_preview.png"))
 print(f"wrote {OUT} ({total:.1f}s)")
