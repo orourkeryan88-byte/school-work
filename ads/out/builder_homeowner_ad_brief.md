@@ -36,6 +36,24 @@ This ad is made for a **builder client** to run under their own Facebook/Instagr
 | 0:14 | Offer card: **FREE · Site visit & written quote**, for your extension. ✓ No obligation ✓ Itemised, in writing ✓ Now booking spring 2027 |
 | 0:19 | A form fills itself in (What are you planning? Kitchen extension · Where's the house? · When would you like to start? Spring 2027), then **"Fill out the form below"** with an arrow bouncing down to the form button. |
 
+## Hook tests (3 versions)
+
+Same video after the first 4 seconds, so the test only measures the hook. Run all three in one ad set and keep the one with the cheapest lead after 4–5 days.
+
+| Video | Hook formula | On screen |
+|---|---|---|
+| `builder_homeowner_hook1_looking_for_5.mp4` | I'm looking for 5 (avatar) who want (desired outcome) | "I'm looking for 5 homeowners who want to extend in spring 2027." Five little houses pop in, numbered 1–5. |
+| `builder_homeowner_hook2_did_you_know.mp4` | Did you know that (X%) of (avatar) are still struggling with (problem) | "Did you know **2 in 3** homeowners go over budget on their extension?" Three houses, two turn red with OVER BUDGET tags. Small source line underneath. |
+| `builder_homeowner_hook3_tired_of.mp4` | If you're (avatar) and tired of struggling with (problems) | "If you've outgrown your house… and you're tired of… *Builders who don't call back · Quotes that keep growing*" |
+
+> ⚠️ **Hook 1:** only run it if the builder really can take around 5 extension jobs for spring 2027. Otherwise change the number to match.
+> ⚠️ **Hook 2:** "2 in 3" comes from a 2026 survey of 300 UK homeowners (65.6% went over budget; [Renno](https://www.renno.pro/blog/uk-homeowner-survey-2026)). It's a UK figure, so the source line stays on screen.
+
+**Matching first lines for the primary text**
+1. I'm looking for 5 homeowners who want to extend in spring 2027.
+2. Did you know 2 in 3 homeowners go over budget on their extension?
+3. If you've outgrown your house and you're tired of builders who don't call back and quotes that keep growing…
+
 ## Ad copy
 
 **Primary text**

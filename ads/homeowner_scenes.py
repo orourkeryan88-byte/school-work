@@ -193,3 +193,82 @@ def scene_form(answers, dur=6.0, form_at=0.2, ans_at=(1.0, 1.7, 2.4), cta_at=3.2
         return im, 0
     ev = [(form_at, "whoosh", 0.5)] + [(t0 + j / 30, "tick", 0.18) for (q, a), t0 in zip(answers, ans_at) for j in range(0, len(a), 2)]
     return dur, fn, ev + [(t0 + len(a) / 30, "pop", 0.5) for (q, a), t0 in zip(answers, ans_at)] + [(cta_at, "swish", 0.5), (cta_at + 0.2, "hit", 0.7), (arrow_at, "pop", 0.6)]
+
+
+# ======================================================================= hook variants (A/B test)
+def mini_house(d, cx, base, s, col=(236, 228, 214), roof=(70, 78, 98), outline=None):
+    w, h = 120 * s, 90 * s
+    d.rectangle((cx - w / 2, base - h, cx + w / 2, base), fill=col, outline=outline, width=int(5 * s) if outline else 0)
+    d.polygon([(cx - w / 2 - 10 * s, base - h), (cx, base - h - 60 * s), (cx + w / 2 + 10 * s, base - h)], fill=roof)
+    d.rectangle((cx - 14 * s, base - 44 * s, cx + 14 * s, base), fill=(120, 86, 60))
+
+
+def scene_hook_looking(dur=4.2, l1_at=0.15, houses_at=0.9, l2_at=2.0, l3_at=2.5):
+    """hook 1 'I'm looking for 5 (avatar) who want (outcome)': 'I'm looking for 5 homeowners' slams, five little
+    houses pop in a row with 1-5 tags, 'who want to extend' / 'in spring 2027.'"""
+    l1 = T("I'm looking for 5", 104, WHITE); l1b = T("homeowners", 104, ACC())
+    l2, l3 = T("who want to extend", 80, WHITE), T("in spring 2027.", 80, WHITE)
+    nums = [A.pill(str(i + 1), 30, ACC(), (24, 26, 34), w="bl") for i in range(5)]
+    def fn(t):
+        im = A.bg(); sh = 12 if l1_at <= t < l1_at + 0.13 else 0
+        if t >= l1_at:
+            k = (t - l1_at) / 0.35; put(im, l1, W / 2, 440, clamp(k / 0.3), 1.35 - 0.35 * back(k)); put(im, l1b, W / 2, 560, clamp(k / 0.3), 1.35 - 0.35 * back(k))
+        for i in range(5):
+            k = (t - houses_at - i * 0.16) / 0.35
+            if k <= 0: continue
+            o = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(o); x = W / 2 + (i - 2) * 190; y = 1000 + 40 * (1 - back(k))
+            mini_house(d, x, y, 1.15); im.alpha_composite(o); pop(im, nums[i], x, y + 60, t, houses_at + i * 0.16 + 0.1, 1.5)
+        rise(im, l2, W / 2, 1260, t, l2_at); rise(im, l3, W / 2, 1360, t, l3_at)
+        if t >= l3_at: swipe(im, "in spring 2027.", 80, W / 2, 1360, (t - l3_at - 0.3) / 0.4)
+        if t >= l3_at: put(im, l3, W / 2, 1360)
+        return im, sh
+    return dur, fn, [(l1_at, "hit", 0.9)] + [(houses_at + i * 0.16, "pop", 0.55) for i in range(5)] + [(l2_at, "swish", 0.45), (l3_at, "swish", 0.45), (l3_at + 0.3, "swish", 0.4)]
+
+
+def scene_hook_stat(dur=4.6, l1_at=0.15, big_at=0.6, houses_at=1.4, red_at=(2.0, 2.3), l2_at=2.6, src_at=3.0,
+                    big="2 in 3", line2=("go over budget on", "their extension?"), src="Source: UK homeowner survey, 2026"):
+    """hook 2 'Did you know that X% of (avatar) are still struggling with (problem)': 'Did you know' then '2 in 3'
+    slams huge, three houses, two turn red with 'OVER BUDGET' tags, 'homeowners go over budget on their extension?'
+    and a small source line (the stat is real, so show where it's from)"""
+    l1 = T("Did you know", 80, WHITE); bg_ = T(big, 220, ACC()); l1c = T("homeowners", 80, WHITE)
+    l2a, l2b = T(line2[0], 76, WHITE), T(line2[1], 76, WHITE); sp = T(src, 30, (150, 160, 180), "m")
+    tag = A.pill("OVER BUDGET", 24, RED, WHITE, w="bl")
+    def fn(t):
+        im = A.bg(); sh = 14 if big_at <= t < big_at + 0.14 else 0
+        rise(im, l1, W / 2, 330, t, l1_at)
+        if t >= big_at: put(im, bg_, W / 2, 520, clamp((t - big_at) / 0.1), 1.45 - 0.45 * back((t - big_at) / 0.35))
+        rise(im, l1c, W / 2, 700, t, big_at + 0.3)
+        for i in range(3):
+            k = (t - houses_at - i * 0.15) / 0.35
+            if k <= 0: continue
+            red = i < 2 and t >= red_at[i]; x = W / 2 + (i - 1) * 270; y = 1060
+            o = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(o)
+            mini_house(d, x, y + 30 * (1 - back(k)), 1.5, col=(250, 222, 222) if red else (236, 228, 214), outline=RED if red else None); im.alpha_composite(o)
+            if red: pop(im, tag, x, y + 50, t, red_at[i], 1.5)
+        rise(im, l2a, W / 2, 1270, t, l2_at); rise(im, l2b, W / 2, 1365, t, l2_at + 0.2)
+        if t >= l2_at + 0.2: swipe(im, line2[0], 76, W / 2, 1270, (t - l2_at - 0.5) / 0.4); put(im, l2a, W / 2, 1270)
+        rise(im, sp, W / 2, 1480, t, src_at)
+        return im, sh
+    return dur, fn, [(l1_at, "swish", 0.4), (big_at, "hit", 1.0), (big_at + 0.3, "swish", 0.35)] + [(houses_at + i * 0.15, "pop", 0.5) for i in range(3)] + \
+        [(x, "glitch", 0.5) for x in red_at] + [(l2_at, "swish", 0.4), (l2_at + 0.2, "swish", 0.4)]
+
+
+def scene_hook_tired(dur=4.6, l1_at=0.15, house_at=0.3, l2_at=1.5, chips_at=(2.2, 2.7)):
+    """hook 3 'If you're (avatar) and tired of struggling with (problems)': 'If you've outgrown your house…' over the
+    crowded house, then 'and you're tired of' + two problem chips that drop in with a shake"""
+    l1 = T("If you've outgrown your house…", 84, WHITE); l2 = T("and you're tired of…", 80, WHITE)
+    chips = [A.pill("Builders who don't call back", 44, WHITE, (24, 26, 34), w="bl"), A.pill("Quotes that keep growing", 44, WHITE, (24, 26, 34), w="bl")]
+    def fn(t):
+        im = A.bg(); sh = 10 if l1_at <= t < l1_at + 0.12 else 0
+        if t >= l1_at: put(im, l1, W / 2, 400, clamp((t - l1_at) / 0.1), 1.3 - 0.3 * back((t - l1_at) / 0.35))
+        if t >= house_at:
+            k = spring((t - house_at) / 0.6, f=1.4, d=6); n = 1 + int(5 * clamp((t - house_at - 0.3) / 0.8))
+            o = Image.new("RGBA", (W, H), (0, 0, 0, 0)); d = ImageDraw.Draw(o); house(d, W / 2, 1000 + 500 * (1 - k), 1.05, people=n); im.alpha_composite(o)
+        rise(im, l2, W / 2, 1180, t, l2_at)
+        for i, (c, t0) in enumerate(zip(chips, chips_at)):
+            k = (t - t0) / 0.35
+            if k > 0:
+                jit = 8 * math.sin((t - t0) * 50) * clamp(1 - (t - t0) / 0.3)
+                put(im, c, W / 2 + jit, 1310 + i * 120, clamp(k / 0.2), 1.4 - 0.4 * back(k))
+        return im, sh
+    return dur, fn, [(l1_at, "hit", 0.8), (house_at, "whoosh", 0.4), (l2_at, "swish", 0.45)] + [(x, "hit", 0.6) for x in chips_at]
