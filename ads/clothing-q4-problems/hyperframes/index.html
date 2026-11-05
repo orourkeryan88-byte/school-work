@@ -104,6 +104,13 @@
   .chk .x::before { transform: rotate(45deg); } .chk .x::after { transform: rotate(-45deg); }
   .chk .st { position: absolute; left: -6px; top: 56px; height: 8px; background: var(--fog); border-radius: 3px; transform-origin: 0 50%; }
 
+  /* S5 logo stamp: the badge shoots down and crushes the problems */
+  #stamp { position: absolute; left: 350px; top: 500px; width: 380px; height: 380px; z-index: 8; opacity: 0; filter: drop-shadow(0 40px 40px rgba(0,0,0,.55)); }
+  #burst i { position: absolute; left: 540px; top: 690px; width: 150px; height: 10px; margin-top: -5px; background: var(--goldb); border-radius: 4px; transform-origin: 0 50%; opacity: 0; }
+  #debris b { position: absolute; left: 540px; top: 700px; width: 46px; height: 12px; background: var(--fog); border-radius: 3px; opacity: 0; }
+  #flash { position: absolute; inset: 0; background: #fff; opacity: 0; z-index: 9; }
+  #c5b { transform-origin: 50% 100%; }
+
   /* S7 fix list */
   .li { position: absolute; left: 72px; font-weight: 700; font-size: 88px; letter-spacing: -0.035em; color: var(--ink); white-space: nowrap; }
   .li i { display: inline-block; width: 16px; height: 70px; background: var(--gold); border-radius: 4px; margin-right: 30px; vertical-align: -6px; transform-origin: 50% 100%; }
@@ -131,7 +138,7 @@
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="main" data-width="1080" data-height="1920" data-duration="28.067">
+<div id="root" data-composition-id="main" data-width="1080" data-height="1920" data-duration="29.032">
   <div id="bg" class="full" data-layout-ignore></div>
   <div id="haze" data-layout-ignore></div>
 
@@ -206,7 +213,7 @@
   </section>
 
   <!-- S5 11.613–15.484 PAIN 3 lost buyers -->
-  <section id="s5" class="clip scene dark" data-start="11.613" data-duration="3.871" data-track-index="1">
+  <section id="s5" class="clip scene dark" data-start="11.613" data-duration="4.839" data-track-index="1">
     <div class="cam" id="cam5">
       <span class="corner tl"></span><span class="corner br"></span>
       <div class="label">03 — Lost buyers</div>
@@ -221,11 +228,15 @@
         <div class="chk" id="k2" style="top:670px">cart email<span class="x"></span><span class="st" style="width:540px"></span></div>
         <div class="chk" id="k3" style="top:800px">welcome flow<span class="x"></span><span class="st" style="width:690px"></span></div>
       </div>
+      <div id="burst" data-layout-ignore></div>
+      <div id="debris" data-layout-ignore></div>
+      <img id="stamp" src="assets/logo.png" alt="Southline" data-layout-ignore />
+      <div id="flash" data-layout-ignore></div>
     </div>
   </section>
 
   <!-- S6a 15.484–16.935 turn (Pine) -->
-  <section id="s6a" class="clip scene dark" data-start="15.484" data-duration="1.451" data-track-index="1">
+  <section id="s6a" class="clip scene dark" data-start="16.452" data-duration="1.451" data-track-index="1">
     <div class="cam" id="cam6a">
       <div class="ghost" id="g6a" style="left:-60px;top:1060px;font-size:560px" data-layout-ignore>clothes</div>
       <div class="cap" id="c6a" style="top:700px"><span class="kw"><span class="w">it's</span> <span class="w">not</span> <span class="w">your</span> <span class="w">clothes.<span class="ul" id="u6a"></span></span></span></div>
@@ -233,7 +244,7 @@
   </section>
 
   <!-- S6b 16.935–18.387 turn (Cloud, after the gold line wipe) -->
-  <section id="s6b" class="clip scene light" data-start="16.935" data-duration="1.452" data-track-index="1">
+  <section id="s6b" class="clip scene light" data-start="17.903" data-duration="1.452" data-track-index="1">
     <div class="cloudbg" data-layout-ignore></div>
     <div class="cam" id="cam6b">
       <div class="ghost" id="g6b" style="left:-40px;top:1060px;font-size:560px" data-layout-ignore>system</div>
@@ -242,7 +253,7 @@
   </section>
 
   <!-- S7 18.387–23.226 the fix (Cloud) -->
-  <section id="s7" class="clip scene light" data-start="18.387" data-duration="4.839" data-track-index="1">
+  <section id="s7" class="clip scene light" data-start="19.355" data-duration="4.839" data-track-index="1">
     <div class="cloudbg" data-layout-ignore></div>
     <div class="cam" id="cam7">
       <span class="corner tl"></span><span class="corner br"></span>
@@ -257,7 +268,7 @@
   </section>
 
   <!-- S8 23.226–25.645 payoff (Cloud): "clothes" behind the hoodie, then in front on the beat -->
-  <section id="s8" class="clip scene light" data-start="23.226" data-duration="2.419" data-track-index="1">
+  <section id="s8" class="clip scene light" data-start="24.194" data-duration="2.419" data-track-index="1">
     <div class="cloudbg" data-layout-ignore></div>
     <div class="cam" id="cam8">
       <div class="cap" id="c8"><span class="ld"><span class="w">you</span> <span class="w">focus</span> <span class="w">on</span> <span class="w">the</span></span></div>
@@ -269,7 +280,7 @@
   </section>
 
   <!-- S9 25.645–28.067 end card (Pine), loops to frame 1 -->
-  <section id="s9" class="clip scene dark" data-start="25.645" data-duration="2.422" data-track-index="1">
+  <section id="s9" class="clip scene dark" data-start="26.613" data-duration="2.419" data-track-index="1">
     <div class="cam" id="cam9">
       <div id="q4" data-layout-ignore>Q4</div>
       <div class="cap" id="c9"><span class="ld"><span class="w">we'll</span> <span class="w">show</span> <span class="w">you</span> <span class="w">how</span></span>
@@ -281,13 +292,13 @@
   <div id="wipe" data-layout-ignore><i></i></div>
   <div id="streak" data-layout-ignore></div>
   <div id="grain" class="full" data-layout-ignore></div>
-  <audio id="score" src="assets/audio.wav" data-start="0" data-duration="28.067" data-track-index="10" data-volume="1"></audio>
+  <audio id="score" src="assets/audio.wav" data-start="0" data-duration="29.032" data-track-index="10" data-volume="1"></audio>
 </div>
 
 <script>
   window.__timelines = window.__timelines || {};
   const tl = gsap.timeline({ paused: true });
-  const DUR = 28.067;
+  const DUR = 29.032;
   const b = n => n * 60 / 124;                     // beat grid, 124 BPM
   const E = { in: "expo.out", cam: "sine.inOut", ui: "back.out(1.4)" };
   const rnd = i => Math.sin(i * 12.9898) * 43758.5453 % 1;   // deterministic jitter
@@ -400,42 +411,68 @@
     tl.to(k, { opacity: 0.55, duration: 0.2 }, b(n) + 0.1);
   });
 
+  // ===== S5b THE STAMP: the Southline badge shoots down and crushes the struck-through problems on b(32)
+  const HIT = b(32);
+  const bursts = document.getElementById("burst"), deb = document.getElementById("debris");
+  for (let i = 0; i < 10; i++) { const e = document.createElement("i"); e.id = "bu" + i; bursts.appendChild(e); }
+  for (let i = 0; i < 16; i++) { const e = document.createElement("b"); e.id = "de" + i; deb.appendChild(e); }
+  tl.fromTo("#stamp", { y: -1500, scale: 1.3, rotation: -14, opacity: 1 }, { y: 0, scale: 1, rotation: 0, duration: 0.32, ease: "power4.in" }, HIT - 0.32);
+  tl.to("#stamp", { keyframes: { scaleX: [1.16, 0.94, 1.03, 1], scaleY: [0.8, 1.06, 0.98, 1] }, duration: 0.35, ease: "none" }, HIT);   // squash on impact
+  tl.to("#c5b", { scaleY: 0.08, y: 120, opacity: 0, duration: 0.16, ease: "power3.in" }, HIT - 0.02);                              // the problems get crushed
+  tl.to("#cart .k", { x: (i) => [-260, 260, -260, 260][i], y: (i) => [-160, -160, 220, 220][i], rotation: (i) => [-25, 25, 25, -25][i], opacity: 0, duration: 0.5, ease: "power3.out" }, HIT);
+  tl.to("#cl5, #cam5 .label", { opacity: 0, duration: 0.15 }, HIT);
+  for (let i = 0; i < 16; i++) {                                       // debris flies out from under the badge
+    const a = (i / 16) * Math.PI * 2 + rnd(i) * 0.4, r = 360 + Math.abs(rnd(i + 9)) * 380;
+    tl.set("#de" + i, { x: 0, y: 0, rotation: 0, opacity: 1 }, HIT);
+    tl.to("#de" + i, { x: Math.cos(a) * r, y: Math.sin(a) * r * 0.8 + 140, rotation: rnd(i + 3) * 540, opacity: 0, duration: 0.7, ease: "power3.out" }, HIT);
+  }
+  // gold impact lines radiating out from under the badge (rotation set per bar, pushed outward along it)
+  document.querySelectorAll("#burst i").forEach((e, i) => {
+    const ang = i * 36 + 18, rad = ang * Math.PI / 180;
+    tl.set(e, { rotation: ang, x: Math.cos(rad) * 200, y: Math.sin(rad) * 200, scaleX: 0, opacity: 1 }, HIT);
+    tl.to(e, { scaleX: 1, x: Math.cos(rad) * 230, y: Math.sin(rad) * 230, duration: 0.18, ease: "expo.out" }, HIT);
+    tl.to(e, { opacity: 0, x: Math.cos(rad) * 320, y: Math.sin(rad) * 320, duration: 0.25, ease: "power2.in" }, HIT + 0.2);
+  });
+  tl.set("#flash", { opacity: 0.35 }, HIT); tl.to("#flash", { opacity: 0, duration: 0.18, ease: "power2.out" }, HIT + 0.01);
+  shake("#cam5", HIT, 8); punch("#stamp", HIT + 0.35);
+  tl.to("#cam5", { scale: 1.12, duration: 0.6, ease: E.cam }, HIT + 0.25);                        // push in on the badge before the turn
+
   // ===== S6 THE TURN: "it's not your clothes." -> gold line wipe to Cloud -> "it's your system."
-  drift("#cam6a", b(32), b(35), 0.05);
-  tl.fromTo("#g6a", { x: 0 }, { x: -260, duration: b(35) - b(32), ease: "none" }, b(32));
-  words("#c6a", [b(32), b(32.5), b(33), b(33.5)]); under("#u6a", b(33.5)); punch("#c6a", b(33.5));
-  lineWipe(b(35));
-  drift("#cam6b", b(35), b(38), 0.05);
-  tl.fromTo("#g6b", { x: 0 }, { x: -260, duration: b(38) - b(35), ease: "none" }, b(35));
-  words("#c6b", [b(35.25), b(35.75), b(36.25)]); under("#u6b", b(36.25)); punch("#c6b", b(36.25));
+  drift("#cam6a", b(34), b(37), 0.05);
+  tl.fromTo("#g6a", { x: 0 }, { x: -260, duration: b(37) - b(34), ease: "none" }, b(34));
+  words("#c6a", [b(34), b(34.5), b(35), b(35.5)]); under("#u6a", b(35.5)); punch("#c6a", b(35.5));
+  lineWipe(b(37));
+  drift("#cam6b", b(37), b(40), 0.05);
+  tl.fromTo("#g6b", { x: 0 }, { x: -260, duration: b(40) - b(37), ease: "none" }, b(37));
+  words("#c6b", [b(37.25), b(37.75), b(38.25)]); under("#u6b", b(38.25)); punch("#c6b", b(38.25));
 
   // ===== S7 THE FIX (Cloud): build-on list with gold bars, then the email add-on card tilts in
-  drift("#cam7", b(38), b(48), 0.05);
-  words("#c7", [b(38), b(38.5), b(39), b(39.5), b(40)]); under("#u7", b(40)); punch("#c7", b(40));
-  tl.to("#u7", { scaleX: 0, duration: 0.15, ease: "power2.in" }, b(40.75));            // one gold element per frame
+  drift("#cam7", b(40), b(50), 0.05);
+  words("#c7", [b(40), b(40.5), b(41), b(41.5), b(42)]); under("#u7", b(42)); punch("#c7", b(42));
+  tl.to("#u7", { scaleX: 0, duration: 0.15, ease: "power2.in" }, b(42.75));            // one gold element per frame
   [["#l1", 41], ["#l2", 42], ["#l3", 43]].forEach(([l, n]) => {
     tl.fromTo(l, { x: -40, opacity: 0, filter: "blur(8px)" }, { x: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: E.in }, b(n));
     tl.fromTo(l + " i", { scaleY: 0 }, { scaleY: 1, duration: 0.25, ease: E.ui }, b(n));
   });
-  tl.fromTo("#mail", { rotationX: 8, rotation: -6, y: 120, opacity: 0, transformPerspective: 900 }, { rotationX: 0, rotation: -2, y: 0, opacity: 1, duration: 0.5, ease: E.ui }, b(44));
-  punch("#mail", b(45));
+  tl.fromTo("#mail", { rotationX: 8, rotation: -6, y: 120, opacity: 0, transformPerspective: 900 }, { rotationX: 0, rotation: -2, y: 0, opacity: 1, duration: 0.5, ease: E.ui }, b(46));
+  punch("#mail", b(47));
 
   // ===== S8 PAYOFF (music drops out just before): the hoodie is pulled on, "clothes." pops in front on the beat
-  drift("#cam8", b(48), b(53), 0.05);
-  words("#c8", [b(48), b(48.5), b(49), b(49.5)]);
-  tl.fromTo("#cl8back", { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.18, ease: E.in }, b(50));
-  tl.fromTo("#hood8", { y: -700, scaleY: 1.15, opacity: 1 }, { y: 0, scaleY: 1, duration: 0.55, ease: "back.out(1.2)" }, b(48));   // pulled down over
-  tl.fromTo("#goldbar", { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.4, ease: E.in }, b(48.5));
-  tl.set("#cl8front", { opacity: 0 }, b(48));
-  tl.set("#cl8front", { opacity: 1 }, b(51));                          // in front of the subject, on the beat
-  punch("#cl8front", b(51));
+  drift("#cam8", b(50), b(55), 0.05);
+  words("#c8", [b(50), b(50.5), b(51), b(51.5)]);
+  tl.fromTo("#cl8back", { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.18, ease: E.in }, b(52));
+  tl.fromTo("#hood8", { y: -700, scaleY: 1.15, opacity: 1 }, { y: 0, scaleY: 1, duration: 0.55, ease: "back.out(1.2)" }, b(50));   // pulled down over
+  tl.fromTo("#goldbar", { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.4, ease: E.in }, b(50.5));
+  tl.set("#cl8front", { opacity: 0 }, b(50));
+  tl.set("#cl8front", { opacity: 1 }, b(53));                          // in front of the subject, on the beat
+  punch("#cl8front", b(53));
 
   // ===== S9 END CARD: "comment Q4", Q4 bleeding off the right edge, "we'll show you how", wordmark
-  drift("#cam9", b(53), DUR, 0.04);
-  words("#c9", [b(54), b(54.25), b(54.5), b(54.75), b(53)]);
-  tl.fromTo("#q4", { x: 700, opacity: 1, filter: "blur(12px)" }, { x: 0, filter: "blur(0px)", duration: 0.35, ease: "expo.out" }, b(53.5));
-  shake("#cam9", b(53.5) + 0.1, 7);
-  tl.fromTo("#brand", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: E.in }, b(55));
+  drift("#cam9", b(55), DUR, 0.04);
+  words("#c9", [b(56), b(56.25), b(56.5), b(56.75), b(55)]);
+  tl.fromTo("#q4", { x: 700, opacity: 1, filter: "blur(12px)" }, { x: 0, filter: "blur(0px)", duration: 0.35, ease: "expo.out" }, b(55.5));
+  shake("#cam9", b(55.5) + 0.1, 7);
+  tl.fromTo("#brand", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: E.in }, b(57));
 
   window.__timelines["main"] = tl;
 </script>
