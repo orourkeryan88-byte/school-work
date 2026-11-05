@@ -47,13 +47,13 @@
   .light .ul { background: var(--gold); } .dark .ul { background: var(--goldb); }
 
   /* S1 phone-POV opener (illustrated stand-in for founder footage) */
-  #room { position: absolute; inset: -60px; background: linear-gradient(180deg, #232823 0%, #171b18 55%, #0f1311 100%); }
+  #room { position: absolute; inset: -900px; background: linear-gradient(180deg, #232823 0%, #171b18 55%, #0f1311 100%); }
   #lamp { position: absolute; left: 640px; top: 120px; width: 900px; height: 900px; margin: -450px 0 0 -450px; border-radius: 50%;
     background: radial-gradient(circle, rgba(240,180,85,.30) 0%, rgba(240,180,85,0) 60%); }
   #shelf { position: absolute; left: -40px; top: 520px; width: 760px; height: 22px; background: #2a2620; }
   .box { position: absolute; background: #6b5a44; border-radius: 6px; }
   .box::after { content: ""; position: absolute; left: 44%; top: 0; width: 12%; height: 100%; background: rgba(214,200,170,.35); }
-  #desk { position: absolute; left: -60px; top: 1130px; width: 1200px; height: 900px; background: linear-gradient(180deg, #3b3228 0%, #2b241d 100%); }
+  #desk { position: absolute; left: -900px; top: 1130px; width: 2900px; height: 1700px; background: linear-gradient(180deg, #3b3228 0%, #2b241d 100%); }
   .mailer { position: absolute; width: 330px; height: 230px; border-radius: 10px; background: #d9d4cb; box-shadow: 0 18px 30px -16px rgba(0,0,0,.6); }
   .mailer::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 34px; border-radius: 10px 10px 0 0; background: #c8c2b6; }
   .mailer i { position: absolute; left: 34px; top: 84px; width: 150px; height: 70px; background: #f4f2ee; border-radius: 4px; }
@@ -64,9 +64,15 @@
   .nt { position: absolute; left: 10px; right: 10px; height: 50px; border-radius: 12px; background: rgba(236,238,237,.92); }
   .nt b { position: absolute; left: 12px; top: 10px; font: 500 14px "IBM Plex Mono", monospace; letter-spacing: .06em; color: #0e1412; }
   .nt s { position: absolute; left: 12px; top: 30px; width: 90px; height: 6px; background: #9fb0a8; }
-  #pov { position: absolute; left: 90px; right: 90px; top: 600px; text-align: center; z-index: 5; }
-  #pov span { display: inline; font-weight: 500; font-size: 54px; line-height: 1.42; color: var(--ink); background: #fff; padding: 6px 18px;
-    border-radius: 14px; -webkit-box-decoration-break: clone; box-decoration-break: clone; }
+  .stk { position: absolute; left: 0; right: 0; text-align: center; z-index: 5; }
+  .stk span { display: inline-block; font-weight: 700; color: var(--ink); background: #fff; border-radius: 16px; letter-spacing: -0.02em; }
+  #pov1 { top: 520px; } #pov1 span { font-size: 92px; padding: 8px 30px 10px; }
+  #pov2 { top: 668px; } #pov2 span { font-size: 58px; font-weight: 500; padding: 6px 22px 8px; }
+  .role { position: absolute; font-weight: 700; font-size: 54px; color: var(--ink); background: #fff; border-radius: 14px; padding: 4px 20px 8px; white-space: nowrap;
+    box-shadow: 0 14px 24px -12px rgba(0,0,0,.6); z-index: 4; }
+  #sketch { position: absolute; left: 470px; top: 1160px; width: 200px; height: 140px; border-radius: 6px; background: #efece6; transform: rotate(-6deg); box-shadow: 0 16px 26px -14px rgba(0,0,0,.6); }
+  #sketch i { position: absolute; left: 34px; top: 26px; width: 92px; height: 92px; border: 4px solid #6d675c; border-radius: 10px 10px 2px 2px; border-top-width: 10px; }
+  #sketch b { position: absolute; left: 140px; top: 18px; width: 10px; height: 110px; background: #c9821f; transform: rotate(18deg); border-radius: 3px; }
   #rew { position: absolute; left: 72px; top: 300px; font: 500 30px "IBM Plex Mono", monospace; letter-spacing: .14em; color: #fff; opacity: 0; z-index: 6; }
   #rew em { display: inline-block; width: 0; height: 0; border-top: 14px solid transparent; border-bottom: 14px solid transparent; border-right: 22px solid #fff; margin-right: 2px; vertical-align: -4px; }
   #scan { position: absolute; inset: 0; z-index: 7; opacity: 0; background: repeating-linear-gradient(0deg, rgba(255,255,255,.10) 0 2px, transparent 2px 9px); }
@@ -131,7 +137,7 @@
 
   <!-- S1 0.000–3.387 POV opener (freeze 2.903, rewind glitch) -->
   <section id="s1" class="clip scene dark" data-start="0" data-duration="3.387" data-track-index="1">
-    <div class="cam" id="cam1">
+    <div class="cam" id="cam1z" style="transform-origin:50% 50%"><div class="cam" id="cam1" style="transform-origin:50% 50%">
       <div id="room" data-layout-ignore></div>
       <div id="lamp" data-layout-ignore></div>
       <div id="shelf" data-layout-ignore></div>
@@ -146,13 +152,18 @@
       <div class="mailer m4" style="left:96px;top:1078px;transform:rotate(3deg)" data-layout-ignore><i></i></div>
       <div class="mailer m5" style="left:118px;top:1036px;transform:rotate(-3deg)" data-layout-ignore><i></i></div>
       <div id="tape" data-layout-ignore></div>
+      <div id="sketch" data-layout-ignore><i></i><b></b></div>
+      <div class="role" id="r1" style="left:430px;top:1070px;transform:rotate(-4deg)">designer</div>
+      <div class="role" id="r2" style="left:120px;top:940px;transform:rotate(3deg)">packer</div>
+      <div class="role" id="r3" style="left:420px;top:1440px;transform:rotate(-3deg)">ads guy</div>
       <div id="phone" data-layout-ignore><div id="screen">
         <div class="nt" id="n1" style="top:16px"><b>NEW ORDER</b><s></s></div>
         <div class="nt" id="n2" style="top:74px"><b>NEW ORDER</b><s></s></div>
         <div class="nt" id="n3" style="top:132px"><b>NEW ORDER</b><s></s></div>
       </div></div>
-    </div>
-    <div id="pov"><span>POV: it's Q4 and you're the designer, packer and ads guy</span></div>
+    </div></div>
+    <div class="stk" id="pov1"><span>POV: it's Q4</span></div>
+    <div class="stk" id="pov2"><span>and you're the…</span></div>
     <div id="rew"><em></em><em></em> REWIND</div>
     <div id="scan" data-layout-ignore></div>
   </section>
@@ -310,7 +321,16 @@
     tl.fromTo("#phone", { x: 0 }, { keyframes: { x: [6, -6, 5, -5, 3, 0] }, duration: 0.3, ease: "none" }, t);
     tl.fromTo("#n" + (i + 1), { x: 200, opacity: 0 }, { x: 0, opacity: 1, duration: 0.3, ease: E.in }, t);
   });
-  tl.fromTo("#pov", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.12, ease: E.in }, 0);   // readable by 0.12 s
+  // hook: "POV: it's Q4" readable in frame 1, the camera crashes in, then snaps to each job on the beat
+  tl.fromTo("#pov1", { scale: 1.25, opacity: 1 }, { scale: 1, duration: 0.25, ease: "expo.out" }, 0);
+  tl.fromTo("#pov2", { y: 24, opacity: 0, filter: "blur(8px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.18, ease: E.in }, b(1.5));
+  // scale sc about the frame centre and move point (px, py) to (540, 1290), below the POV stickers
+  const go = (px, py, sc, t, d = 0.28) => tl.to("#cam1z", { scale: sc, x: -sc * (px - 540), y: 330 - sc * (py - 960), duration: d, ease: "expo.out" }, t);
+  tl.fromTo("#cam1z", { scale: 1.35 }, { scale: 1.0, duration: 0.6, ease: "expo.out" }, 0);       // crash zoom out on frame 1
+  go(570, 1230, 1.22, b(3));   tl.fromTo("#r1", { scale: 1.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: E.ui }, b(3));
+  go(255, 1250, 1.22, b(4));   tl.fromTo("#r2", { scale: 1.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: E.ui }, b(4));
+  go(700, 1450, 1.22, b(5));   tl.fromTo("#r3", { scale: 1.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: E.ui }, b(5));
+  tl.to("#cam1z", { scale: 1, x: 0, y: 0, duration: 0.3, ease: "power3.in" }, b(6) + 0.1);       // rewind pulls the camera back out
   tl.to("#cam1", { filter: "grayscale(1) contrast(1.25) brightness(.8)", duration: 0.06, ease: "none" }, b(6));   // freeze
   tl.set("#rew", { opacity: 1 }, b(6) + 0.08);
   tl.fromTo("#scan", { opacity: 0 }, { keyframes: { opacity: [0, .9, .5, 1, .6] }, duration: 0.42, ease: "none" }, b(6) + 0.06);
