@@ -1,0 +1,507 @@
+[
+{
+"line": 1,
+"word": "This",
+"start": 0.1
+},
+{
+"line": 1,
+"word": "is",
+"start": 0.28
+},
+{
+"line": 1,
+"word": "what",
+"start": 0.45
+},
+{
+"line": 1,
+"word": "Q4",
+"start": 0.63
+},
+{
+"line": 1,
+"word": "looks",
+"start": 0.98
+},
+{
+"line": 1,
+"word": "like",
+"start": 1.16
+},
+{
+"line": 1,
+"word": "when",
+"start": 1.34
+},
+{
+"line": 1,
+"word": "you",
+"start": 1.51
+},
+{
+"line": 1,
+"word": "run",
+"start": 1.69
+},
+{
+"line": 1,
+"word": "your",
+"start": 1.86
+},
+{
+"line": 1,
+"word": "clothing",
+"start": 2.04
+},
+{
+"line": 1,
+"word": "brand's",
+"start": 2.39
+},
+{
+"line": 1,
+"word": "ads",
+"start": 2.57
+},
+{
+"line": 1,
+"word": "yourself.",
+"start": 2.75
+},
+{
+"line": 2,
+"word": "And",
+"start": 3.25
+},
+{
+"line": 2,
+"word": "here's",
+"start": 3.45
+},
+{
+"line": 2,
+"word": "what",
+"start": 3.65
+},
+{
+"line": 2,
+"word": "nobody",
+"start": 3.85
+},
+{
+"line": 2,
+"word": "tells",
+"start": 4.45
+},
+{
+"line": 2,
+"word": "you.",
+"start": 4.65
+},
+{
+"line": 3,
+"word": "Every",
+"start": 5.05
+},
+{
+"line": 3,
+"word": "brand",
+"start": 5.54
+},
+{
+"line": 3,
+"word": "is",
+"start": 5.78
+},
+{
+"line": 3,
+"word": "fighting",
+"start": 6.02
+},
+{
+"line": 3,
+"word": "for",
+"start": 6.51
+},
+{
+"line": 3,
+"word": "the",
+"start": 6.75
+},
+{
+"line": 3,
+"word": "same",
+"start": 7.0
+},
+{
+"line": 3,
+"word": "feeds",
+"start": 7.24
+},
+{
+"line": 3,
+"word": "right",
+"start": 7.49
+},
+{
+"line": 3,
+"word": "now,",
+"start": 7.73
+},
+{
+"line": 3,
+"word": "so",
+"start": 8.13
+},
+{
+"line": 3,
+"word": "your",
+"start": 8.38
+},
+{
+"line": 3,
+"word": "ads",
+"start": 8.62
+},
+{
+"line": 3,
+"word": "cost",
+"start": 8.86
+},
+{
+"line": 3,
+"word": "more.",
+"start": 9.11
+},
+{
+"line": 4,
+"word": "Same",
+"start": 10.05
+},
+{
+"line": 4,
+"word": "ad",
+"start": 10.26
+},
+{
+"line": 4,
+"word": "for",
+"start": 10.47
+},
+{
+"line": 4,
+"word": "weeks?",
+"start": 10.68
+},
+{
+"line": 4,
+"word": "People",
+"start": 11.17
+},
+{
+"line": 4,
+"word": "scroll",
+"start": 11.59
+},
+{
+"line": 4,
+"word": "past",
+"start": 11.8
+},
+{
+"line": 4,
+"word": "it.",
+"start": 12.0
+},
+{
+"line": 4,
+"word": "Sales",
+"start": 12.49
+},
+{
+"line": 4,
+"word": "slow",
+"start": 12.91
+},
+{
+"line": 4,
+"word": "down",
+"start": 13.12
+},
+{
+"line": 4,
+"word": "mid-rush.",
+"start": 13.33
+},
+{
+"line": 5,
+"word": "And",
+"start": 14.05
+},
+{
+"line": 5,
+"word": "everyone",
+"start": 14.25
+},
+{
+"line": 5,
+"word": "who",
+"start": 14.84
+},
+{
+"line": 5,
+"word": "added",
+"start": 15.04
+},
+{
+"line": 5,
+"word": "to",
+"start": 15.43
+},
+{
+"line": 5,
+"word": "cart",
+"start": 15.63
+},
+{
+"line": 5,
+"word": "and",
+"start": 15.83
+},
+{
+"line": 5,
+"word": "left?",
+"start": 16.03
+},
+{
+"line": 5,
+"word": "No",
+"start": 16.5
+},
+{
+"line": 5,
+"word": "retargeting,",
+"start": 16.7
+},
+{
+"line": 5,
+"word": "no",
+"start": 17.65
+},
+{
+"line": 5,
+"word": "emails,",
+"start": 17.85
+},
+{
+"line": 5,
+"word": "they're",
+"start": 18.4
+},
+{
+"line": 5,
+"word": "gone.",
+"start": 18.6
+},
+{
+"line": 6,
+"word": "That's",
+"start": 19.05
+},
+{
+"line": 6,
+"word": "not",
+"start": 19.24
+},
+{
+"line": 6,
+"word": "a",
+"start": 19.43
+},
+{
+"line": 6,
+"word": "product",
+"start": 19.62
+},
+{
+"line": 6,
+"word": "problem.",
+"start": 20.0
+},
+{
+"line": 6,
+"word": "It's",
+"start": 20.66
+},
+{
+"line": 6,
+"word": "a",
+"start": 20.85
+},
+{
+"line": 6,
+"word": "system",
+"start": 21.04
+},
+{
+"line": 6,
+"word": "problem.",
+"start": 21.42
+},
+{
+"line": 7,
+"word": "Southline",
+"start": 22.05
+},
+{
+"line": 7,
+"word": "runs",
+"start": 22.42
+},
+{
+"line": 7,
+"word": "your",
+"start": 22.61
+},
+{
+"line": 7,
+"word": "Facebook",
+"start": 22.79
+},
+{
+"line": 7,
+"word": "and",
+"start": 23.17
+},
+{
+"line": 7,
+"word": "Instagram",
+"start": 23.35
+},
+{
+"line": 7,
+"word": "ads.",
+"start": 23.91
+},
+{
+"line": 7,
+"word": "Fresh",
+"start": 24.38
+},
+{
+"line": 7,
+"word": "creatives,",
+"start": 24.56
+},
+{
+"line": 7,
+"word": "proper",
+"start": 25.28
+},
+{
+"line": 7,
+"word": "tracking,",
+"start": 25.65
+},
+{
+"line": 7,
+"word": "retargeting.",
+"start": 26.19
+},
+{
+"line": 7,
+"word": "Plus",
+"start": 27.21
+},
+{
+"line": 7,
+"word": "the",
+"start": 27.4
+},
+{
+"line": 7,
+"word": "emails",
+"start": 27.58
+},
+{
+"line": 7,
+"word": "that",
+"start": 27.96
+},
+{
+"line": 7,
+"word": "bring",
+"start": 28.14
+},
+{
+"line": 7,
+"word": "buyers",
+"start": 28.33
+},
+{
+"line": 7,
+"word": "back.",
+"start": 28.51
+},
+{
+"line": 8,
+"word": "You",
+"start": 29.15
+},
+{
+"line": 8,
+"word": "focus",
+"start": 29.37
+},
+{
+"line": 8,
+"word": "on",
+"start": 29.8
+},
+{
+"line": 8,
+"word": "the",
+"start": 30.02
+},
+{
+"line": 8,
+"word": "clothes.",
+"start": 30.23
+},
+{
+"line": 9,
+"word": "Comment",
+"start": 31.05
+},
+{
+"line": 9,
+"word": "Q4",
+"start": 31.43
+},
+{
+"line": 9,
+"word": "and",
+"start": 31.81
+},
+{
+"line": 9,
+"word": "we'll",
+"start": 31.99
+},
+{
+"line": 9,
+"word": "show",
+"start": 32.18
+},
+{
+"line": 9,
+"word": "you",
+"start": 32.37
+},
+{
+"line": 9,
+"word": "how.",
+"start": 32.56
+}
+]
