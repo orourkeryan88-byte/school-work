@@ -1,7 +1,18 @@
 # Southline: "Q4 problems you didn't know you had" (voiceover cut, clothing brand owners)
 
 Meta ad (Reels / Facebook / Instagram), 9:16 1080×1920, 34.3 s, 30 fps. Captions are word-timed to the script; the
-voiceover is Ryan's own recording (not in yet). CTA: comment **Q4**. Output: `southline_clothing_q4_vo.mp4`.
+voiceover is Ryan's own recording (not in yet). CTA: comment **Q4**.
+
+Outputs:
+- `southline_clothing_q4_vo_colour.mp4`: the current version, a bold colour cut (what `hyperframes/index.html` builds now).
+- `southline_clothing_q4_vo.mp4`: the first cut in the green Southline house colours (source in git history).
+
+## Colour cut
+Black `#0D0D0F` and cream `#F3EFE6` bases, with each pop colour doing one job so the eye knows where to look:
+- **Hot orange `#FF5B1F` = problems:** underlines on the pain lines, the rising cost bar, the falling sales line, the strike-throughs.
+- **Electric lime `#D7FF3C` = fixes and the CTA:** "nobody", the gold-line wipe, marker highlights on "system" and the fix list, the block behind the hoodie, "Q4".
+- **Lilac `#B6A3FF` = product and brand:** phone-feed posts, the repeating ad, the cart thumbnail, the email card, the hoodie, a faint haze.
+- In the POV opener the role stickers are lilac / orange / lime.
 
 Angle: Q4 is when DIY ads break (every brand fighting for the same feeds, the same ad getting scrolled past, cart
 buyers lost with no retargeting or emails). It's not a product problem, it's a system problem. Southline runs the
@@ -61,7 +72,7 @@ Swap in your own phone footage when it's filmed: handheld, natural light, 9:16.
 ```
 cd .. && python3 make_cues.py clothing-q4-vo 34.3 clothing-q4-vo/accents.json && cd clothing-q4-vo   # if timings change
 python3 build_audio.py cues.json [vo.m4a] [--music track.mp3] -o hyperframes/assets/audio.wav    # then +1 dB to land on -14 LUFS
-cd hyperframes && npx --yes hyperframes check && npx --yes hyperframes render -q delivery -f 30 -o ../southline_clothing_q4_vo.mp4
+cd hyperframes && npx --yes hyperframes check && npx --yes hyperframes render -q delivery -f 30 -o ../southline_clothing_q4_vo_colour.mp4
 ```
 Delivered mix: -13.8 LUFS, -2.4 dBFS peak (temporary bed, no VO yet). After the render the soundtrack was muxed in
 with ffmpeg so the MP4 carries exactly `assets/audio.wav`.
