@@ -1,0 +1,5 @@
+  #gr { position: absolute; left: 72px; top: 1000px; width: 936px; height: 520px; overflow: visible; }
+  .gl { position: absolute; font: 500 24px "IBM Plex Mono", monospace; letter-spacing: .12em; color: var(--muted); opacity: 0; }
+  .day { position: absolute; top: 1460px; width: 110px; text-align: center; font: 500 26px "IBM Plex Mono", monospace; letter-spacing: .1em; color: var(--mutedl); }
+  .pp { position: absolute; width: 96px; height: 34px; border-radius: 10px; background: var(--lilac); }
+  .pp.v { background: var(--volt); }

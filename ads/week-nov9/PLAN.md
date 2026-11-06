@@ -61,3 +61,18 @@ A bright tech house · B dark restless minimal · C warm deep house.
 (shared look, captions, CTA end card). Audio: `python3 ../../make_cues.py . <dur> accents.json`, then
 `python3 ../build_audio.py cues.json vo.wav --music ../music/bed_a_bright_techhouse.mp3 --bed-db -4 -o hyperframes/assets/audio.wav`
 (VO pre-levelled with `loudnorm I=-12`), then `hyperframes check` + `render`.
+
+## Update: Wed–Sun built with a local voice (no ElevenLabs credits)
+Ryan: "Use your own voice." Claude has no voice of its own, so Wed–Sun use **Piper** (open-source neural TTS run in
+the session) with the **LibriTTS-high** model, speaker 675 (female; picked by pitch and pace across 60 speakers).
+- Licence: LibriTTS is **CC BY 4.0** (commercial use allowed with credit). Credit line for the ad copy or page:
+  "Voice: Piper TTS, LibriTTS (CC BY 4.0)". The nicer-sounding Piper "lessac" voice was ruled out: its dataset licence
+  is research-only and forbids commercial use.
+- Accent is American (no free Irish voice). "one of ye" was changed to "one of you" for this voice.
+- `local_vo.py` reads each phrase, trims it, joins with natural pauses, and writes word timings (phrase timing exact,
+  words spread by syllables). VO files: `vo/*.wav` + `vo/*_words.json`.
+- Outputs: `wed-boost/wed_boost_still_pressing_boost.mp4` (23.3 s), `thu-first/thu_first_ring_back.mp4` (20.3 s),
+  `fri-friday/fri_friday_black_friday.mp4` (22.6 s), `sat-grow/sat_grow_word_of_mouth.mp4` (21.4 s),
+  `sun-risk/sun_risk_money_back.mp4` (19.5 s). All on bed A, -14 LUFS.
+- When ElevenLabs credits are back, any of these can be re-voiced with Laura: generate, transcribe, rebuild (the
+  scenes are timed per word, so re-timing is a small edit).

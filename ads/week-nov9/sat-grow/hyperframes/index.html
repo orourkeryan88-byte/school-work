@@ -1,0 +1,162 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Southline: Word of mouth only grows as fast as your last job</title>
+<script src="assets/vendor/gsap.min.js"></script>
+<style>
+  @font-face { font-family: "Instrument Sans"; src: url(assets/fonts/is-500.woff2) format("woff2"); font-weight: 500; }
+  @font-face { font-family: "Instrument Sans"; src: url(assets/fonts/is-700.woff2) format("woff2"); font-weight: 700; }
+  @font-face { font-family: "Instrument Serif"; src: url(assets/fonts/iserif-italic.woff2) format("woff2"); font-style: italic; font-weight: 400; }
+  @font-face { font-family: "IBM Plex Mono"; src: url(assets/fonts/plex-500.woff2) format("woff2"); font-weight: 500; }
+  :root { --cream: #f3efe6; --ink: #0d0d0f; --ink2: #18181c; --ink3: #25252b; --muted: #8c8a93; --mutedl: #6b6873;
+          --volt: #d7ff3c; --blaze: #ff5b1f; --lilac: #b6a3ff; --lilacd: #8f78f0; }
+  html, body { margin: 0; background: var(--ink); }
+  body { font-family: "Instrument Sans", sans-serif; -webkit-font-smoothing: antialiased; }
+  #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+  .full { position: absolute; inset: 0; }
+  #bg { z-index: 0; background: var(--ink); }
+  #grain { z-index: 90; opacity: .06; mix-blend-mode: overlay; inset: -200px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>"); }
+  .scene { position: absolute; inset: 0; z-index: 10; overflow: hidden; }
+  .cam { position: absolute; inset: 0; transform-origin: 50% 40%; }
+  .light { color: var(--ink); } .dark { color: var(--cream); }
+  .cap { position: absolute; left: 72px; width: 936px; top: 560px; transform-origin: 0% 50%; z-index: 20; }
+  .cap .ld { font-family: "Instrument Serif", serif; font-style: italic; font-size: 72px; line-height: 1.05; opacity: .85; display: block; margin-bottom: 14px; }
+  .cap .kw { font-weight: 700; font-size: var(--k, 150px); letter-spacing: -0.04em; line-height: .95; display: block; }
+  .cap .w { display: inline-block; position: relative; }
+  .ul { position: absolute; left: 0; right: 0; bottom: -8px; height: 12px; border-radius: 3px; transform-origin: 0 50%; display: block; }
+  .dark .ul { background: var(--volt); } .ul.bad { background: var(--blaze) !important; }
+  .light .ul { background: var(--volt); left: -8px; right: -8px; bottom: 4px; height: 42%; border-radius: 4px; z-index: -1; }
+  .label { position: absolute; left: 72px; top: 470px; font: 500 28px "IBM Plex Mono", monospace; letter-spacing: .12em; text-transform: uppercase; z-index: 20; }
+  .light .label { color: var(--mutedl); } .dark .label { color: var(--muted); }
+  .hook { position: absolute; left: 72px; top: 590px; z-index: 20; font-weight: 700; font-size: 176px; letter-spacing: -0.045em; line-height: 1; white-space: nowrap; }
+  .hook .mk { position: absolute; left: -10px; right: -10px; bottom: 18px; height: 60px; border-radius: 6px; background: var(--volt); z-index: -1; transform-origin: 0 50%; }
+  #ctaKw { position: absolute; left: 60px; top: 880px; font-weight: 700; font-size: 280px; letter-spacing: -0.06em; line-height: .8; color: var(--volt); white-space: nowrap; }
+  #brand { position: absolute; left: 72px; top: 1380px; }
+  #brand .b1 { font-weight: 700; font-size: 76px; letter-spacing: -0.03em; color: var(--cream); }
+  #brand .b2 { font: 500 28px "IBM Plex Mono", monospace; letter-spacing: .14em; color: var(--muted); margin-top: 6px; }
+  #flash { position: absolute; inset: 0; z-index: 60; background: var(--cream); opacity: 0; }
+  #gr { position: absolute; left: 72px; top: 1000px; width: 936px; height: 520px; overflow: visible; }
+  .gl { position: absolute; font: 500 24px "IBM Plex Mono", monospace; letter-spacing: .12em; color: var(--muted); opacity: 0; }
+  .day { position: absolute; top: 1460px; width: 110px; text-align: center; font: 500 26px "IBM Plex Mono", monospace; letter-spacing: .1em; color: var(--mutedl); }
+  .pp { position: absolute; width: 96px; height: 34px; border-radius: 10px; background: var(--lilac); }
+  .pp.v { background: var(--volt); }
+
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-width="1080" data-height="1920" data-duration="21.4">
+  <div id="bg" class="full" data-layout-ignore></div>
+  <section id="s1" class="clip scene dark" data-start="0" data-duration="2.3" data-track-index="1">
+    <div class="cam" id="cam1">
+      <div class="hook" id="hook" style="color:var(--cream)">Tradesmen,<span class="mk" id="hmk" style="background:var(--lilacd)"></span></div>
+      <div class="cap" id="c1"><span class="ld"><span class="w">word</span> <span class="w">of</span> <span class="w">mouth</span></span>
+        <span class="kw" style="--k:200px"><span class="w">is</span> <span class="w">great.<span class="ul" id="u1"></span></span></span></div>
+    </div>
+  </section>
+  <section id="s2" class="clip scene dark" data-start="2.3" data-duration="7.5" data-track-index="1">
+    <div class="cam" id="cam2">
+      <div class="cap" id="c2a"><span class="ld"><span class="w">it</span> <span class="w">only</span> <span class="w">grows</span> <span class="w">as</span> <span class="w">fast</span> <span class="w">as</span></span>
+        <span class="kw" style="--k:150px"><span class="w">your</span> <span class="w">last</span> <span class="w">job.</span></span></div>
+      <div class="cap" id="c2b"><span class="ld"><span class="w">finish</span> <span class="w">a</span> <span class="w">job,</span> <span class="w">maybe</span></span>
+        <span class="kw" style="--k:150px"><span class="w">a</span> <span class="w">referral.</span></span></div>
+      <div class="cap" id="c2c"><span class="ld"><span class="w">have</span> <span class="w">a</span> <span class="w">quiet</span> <span class="w">month,</span></span>
+        <span class="kw" style="--k:120px"><span class="w">so</span> <span class="w">does</span> <span class="w">your</span> <span class="w">phone.<span class="ul bad" id="u2"></span></span></span></div>
+      <svg id="gr" viewBox="0 0 936 520" data-layout-ignore>
+        <path d="M0 500 H936" stroke="#3a3a42" stroke-width="4"/><path d="M0 0 V500" stroke="#3a3a42" stroke-width="4"/>
+        <path id="g1" d="M0 470 H250 V380" fill="none" stroke="#c6ccc8" stroke-width="10" stroke-linejoin="round" stroke-dasharray="400" stroke-dashoffset="400"/>
+        <path id="g2" d="M250 380 H390 V300" fill="none" stroke="#c6ccc8" stroke-width="10" stroke-linejoin="round" stroke-dasharray="300" stroke-dashoffset="300"/>
+        <path id="g3" d="M390 300 H530 V210" fill="none" stroke="#c6ccc8" stroke-width="10" stroke-linejoin="round" stroke-dasharray="300" stroke-dashoffset="300"/>
+        <path id="g4" d="M530 210 H700 L800 290 H936" fill="none" stroke="#ff5b1f" stroke-width="10" stroke-linejoin="round" stroke-dasharray="500" stroke-dashoffset="500"/>
+      </svg>
+      <div class="gl" id="l1" style="left:300px;top:1340px">JOB</div><div class="gl" id="l2" style="left:440px;top:1260px">JOB</div>
+      <div class="gl" id="l3" style="left:540px;top:1170px">REFERRAL</div><div class="gl" id="l4" style="left:740px;top:1230px;color:var(--blaze)">QUIET MONTH</div>
+    </div>
+  </section>
+  <section id="s3" class="clip scene light" data-start="9.8" data-duration="8.15" data-track-index="1">
+    <div class="full" style="background:var(--cream)" data-layout-ignore></div>
+    <div class="cam" id="cam3">
+      <div class="cap" id="c3a"><span class="ld"><span class="w">ads</span> <span class="w">don't</span> <span class="w">wait</span> <span class="w">for</span></span>
+        <span class="kw" style="--k:150px"><span class="w">your</span> <span class="w">last</span> <span class="w">job.<span class="ul" id="u3"></span></span></span></div>
+      <div class="cap" id="c3b"><span class="ld"><span class="w">in</span> <span class="w">front</span> <span class="w">of</span> <span class="w">people</span> <span class="w">near</span> <span class="w">you,</span></span>
+        <span class="kw" style="--k:130px"><span class="w">every</span> <span class="w">single</span> <span class="w">day.</span></span></div>
+      <div class="cap" id="c3c"><span class="ld"><span class="w">same</span> <span class="w">great</span> <span class="w">work.</span></span>
+        <span class="kw" style="--k:100px"><span class="w">way</span> <span class="w">more</span> <span class="w">people</span> <span class="w">seeing</span> <span class="w">it.</span></span></div>
+      <div id="week" data-layout-ignore></div>
+    </div>
+  </section>
+
+  <!-- CTA 17.95–21.4 -->
+  <section id="sCTA" class="clip scene dark" data-start="17.95" data-duration="3.45" data-track-index="1">
+    <div class="cam" id="camCTA">
+      <div id="ctaKw" data-layout-ignore>GROW</div>
+      <div class="cap" id="cCTA" style="top:600px"><span class="ld"><span class="w">we'll</span> <span class="w">show</span> <span class="w">you</span> <span class="w">how</span></span>
+        <span class="kw" style="--k:160px"><span class="w">comment</span></span></div>
+      <div id="brand"><div class="b1">Southline</div><div class="b2">META ADS FOR TRADESMEN · IRELAND</div></div>
+    </div>
+  </section>
+  <div id="flash" data-layout-ignore></div>
+  <div id="grain" class="full" data-layout-ignore></div>
+  <audio id="score" src="assets/audio.wav" data-start="0" data-duration="21.4" data-track-index="10" data-volume="1"></audio>
+</div>
+<script>
+  window.__timelines = window.__timelines || {};
+  const tl = gsap.timeline({ paused: true });
+  const DUR = 21.4;
+  const E = { in: "expo.out", cam: "sine.inOut", ui: "back.out(1.4)" };
+  const rnd = i => { const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };
+  function words(capSel, t0, step, times) {
+    const ws = document.querySelectorAll(capSel + " .w");
+    ws.forEach((w, i) => tl.fromTo(w, { y: 24, opacity: 0, filter: "blur(8px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.18, ease: E.in }, times ? times[i] : t0 + i * step));
+  }
+  const under = (sel, t) => tl.fromTo(sel, { scaleX: 0 }, { scaleX: 1, duration: 0.22, ease: E.in }, t);
+  const exit = (sel, t) => tl.to(sel, { opacity: 0, y: -12, duration: 0.12, ease: "power2.in" }, t);
+  const drift = (sel, t0, t1, amt = 0.05) => tl.fromTo(sel, { scale: 1 }, { scale: 1 + amt, duration: t1 - t0, ease: E.cam }, t0);
+  const punch = (sel, t) => tl.fromTo(sel, { scale: 1.12 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, t);
+  const shake = (sel, t, px = 8) => tl.fromTo(sel, { x: 0, y: 0 }, { keyframes: { x: [px, -px * .8, px * .5, -px * .3, 0], y: [-px * .6, px * .5, -px * .3, px * .2, 0] }, duration: 0.2, ease: "none", immediateRender: false }, t);
+  const flash = (t, o = 0.5) => { tl.set("#flash", { opacity: o }, t); tl.to("#flash", { opacity: 0, duration: 0.2 }, t + 0.01); };
+
+  drift("#cam1", 0, 2.3, 0.05);
+  tl.fromTo("#hook", { x: -900, filter: "blur(10px)" }, { x: 0, filter: "blur(0px)", duration: 0.35, ease: "expo.out" }, 0.0);
+  tl.fromTo("#hmk", { scaleX: 0 }, { scaleX: 1, duration: 0.25, ease: E.in }, 0.25); shake("#cam1", 0.12, 8);
+  tl.to("#hook", { y: -30, opacity: 0, duration: 0.15, ease: "power2.in" }, 0.88);
+  words("#c1", 0, 0, [1.01, 1.21, 1.41, 1.62, 1.82]); under("#u1", 1.82); punch("#c1", 1.82);
+  // ===== 2 the word-of-mouth staircase: a step per job, then a quiet month drags it down
+  drift("#cam2", 2.3, 9.8, 0.04);
+  words("#c2a", 0, 0, [2.82, 3.27, 3.49, 3.72, 3.94, 4.17, 4.39, 4.62]); punch("#c2a", 4.62); exit("#c2a", 5.05);
+  tl.fromTo("#g1", { strokeDashoffset: 400 }, { strokeDashoffset: 0, duration: 1.4, ease: "power1.inOut" }, 3.3);
+  tl.set("#l1", { opacity: 1 }, 4.62);
+  tl.set("#c2b", { opacity: 1 }, 5.1); words("#c2b", 0, 0, [5.18, 5.52, 5.69, 6.02, 6.51, 6.67]); punch("#c2b", 6.67); exit("#c2b", 7.3);
+  tl.fromTo("#g2", { strokeDashoffset: 300 }, { strokeDashoffset: 0, duration: 0.6, ease: "power1.inOut" }, 5.2); tl.set("#l2", { opacity: 1 }, 5.69);
+  tl.fromTo("#g3", { strokeDashoffset: 300 }, { strokeDashoffset: 0, duration: 0.6, ease: "power1.inOut" }, 6.2); tl.set("#l3", { opacity: 1 }, 6.67);
+  tl.set("#c2c", { opacity: 1 }, 7.42); words("#c2c", 0, 0, [7.51, 7.69, 7.88, 8.07, 8.64, 8.87, 9.10, 9.32]); under("#u2", 9.32); punch("#c2c", 9.32);
+  tl.fromTo("#g4", { strokeDashoffset: 500 }, { strokeDashoffset: 0, duration: 1.8, ease: "power1.inOut" }, 7.6); tl.set("#l4", { opacity: 1 }, 8.07);
+  // ===== 3 (cream) every single day, a column of people for each day; then way more
+  flash(9.8, 0.4); drift("#cam3", 9.8, 17.95, 0.04);
+  words("#c3a", 0, 0, [9.89, 10.13, 10.37, 10.61, 10.85, 11.09, 11.32]); under("#u3", 11.32); punch("#c3a", 11.32); exit("#c3a", 11.75); tl.to("#u3", { opacity: 0, duration: 0.1 }, 11.75);
+  tl.set("#c3b", { opacity: 1 }, 11.82); words("#c3b", 0, 0, [12.42, 12.59, 12.76, 12.93, 13.27, 13.44, 13.77, 14.31, 14.67]); exit("#c3b", 15.05);
+  tl.set("#c3c", { opacity: 1 }, 15.1); words("#c3c", 0, 0, [15.19, 15.47, 15.75, 16.36, 16.58, 16.80, 17.24, 17.46]); punch("#c3c", 17.46);
+  const wk = document.getElementById("week"), D = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+  D.forEach((n, c) => {
+    const x = 70 + c * 136, lab = document.createElement("div"); lab.className = "day"; lab.id = "dy" + c; lab.style.left = x + "px"; lab.innerText = n; wk.appendChild(lab);
+    tl.fromTo("#dy" + c, { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.2 }, 12.3 + c * 0.05);
+    for (let r = 0; r < 9; r++) {
+      const p = document.createElement("div"); p.className = "pp" + (r >= 4 ? " v" : ""); p.id = "p" + c + "_" + r; p.style.left = (x + 7) + "px"; p.style.top = (1410 - r * 44) + "px"; wk.appendChild(p);
+      tl.fromTo("#p" + c + "_" + r, { scaleX: 0, opacity: 0 }, { scaleX: 1, opacity: 1, duration: 0.18, ease: E.ui, immediateRender: true }, (r < 4 ? 13.77 + c * 0.13 + r * 0.04 : 16.36 + c * 0.1 + (r - 4) * 0.05));
+    }
+  });
+
+
+  // ===== CTA: "comment KEYWORD", keyword slams in, wordmark; holds
+  drift("#camCTA", 17.95, DUR, 0.04);
+  words("#cCTA", 0, 0, [18.96, 19.2, 19.43, 19.67, 18.02]);
+  tl.fromTo("#ctaKw", { x: 700, filter: "blur(12px)" }, { x: 0, filter: "blur(0px)", duration: 0.35, ease: "expo.out" }, 18.49);
+  shake("#camCTA", 18.49 + 0.06, 7);
+  tl.fromTo("#brand", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: E.in }, 18.49 + 0.4);
+
+  window.__timelines["main"] = tl;
+</script>
+</body>
+</html>

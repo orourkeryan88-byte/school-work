@@ -1,0 +1,539 @@
+{
+  "ok": true,
+  "strict": false,
+  "browserSkipped": false,
+  "lint": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 8,
+    "infoCount": 0,
+    "findings": [
+      {
+        "code": "timeline_track_too_dense",
+        "severity": "warning",
+        "message": "Track 1 has 5 timed elements in this HTML file. Smaller sub-compositions keep timelines easier to read, iterate on, and diff.",
+        "selector": "[data-composition-id]",
+        "dataAttributes": {},
+        "sourceFile": "/home/user/school-work/ads/week-nov9/wed-boost/hyperframes/index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Move coherent scene groups into separate .html files under compositions/ and mount them from the parent with data-composition-src so the timeline stays easier to inspect, revise, and validate."
+      },
+      {
+        "code": "negative_z_index",
+        "severity": "warning",
+        "message": "`z-index: -1` paints the element behind its nearest stacking context's own content. With no stacking-context ancestor that context is the composition root itself, so an opaque background there hides it entirely: in the DOM, laid out, and absent from the picture. A transparent root leaves it visible. Siblings at `z-index: 0` or above are unaffected.",
+        "selector": ".light .ul",
+        "dataAttributes": {},
+        "sourceFile": "/home/user/school-work/ads/week-nov9/wed-boost/hyperframes/index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Give the element's parent a stacking context - `isolation: isolate` is the cheapest, and `transform`, `filter`, `opacity` below 1, `contain: paint` and `will-change` all work too. The negative-z child then paints above that parent's background and renders normally. Or express paint order through DOM order - an earlier sibling paints behind a later one - and raise the elements that should sit in front rather than lowering this one."
+      },
+      {
+        "code": "negative_z_index",
+        "severity": "warning",
+        "message": "`z-index: -1` paints the element behind its nearest stacking context's own content. With no stacking-context ancestor that context is the composition root itself, so an opaque background there hides it entirely: in the DOM, laid out, and absent from the picture. A transparent root leaves it visible. Siblings at `z-index: 0` or above are unaffected.",
+        "selector": ".hook .mk",
+        "dataAttributes": {},
+        "sourceFile": "/home/user/school-work/ads/week-nov9/wed-boost/hyperframes/index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Give the element's parent a stacking context - `isolation: isolate` is the cheapest, and `transform`, `filter`, `opacity` below 1, `contain: paint` and `will-change` all work too. The negative-z child then paints above that parent's background and renders normally. Or express paint order through DOM order - an earlier sibling paints behind a later one - and raise the elements that should sit in front rather than lowering this one."
+      },
+      {
+        "code": "nested_structure_needs_subcomposition",
+        "severity": "warning",
+        "message": "<section id=\"s1\"> is a timeline element that contains nested <div id=\"cam1\">. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.",
+        "selector": "#s1",
+        "dataAttributes": {},
+        "sourceFile": "/home/user/school-work/ads/week-nov9/wed-boost/hyperframes/index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Move <section id=\"s1\"> and its contents into a sub-composition file and mount it with data-composition-src."
+      },
+      {
+        "code": "nested_structure_needs_subcomposition",
+        "severity": "warning",
+        "message": "<section id=\"s2\"> is a timeline element that contains nested <div id=\"cam2\">. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.",
+        "selector": "#s2",
+        "dataAttributes": {},
+        "sourceFile": "/home/user/school-work/ads/week-nov9/wed-boost/hyperframes/index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Move <section id=\"s2\"> and its contents into a sub-composition file and mount it with data-composition-src."
+      },
+      {
+        "code": "nested_structure_needs_subcomposition",
+        "severity": "warning",
+        "message": "<section id=\"s3\"> is a timeline element that contains nested <div>. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.",
+        "selector": "#s3",
+        "dataAttributes": {},
+        "sourceFile": "/home/user/school-work/ads/week-nov9/wed-boost/hyperframes/index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Move <section id=\"s3\"> and its contents into a sub-composition file and mount it with data-composition-src."
+      },
+      {
+        "code": "nested_structure_needs_subcomposition",
+        "severity": "warning",
+        "message": "<section id=\"s4\"> is a timeline element that contains nested <div id=\"cam4\">. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.",
+        "selector": "#s4",
+        "dataAttributes": {},
+        "sourceFile": "/home/user/school-work/ads/week-nov9/wed-boost/hyperframes/index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Move <section id=\"s4\"> and its contents into a sub-composition file and mount it with data-composition-src."
+      },
+      {
+        "code": "nested_structure_needs_subcomposition",
+        "severity": "warning",
+        "message": "<section id=\"sCTA\"> is a timeline element that contains nested <div id=\"camCTA\">. The timeline shows one row per top-level element, and the root composition is built only from sub-compositions.",
+        "selector": "#sCTA",
+        "dataAttributes": {},
+        "sourceFile": "/home/user/school-work/ads/week-nov9/wed-boost/hyperframes/index.html",
+        "bbox": {
+          "x": 0,
+          "y": 0,
+          "width": 0,
+          "height": 0
+        },
+        "time": 0,
+        "fixHint": "Move <section id=\"sCTA\"> and its contents into a sub-composition file and mount it with data-composition-src."
+      }
+    ],
+    "filesScanned": 1
+  },
+  "runtime": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": []
+  },
+  "layout": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 6,
+    "findings": [
+      {
+        "code": "container_overflow",
+        "severity": "info",
+        "time": 1.294,
+        "selector": "#cam1",
+        "message": "Element extends outside a clipping layout container.",
+        "rect": {
+          "left": -12.2,
+          "top": -17.36,
+          "right": 1092.2,
+          "bottom": 1946.04,
+          "width": 1104.41,
+          "height": 1963.39
+        },
+        "containerSelector": "#s1",
+        "fixHint": "Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.",
+        "containerRect": {
+          "left": 0,
+          "top": 0,
+          "right": 1080,
+          "bottom": 1920,
+          "width": 1080,
+          "height": 1920
+        },
+        "overflow": {
+          "left": 12.2,
+          "right": 12.2,
+          "top": 17.36,
+          "bottom": 26.04
+        },
+        "dataAttributes": {},
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": -12.2,
+          "y": -17.36,
+          "width": 1104.41,
+          "height": 1963.39
+        },
+        "firstSeen": 1.294,
+        "lastSeen": 1.294,
+        "occurrences": 1,
+        "heldMs": 0,
+        "times": [
+          1.294
+        ]
+      },
+      {
+        "code": "container_overflow",
+        "severity": "info",
+        "time": 3.883,
+        "selector": "#cam2",
+        "message": "Element extends outside a clipping layout container.",
+        "rect": {
+          "left": -1.35,
+          "top": -1.92,
+          "right": 1081.35,
+          "bottom": 1922.88,
+          "width": 1082.7,
+          "height": 1924.8
+        },
+        "containerSelector": "#s2",
+        "fixHint": "Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.",
+        "containerRect": {
+          "left": 0,
+          "top": 0,
+          "right": 1080,
+          "bottom": 1920,
+          "width": 1080,
+          "height": 1920
+        },
+        "overflow": {
+          "bottom": 2.88
+        },
+        "dataAttributes": {},
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": -1.35,
+          "y": -1.92,
+          "width": 1082.7,
+          "height": 1924.8
+        },
+        "firstSeen": 3.883,
+        "lastSeen": 9.061,
+        "occurrences": 3,
+        "heldMs": 0,
+        "times": [
+          3.883,
+          6.472,
+          9.061
+        ]
+      },
+      {
+        "code": "container_overflow",
+        "severity": "info",
+        "time": 11.65,
+        "selector": "#cam3",
+        "message": "Element extends outside a clipping layout container.",
+        "rect": {
+          "left": -2.86,
+          "top": -4.07,
+          "right": 1082.86,
+          "bottom": 1926.11,
+          "width": 1085.72,
+          "height": 1930.18
+        },
+        "containerSelector": "#s3",
+        "fixHint": "Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.",
+        "containerRect": {
+          "left": 0,
+          "top": 0,
+          "right": 1080,
+          "bottom": 1920,
+          "width": 1080,
+          "height": 1920
+        },
+        "overflow": {
+          "left": 2.86,
+          "right": 2.86,
+          "top": 4.07,
+          "bottom": 6.11
+        },
+        "dataAttributes": {},
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": -2.86,
+          "y": -4.07,
+          "width": 1085.72,
+          "height": 1930.18
+        },
+        "firstSeen": 11.65,
+        "lastSeen": 16.828,
+        "occurrences": 3,
+        "heldMs": 0,
+        "times": [
+          11.65,
+          14.239,
+          16.828
+        ]
+      },
+      {
+        "code": "content_overlap",
+        "severity": "info",
+        "time": 13.798,
+        "selector": "#c3b > span:nth-of-type(1) > span:nth-of-type(1)",
+        "message": "Two text blocks overlap and may render unreadable.",
+        "rect": {
+          "left": 61.75,
+          "top": 459.88,
+          "right": 189.57,
+          "bottom": 554.91,
+          "width": 127.82,
+          "height": 95.03
+        },
+        "containerSelector": "#c3c > span:nth-of-type(1) > span:nth-of-type(1)",
+        "text": "fresh",
+        "fixHint": "Give each block its own zone, or put data-layout-allow-overlap on the text or on a container inside the scene. A marker on the scene root does not apply.",
+        "dataAttributes": {},
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 61.75,
+          "y": 459.88,
+          "width": 127.82,
+          "height": 95.03
+        },
+        "firstSeen": 13.798,
+        "lastSeen": 13.798,
+        "occurrences": 1,
+        "heldMs": 0,
+        "times": [
+          13.798
+        ]
+      },
+      {
+        "code": "container_overflow",
+        "severity": "info",
+        "time": 19.417,
+        "selector": "#cam4",
+        "message": "Element extends outside a clipping layout container.",
+        "rect": {
+          "left": -25.43,
+          "top": -36.17,
+          "right": 1105.43,
+          "bottom": 1974.26,
+          "width": 1130.87,
+          "height": 2010.43
+        },
+        "containerSelector": "#s4",
+        "fixHint": "Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.",
+        "containerRect": {
+          "left": 0,
+          "top": 0,
+          "right": 1080,
+          "bottom": 1920,
+          "width": 1080,
+          "height": 1920
+        },
+        "overflow": {
+          "left": 25.43,
+          "right": 25.43,
+          "top": 36.17,
+          "bottom": 54.26
+        },
+        "dataAttributes": {},
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": -25.43,
+          "y": -36.17,
+          "width": 1130.87,
+          "height": 2010.43
+        },
+        "firstSeen": 19.417,
+        "lastSeen": 19.417,
+        "occurrences": 1,
+        "heldMs": 0,
+        "times": [
+          19.417
+        ]
+      },
+      {
+        "code": "container_overflow",
+        "severity": "info",
+        "time": 22.006,
+        "selector": "#camCTA",
+        "message": "Element extends outside a clipping layout container.",
+        "rect": {
+          "left": -15.07,
+          "top": -21.43,
+          "right": 1095.07,
+          "bottom": 1952.14,
+          "width": 1110.13,
+          "height": 1973.57
+        },
+        "containerSelector": "#sCTA",
+        "fixHint": "Resize/reposition the child or container, or mark intentional overflow with data-layout-allow-overflow.",
+        "containerRect": {
+          "left": 0,
+          "top": 0,
+          "right": 1080,
+          "bottom": 1920,
+          "width": 1080,
+          "height": 1920
+        },
+        "overflow": {
+          "left": 15.07,
+          "right": 15.07,
+          "top": 21.43,
+          "bottom": 32.14
+        },
+        "dataAttributes": {},
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": -15.07,
+          "y": -21.43,
+          "width": 1110.13,
+          "height": 1973.57
+        },
+        "firstSeen": 22.006,
+        "lastSeen": 22.006,
+        "occurrences": 1,
+        "heldMs": 0,
+        "times": [
+          22.006
+        ]
+      }
+    ],
+    "duration": 23.3,
+    "samples": [
+      1.294,
+      3.883,
+      6.472,
+      9.061,
+      11.65,
+      14.239,
+      16.828,
+      19.417,
+      22.006
+    ],
+    "transitionSamples": [],
+    "transitionSamplesDropped": 0,
+    "tolerance": 2,
+    "totalIssueCount": 6,
+    "truncated": false
+  },
+  "motion": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": false,
+    "samples": 0
+  },
+  "contrast": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": [],
+    "enabled": true,
+    "samples": [
+      1.294,
+      6.472,
+      11.65,
+      16.828,
+      22.006
+    ],
+    "checked": 25,
+    "passed": 25
+  },
+  "craft": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 1,
+    "infoCount": 0,
+    "findings": [
+      {
+        "code": "text_below_floor",
+        "severity": "warning",
+        "message": "Type floor is 28 px (2.6% of the 1080 px short side, what a phone can read) and 3 text elements stay under it for 0.5 s or more, the smallest \"TEST A\" at 21 px: set reading text to at least 28 px, or put data-layout-ignore on text that is texture rather than reading; see references/look.md.",
+        "text": "TEST A",
+        "selector": "#cr1 > em:nth-of-type(1)",
+        "dataAttributes": {},
+        "sourceFile": "index.html",
+        "bbox": {
+          "x": 80.54,
+          "y": 1129.53,
+          "width": 97.47,
+          "height": 35.79
+        },
+        "time": 11.837,
+        "times": [
+          11.837,
+          11.961,
+          12.086
+        ],
+        "fontPx": 21.27,
+        "floorPx": 28,
+        "seconds": 2.368,
+        "elements": [
+          {
+            "selector": "#cr1 > em:nth-of-type(1)",
+            "text": "TEST A",
+            "fontPx": 21.27,
+            "time": 11.837,
+            "seconds": 2.368
+          },
+          {
+            "selector": "#cr3 > em:nth-of-type(1)",
+            "text": "TEST C",
+            "fontPx": 21.27,
+            "time": 12.086,
+            "seconds": 2.119
+          },
+          {
+            "selector": "#cr2 > em:nth-of-type(1)",
+            "text": "TEST B",
+            "fontPx": 22.16,
+            "time": 11.961,
+            "seconds": 5.359
+          }
+        ]
+      }
+    ],
+    "enabled": true,
+    "step": 0.125,
+    "samples": 187
+  },
+  "audio": {
+    "ok": true,
+    "errorCount": 0,
+    "warningCount": 0,
+    "infoCount": 0,
+    "findings": []
+  },
+  "hdr": {
+    "autoPromotion": null,
+    "inspection": "available"
+  },
+  "snapshots": {
+    "enabled": false,
+    "files": [],
+    "times": [],
+    "findingFiles": []
+  }
+}

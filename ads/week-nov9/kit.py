@@ -6,7 +6,10 @@ are written as words("#cap", [times]) using the real spoken times."""
 import json, os, shutil, sys
 ad = sys.argv[1]; meta = json.load(open(os.path.join(ad, "meta.json")))
 read = lambda f: open(os.path.join(ad, f)).read() if os.path.exists(os.path.join(ad, f)) else ""
-DUR = meta["duration"]; KW = meta["keyword"]; CTA0 = meta["cta_start"]; W = meta["cta_words"]   # [comment, kw, we'll, show, you, how]
+DUR = meta["duration"]; KW = meta["keyword"]; CTA0 = meta["cta_start"]; W = meta["cta_words"]   # [comment, kw, then one time per lead word]
+LEAD = meta.get("cta_lead", ["we'll", "show", "you", "how"])
+lead_html = " ".join('<span class="w">%s</span>' % w for w in LEAD)
+lead_times = ", ".join(str(t) for t in W[2:2 + len(LEAD)])
 HEAD = """<!doctype html>
 <html lang="en">
 <head>
@@ -58,7 +61,7 @@ HEAD = """<!doctype html>
   <section id="sCTA" class="clip scene dark" data-start="%(cta0)s" data-duration="%(ctad)s" data-track-index="1">
     <div class="cam" id="camCTA">
       <div id="ctaKw" data-layout-ignore>%(kw)s</div>
-      <div class="cap" id="cCTA" style="top:600px"><span class="ld"><span class="w">we'll</span> <span class="w">show</span> <span class="w">you</span> <span class="w">how</span></span>
+      <div class="cap" id="cCTA" style="top:600px"><span class="ld">%(lead)s</span>
         <span class="kw" style="--k:160px"><span class="w">comment</span></span></div>
       <div id="brand"><div class="b1">Southline</div><div class="b2">%(tag)s</div></div>
     </div>
@@ -88,7 +91,7 @@ HEAD = """<!doctype html>
 
   // ===== CTA: "comment KEYWORD", keyword slams in, wordmark; holds
   drift("#camCTA", %(cta0)s, DUR, 0.04);
-  words("#cCTA", 0, 0, [%(w2)s, %(w3)s, %(w4)s, %(w5)s, %(w0)s]);
+  words("#cCTA", 0, 0, [%(leadt)s, %(w0)s]);
   tl.fromTo("#ctaKw", { x: 700, filter: "blur(12px)" }, { x: 0, filter: "blur(0px)", duration: 0.35, ease: "expo.out" }, %(w1)s);
   shake("#camCTA", %(w1)s + 0.06, 7);
   tl.fromTo("#brand", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: E.in }, %(w1)s + 0.4);
@@ -100,7 +103,7 @@ HEAD = """<!doctype html>
 """
 out = HEAD % dict(title=meta["title"], dur=DUR, cta0=CTA0, ctad=round(DUR - CTA0, 3), kw=KW, tag=meta["tag"],
                   kwsize=meta.get("kw_size", 400), css=read("scenes.css"), html=read("scenes.html"), js=read("scenes.js"),
-                  w0=W[0], w1=W[1], w2=W[2], w3=W[3], w4=W[4], w5=W[5])
+                  w0=W[0], w1=W[1], lead=lead_html, leadt=lead_times)
 hf = os.path.join(ad, "hyperframes"); os.makedirs(os.path.join(hf, "assets"), exist_ok=True)
 open(os.path.join(hf, "index.html"), "w").write(out)
 src = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "tradesmen-map-leads", "hyperframes", "assets")

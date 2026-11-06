@@ -1,0 +1,19 @@
+  #inv { position: absolute; left: 140px; top: 980px; width: 800px; height: 460px; border-radius: 30px; background: var(--cream); color: var(--ink); overflow: hidden; }
+  #inv .t { position: absolute; left: 44px; top: 40px; font: 500 30px "IBM Plex Mono", monospace; letter-spacing: .14em; }
+  #inv .r { position: absolute; left: 44px; right: 44px; height: 70px; border-bottom: 3px dashed #c9c4ba; font-weight: 700; font-size: 44px; letter-spacing: -0.02em; line-height: 70px; }
+  #inv .burn { position: absolute; inset: 0; background: radial-gradient(circle at 70% 80%, rgba(255,91,31,.95) 0%, rgba(120,30,10,.9) 40%, rgba(13,13,15,.95) 75%); opacity: 0; }
+  #deal { position: absolute; left: 90px; top: 760px; width: 900px; height: 660px; border-radius: 40px; background: #fff; box-shadow: 0 40px 70px -40px rgba(13,13,15,.45); }
+  #deal .t { position: absolute; left: 50px; top: 46px; font: 500 30px "IBM Plex Mono", monospace; letter-spacing: .16em; color: var(--mutedl); }
+  #deal .big { position: absolute; left: 50px; top: 100px; font-weight: 700; font-size: 230px; letter-spacing: -0.07em; line-height: .9; color: var(--ink); }
+  #deal .w1 { position: absolute; left: 330px; top: 140px; font-weight: 700; font-size: 74px; letter-spacing: -0.035em; line-height: 1; color: var(--ink); }
+  #deal .w2 { position: absolute; left: 50px; top: 360px; font-family: "Instrument Serif", serif; font-style: italic; font-size: 92px; color: var(--ink); }
+  #deal .st { position: absolute; left: 50px; top: 490px; padding: 18px 34px 22px; border-radius: 22px; background: var(--volt); color: var(--ink); font-weight: 700; font-size: 66px; letter-spacing: -0.03em; transform: rotate(-3deg); }
+  #beam { position: absolute; left: 190px; top: 1180px; width: 700px; height: 18px; border-radius: 9px; background: var(--cream); }
+  #piv { position: absolute; left: 500px; top: 1196px; border-left: 40px solid transparent; border-right: 40px solid transparent; border-bottom: 120px solid var(--muted); }
+  .pan { position: absolute; top: 1240px; width: 240px; height: 26px; border-radius: 0 0 40px 40px; background: var(--cream); }
+  .pan b { position: absolute; left: 0; right: 0; top: 40px; text-align: center; font: 500 30px "IBM Plex Mono", monospace; letter-spacing: .16em; color: var(--muted); }
+  #rk { position: absolute; left: 115px; top: 1110px; width: 190px; height: 120px; border-radius: 18px; background: var(--blaze); color: var(--ink); font-weight: 700; font-size: 52px; text-align: center; line-height: 120px; letter-spacing: -0.02em; z-index: 3; }
+  #meter { position: absolute; left: 90px; top: 1040px; width: 900px; height: 120px; }
+  .sg { position: absolute; top: 0; width: 78px; height: 120px; border-radius: 16px; background: rgba(13,13,15,.18); }
+  .sg i { position: absolute; inset: 0; border-radius: 16px; background: var(--ink); transform: scaleY(0); transform-origin: 50% 100%; }
+  #ml { position: absolute; left: 90px; top: 990px; font: 500 28px "IBM Plex Mono", monospace; letter-spacing: .14em; color: var(--ink); opacity: .7; }

@@ -1,0 +1,17 @@
+  .lane { position: absolute; left: 60px; width: 960px; height: 170px; border-radius: 28px; background: var(--ink2); border: 2px solid var(--ink3); box-sizing: border-box; }
+  .lane .nm { position: absolute; left: 30px; top: 26px; font: 500 26px "IBM Plex Mono", monospace; letter-spacing: .14em; color: var(--muted); }
+  .lane .bar { position: absolute; left: 30px; top: 78px; height: 56px; width: 860px; border-radius: 14px; background: #3a3a42; transform-origin: 0 50%; }
+  .lane.you .bar { background: var(--volt); } .lane.you .nm { color: var(--volt); }
+  .lane .msg { position: absolute; right: 26px; top: 20px; padding: 6px 14px; border-radius: 10px; background: var(--lilac); color: var(--ink); font: 500 22px "IBM Plex Mono", monospace; letter-spacing: .1em; }
+  #finish { position: absolute; left: 960px; top: 900px; width: 10px; height: 640px; background: repeating-linear-gradient(0deg, var(--cream) 0 20px, var(--ink) 20px 40px); }
+  #won { position: absolute; left: 470px; top: 1000px; padding: 10px 22px; border-radius: 14px; background: var(--cream); color: var(--ink); font-weight: 700; font-size: 50px; letter-spacing: -0.02em; opacity: 0; z-index: 4; }
+  #watch { position: absolute; left: 820px; top: 560px; width: 190px; height: 190px; border-radius: 50%; border: 10px solid var(--cream); box-sizing: border-box; }
+  #watch i { position: absolute; left: 80px; top: 18px; width: 10px; height: 72px; border-radius: 5px; background: var(--blaze); transform-origin: 50% 100%; }
+  #watch b { position: absolute; left: 70px; top: -36px; width: 30px; height: 26px; border-radius: 6px; background: var(--cream); }
+  #nc { position: absolute; left: 90px; top: 860px; width: 900px; height: 640px; border-radius: 44px; background: #fff; box-shadow: 0 40px 70px -40px rgba(13,13,15,.45); overflow: hidden; }
+  #nc .hd { position: absolute; left: 0; right: 0; top: 0; height: 120px; background: var(--volt); }
+  #nc .hd b { position: absolute; left: 44px; top: 40px; font: 500 34px "IBM Plex Mono", monospace; letter-spacing: .14em; color: var(--ink); }
+  #nc .hd em { position: absolute; right: 44px; top: 40px; font: 500 34px "IBM Plex Mono", monospace; letter-spacing: .1em; color: var(--ink); font-style: normal; }
+  .fld { position: absolute; left: 44px; right: 44px; height: 150px; border-bottom: 2px solid #e6e1d6; }
+  .fld small { position: absolute; left: 0; top: 26px; font: 500 26px "IBM Plex Mono", monospace; letter-spacing: .14em; color: var(--mutedl); }
+  .fld span { position: absolute; left: 0; top: 64px; font-weight: 700; font-size: 66px; letter-spacing: -0.035em; color: var(--ink); white-space: nowrap; }

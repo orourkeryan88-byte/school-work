@@ -1,0 +1,22 @@
+  #btn { position: absolute; left: 170px; top: 1080px; width: 740px; height: 210px; border-radius: 105px; background: var(--lilac); color: var(--ink);
+    font-weight: 700; font-size: 96px; letter-spacing: -0.035em; text-align: center; line-height: 210px; box-shadow: 0 26px 0 #6f5bd6; }
+  #tap { position: absolute; left: 640px; top: 1180px; width: 120px; height: 120px; margin: -60px 0 0 -60px; border-radius: 50%; background: rgba(243,239,230,.85); opacity: 0; }
+  #post { position: absolute; left: 90px; top: 1000px; width: 250px; height: 320px; border-radius: 26px; background: var(--lilac); }
+  #post i { position: absolute; left: 20px; right: 20px; top: 20px; height: 200px; border-radius: 16px; background: var(--lilacd); }
+  #arrow { position: absolute; left: 360px; top: 1150px; width: 420px; height: 14px; border-radius: 7px; background: var(--cream); transform-origin: 0 50%; }
+  #arrow::after { content: ""; position: absolute; right: -6px; top: -18px; border-left: 40px solid var(--cream); border-top: 25px solid transparent; border-bottom: 25px solid transparent; }
+  .crowd { position: absolute; width: 40px; height: 40px; border-radius: 12px; background: #3a3a42; }
+  .xl { position: absolute; left: 72px; font-weight: 700; font-size: 92px; letter-spacing: -0.04em; color: var(--cream); white-space: nowrap; }
+  .xl b { display: inline-block; width: 86px; height: 86px; margin-right: 26px; border-radius: 20px; background: var(--blaze); color: var(--ink); text-align: center; line-height: 84px; font-size: 70px; vertical-align: -4px; }
+  .cr { position: absolute; top: 760px; width: 260px; height: 330px; border-radius: 28px; background: #fff; box-shadow: 0 26px 46px -26px rgba(13,13,15,.4); }
+  .cr i { position: absolute; left: 18px; right: 18px; top: 18px; height: 210px; border-radius: 18px; }
+  .cr s { position: absolute; left: 18px; bottom: 26px; height: 18px; border-radius: 9px; background: var(--ink); text-decoration: none; transform-origin: 0 50%; }
+  .cr em { position: absolute; left: 18px; top: 240px; font: 500 22px "IBM Plex Mono", monospace; letter-spacing: .12em; font-style: normal; color: var(--mutedl); }
+  #win { position: absolute; left: 470px; top: 700px; padding: 8px 20px; border-radius: 14px; background: var(--ink); color: var(--volt); font: 500 26px "IBM Plex Mono", monospace; letter-spacing: .14em; opacity: 0; z-index: 3; }
+  #up { position: absolute; left: 520px; top: 1110px; width: 40px; height: 180px; border-radius: 10px; background: var(--volt); transform-origin: 50% 100%; }
+  #up::after { content: ""; position: absolute; left: -30px; top: -50px; border-bottom: 60px solid var(--volt); border-left: 50px solid transparent; border-right: 50px solid transparent; }
+  .aud { position: absolute; top: 1420px; width: 44px; height: 44px; border-radius: 12px; background: var(--ink); opacity: .85; }
+  #loop { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; overflow: visible; }
+  #fee { position: absolute; left: 90px; top: 1060px; padding: 26px 40px; border-radius: 28px; background: var(--volt); color: var(--ink); font-weight: 700; font-size: 70px; letter-spacing: -0.03em; }
+  #feeline { position: absolute; left: 430px; top: 1110px; width: 220px; height: 10px; border-radius: 5px; background: var(--cream); transform-origin: 0 50%; }
+  .sale { position: absolute; left: 680px; width: 310px; height: 110px; border-radius: 24px; background: var(--lilac); color: var(--ink); font: 500 30px "IBM Plex Mono", monospace; letter-spacing: .12em; line-height: 110px; text-align: center; }
