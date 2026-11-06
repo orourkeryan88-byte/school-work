@@ -107,12 +107,12 @@
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="main" data-width="1080" data-height="1920" data-duration="21.7">
+<div id="root" data-composition-id="main" data-width="1080" data-height="1920" data-duration="22.18">
   <div id="bg" class="full" data-layout-ignore></div>
 
   <!-- 1 MAP 0–9.65: "Tradesmen. You've got leads already looking for you. People near you, searching for a sparky,
        a plumber, a builder… right now. You just can't get to them." -->
-  <section id="s1" class="clip scene light" data-start="0" data-duration="9.65" data-track-index="1">
+  <section id="s1" class="clip scene light" data-start="0.0" data-duration="10.325" data-track-index="1">
     <div class="full" style="background:var(--land)" data-layout-ignore></div>
     <div id="world" data-layout-ignore>
       <svg class="map" id="map" viewBox="0 0 2160 3840"></svg>
@@ -131,7 +131,7 @@
   </section>
 
   <!-- 2 TURN 9.65–11.05 (ink): "So we do it for you." -->
-  <section id="s2" class="clip scene dark" data-start="9.65" data-duration="1.4" data-track-index="1">
+  <section id="s2" class="clip scene dark" data-start="10.325" data-duration="1.473" data-track-index="1">
     <div id="haze" data-layout-ignore></div>
     <div class="cam" id="cam2">
       <div class="cap" id="c2" style="top:680px"><span class="ld"><span class="w">so</span> <span class="w">we</span> <span class="w">do</span> <span class="w">it</span></span>
@@ -141,7 +141,7 @@
 
   <!-- 3 PHONE 11.05–18.4: "We run Facebook and Instagram ads for your business, and the enquiries come straight to your phone.
        Again. And again." Leads fly off the dark map into the phone, slam in one by one, then burst out around it. -->
-  <section id="s3" class="clip scene dark" data-start="11.05" data-duration="7.35" data-track-index="1">
+  <section id="s3" class="clip scene dark" data-start="11.798" data-duration="6.89" data-track-index="1">
     <div id="world2" data-layout-ignore></div>
     <div id="vig" data-layout-ignore></div>
     <div class="cam" id="cam3">
@@ -166,7 +166,7 @@
   </section>
 
   <!-- 4 CTA 18.4–21.7: "Comment MAP and we'll show you how." -->
-  <section id="s4" class="clip scene dark" data-start="18.4" data-duration="3.3" data-track-index="1">
+  <section id="s4" class="clip scene dark" data-start="18.688" data-duration="3.492" data-track-index="1">
     <div class="cam" id="cam4">
       <div id="map4" data-layout-ignore>MAP</div>
       <div class="cap" id="c4" style="top:600px"><span class="ld"><span class="w">we'll</span> <span class="w">show</span> <span class="w">you</span> <span class="w">how</span></span>
@@ -177,13 +177,22 @@
 
   <div id="flash" data-layout-ignore></div>
   <div id="grain" class="full" data-layout-ignore></div>
-  <audio id="score" src="assets/audio.wav" data-start="0" data-duration="21.7" data-track-index="10" data-volume="1"></audio>
+  <audio id="score" src="assets/audio.wav" data-start="0" data-duration="22.18" data-track-index="10" data-volume="1"></audio>
 </div>
 
 <script>
   window.__timelines = window.__timelines || {};
-  const tl = gsap.timeline({ paused: true });
+  const TL = gsap.timeline({ paused: true });
   const DUR = 21.7;
+  // Positions are authored on the Sean read (../vo_words_sean.json); WARP maps them onto another read. ../retime.py fills it in.
+  const WARP = [[0.0, 0.0], [0.152, 0.16], [0.96, 1.28], [1.2, 1.52], [1.36, 1.68], [1.68, 2.0], [2.24, 2.56], [2.6, 2.8], [2.72, 3.04], [3.2, 3.68], [3.52, 4.0], [3.84, 4.32], [4.16, 4.8], [4.52, 5.16], [4.64, 5.28], [4.96, 5.36], [5.44, 6.16], [5.6, 6.32], [6.08, 6.84], [6.56, 6.96], [7.04, 7.84], [7.36, 8.08], [8.08, 8.96], [8.24, 9.12], [8.4, 9.28], [8.72, 9.52], [8.88, 9.72], [9.2, 9.84], [9.794, 10.48], [9.92, 10.64], [10.12, 10.8], [10.24, 10.96], [10.4, 11.12], [10.8, 11.36], [11.12, 11.92], [11.4, 12.08], [11.6, 12.32], [12.08, 12.76], [12.4, 12.88], [12.72, 13.36], [13.04, 13.68], [13.2, 13.84], [13.68, 14.08], [14.053, 14.64], [14.16, 14.76], [14.24, 14.88], [14.92, 15.44], [15.2, 15.68], [15.48, 16.04], [15.6, 16.16], [16.0, 16.4], [16.4, 17.12], [17.2, 17.68], [17.44, 17.92], [18.44, 18.72], [18.64, 19.04], [18.96, 19.36], [19.12, 19.52], [19.36, 19.76], [19.52, 19.92], [19.68, 20.08], [20.08, 20.56], [21.7, 22.18]]; // @warp
+  const W = t => {
+    if (t <= WARP[0][0]) return t;
+    for (let i = 1; i < WARP.length; i++) if (t <= WARP[i][0]) { const [a0, b0] = WARP[i - 1], [a1, b1] = WARP[i]; return b0 + (t - a0) * (b1 - b0) / (a1 - a0); }
+    const [a, bb] = WARP[WARP.length - 1]; return bb + (t - a);
+  };
+  const span = (t0, t1) => W(t1) - W(t0);
+  const tl = { to: (a, v, p) => TL.to(a, v, W(p)), fromTo: (a, f, v, p) => TL.fromTo(a, f, v, W(p)), set: (a, v, p) => TL.set(a, v, W(p)) };
   const E = { in: "expo.out", cam: "sine.inOut", ui: "back.out(1.4)" };
   const rnd = i => { const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };   // deterministic 0..1
 
@@ -193,7 +202,7 @@
   }
   const under = (sel, t) => tl.fromTo(sel, { scaleX: 0 }, { scaleX: 1, duration: 0.22, ease: E.in }, t);
   const exit = (sel, t) => tl.to(sel, { opacity: 0, y: -12, duration: 0.12, ease: "power2.in" }, t);
-  const drift = (sel, t0, t1, amt = 0.05) => tl.fromTo(sel, { scale: 1 }, { scale: 1 + amt, duration: t1 - t0, ease: E.cam }, t0);
+  const drift = (sel, t0, t1, amt = 0.05) => tl.fromTo(sel, { scale: 1 }, { scale: 1 + amt, duration: span(t0, t1), ease: E.cam }, t0);
   const punch = (sel, t) => tl.fromTo(sel, { scale: 1.12 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, t);
   const shake = (sel, t, px = 8) => tl.fromTo(sel, { x: 0, y: 0 }, { keyframes: { x: [px, -px * .8, px * .5, -px * .3, 0], y: [-px * .6, px * .5, -px * .3, px * .2, 0] }, duration: 0.2, ease: "none" }, t);
 
@@ -235,9 +244,9 @@
   // camera: world point (px,py) at screen (sx,sy), scale s
   const cam = (s, px, py, sx = 540, sy = 1180) => ({ scale: s, x: sx - s * px, y: sy - s * py });
   tl.set("#world", cam(3.0, 1150, 2000), 0);
-  tl.to("#world", { ...cam(3.15, 1150, 2000), duration: 2.95, ease: "none" }, 0);
+  tl.to("#world", { ...cam(3.15, 1150, 2000), duration: span(0, 2.95), ease: "none" }, 0);
   tl.to("#world", { scale: 0.5, x: 0, y: 0, duration: 1.9, ease: "power3.inOut" }, 2.95);         // zoom out to the whole town
-  tl.to("#world", { ...cam(0.53, 1080, 1920, 540, 960), duration: 4.75, ease: E.cam }, 4.9);
+  tl.to("#world", { ...cam(0.53, 1080, 1920, 540, 960), duration: span(4.9, 9.65), ease: E.cam }, 4.9);
   for (let i = 0; i < 3; i++)                                                                 // the hero's location dot pulses
     tl.fromTo("#hl0", { scale: 0.5, opacity: 0.9 }, { scale: 1.8, opacity: 0, duration: 0.9, ease: "power2.out" }, 0.2 + i * 0.95);
   tl.fromTo("#f0", { scale: 0.6, y: 20 }, { scale: 1, y: 0, duration: 0.4, ease: E.ui }, 0.05);
@@ -284,7 +293,7 @@
   drift("#cam3", 11.05, 18.4, 0.04);
   const w2 = document.getElementById("world2"), mapClone = document.getElementById("map").cloneNode(true), figClone = document.getElementById("figs").cloneNode(true);
   [mapClone, figClone].forEach(c => { c.removeAttribute("id"); c.querySelectorAll("[id]").forEach(e => e.removeAttribute("id")); w2.appendChild(c); });
-  tl.fromTo("#world2", { scale: 0.62, x: -130, y: -280 }, { scale: 0.56, x: -65, y: -150, duration: 7.35, ease: E.cam }, 11.05);
+  tl.fromTo("#world2", { scale: 0.62, x: -130, y: -280 }, { scale: 0.56, x: -65, y: -150, duration: span(11.05, 18.4), ease: E.cam }, 11.05);
   tl.fromTo("#ph", { y: 900, rotation: 6 }, { y: 0, rotation: 0, duration: 0.6, ease: E.ui }, 11.05);
   tl.fromTo("#badge", { scale: 0 }, { scale: 1, duration: 0.35, ease: "back.out(2.4)" }, 11.5);
   words("#c3a", 0, 0, [11.12, 11.4, 11.6, 12.08, 12.4, 12.72]); under("#u3a", 12.72);
@@ -360,7 +369,7 @@
   shake("#cam4", 18.7, 7);
   tl.fromTo("#brand", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: E.in }, 19.0);
 
-  window.__timelines["main"] = tl;
+  window.__timelines["main"] = TL;
 </script>
 </body>
 </html>

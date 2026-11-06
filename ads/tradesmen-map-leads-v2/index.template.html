@@ -1,0 +1,375 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Southline: leads already looking for you (v2)</title>
+<script src="assets/vendor/gsap.min.js"></script>
+<style>
+  /* Tradesmen: a street map close on one person looking for a tradesman, zoom out to dozens, glass drops between,
+     then Southline gets them to you: ads card on the phone and the enquiries buzz in. Timed to ../vo_words_sean.json.
+     Colours: ink/cream bases, lime = Southline/fixes/CTA, orange = the problem, map in soft street-map tones (unbranded). */
+  @font-face { font-family: "Instrument Sans"; src: url(assets/fonts/is-500.woff2) format("woff2"); font-weight: 500; }
+  @font-face { font-family: "Instrument Sans"; src: url(assets/fonts/is-700.woff2) format("woff2"); font-weight: 700; }
+  @font-face { font-family: "Instrument Serif"; src: url(assets/fonts/iserif-italic.woff2) format("woff2"); font-style: italic; font-weight: 400; }
+  @font-face { font-family: "IBM Plex Mono"; src: url(assets/fonts/plex-500.woff2) format("woff2"); font-weight: 500; }
+  :root { --cream: #f3efe6; --ink: #0d0d0f; --ink2: #18181c; --ink3: #25252b; --muted: #8c8a93; --mutedl: #6b6873;
+          --volt: #d7ff3c; --blaze: #ff5b1f; --lilac: #b6a3ff; --land: #ece8df; }
+  html, body { margin: 0; background: var(--ink); }
+  body { font-family: "Instrument Sans", sans-serif; -webkit-font-smoothing: antialiased; }
+  #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+  .full { position: absolute; inset: 0; }
+  #bg { z-index: 0; background: var(--ink); }
+  #grain { z-index: 90; opacity: .06; mix-blend-mode: overlay; inset: -200px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>"); }
+  .scene { position: absolute; inset: 0; z-index: 10; overflow: hidden; }
+  .cam { position: absolute; inset: 0; transform-origin: 50% 40%; }
+  .light { color: var(--ink); } .dark { color: var(--cream); }
+
+  /* captions: serif-italic lead over a tight bold key line */
+  .cap { position: absolute; left: 72px; width: 936px; top: 560px; transform-origin: 0% 50%; z-index: 20; }
+  .cap .ld { font-family: "Instrument Serif", serif; font-style: italic; font-size: 72px; line-height: 1.05; opacity: .85; display: block; margin-bottom: 14px; }
+  .cap .kw { font-weight: 700; font-size: var(--k, 150px); letter-spacing: -0.04em; line-height: .95; display: block; }
+  .cap .w { display: inline-block; position: relative; }
+  .ul { position: absolute; left: 0; right: 0; bottom: -8px; height: 12px; border-radius: 3px; transform-origin: 0 50%; display: block; }
+  .dark .ul { background: var(--volt); }
+  .ul.bad { background: var(--blaze); }
+  .light .ul { background: var(--volt); left: -8px; right: -8px; bottom: 4px; height: 42%; border-radius: 4px; z-index: -1; }   /* marker */
+  .label { position: absolute; left: 72px; top: 470px; font: 500 28px "IBM Plex Mono", monospace; letter-spacing: .12em; text-transform: uppercase; z-index: 20; }
+  .light .label { color: var(--mutedl); } .dark .label { color: var(--muted); }
+
+  /* the map world: 2160 x 3840 (2x the frame), camera = transform on #world */
+  #world { position: absolute; left: 0; top: 0; width: 2160px; height: 3840px; transform-origin: 0 0; }
+  #world svg.map { position: absolute; left: 0; top: 0; width: 2160px; height: 3840px; }
+  .fig { position: absolute; width: 40px; height: 76px; margin: -66px 0 0 -20px; transform-origin: 50% 87%; }
+  .fig svg { position: absolute; left: 0; top: 0; width: 40px; height: 64px; overflow: visible; }
+  .fig .pd { position: absolute; left: 11px; top: 62px; width: 18px; height: 10px; border-radius: 50%; background: var(--volt); box-shadow: 0 0 0 3px rgba(13,13,15,.85); }
+  .fig .hl { position: absolute; left: -10px; top: 51px; width: 60px; height: 32px; border-radius: 50%; background: rgba(215,255,60,.45); }
+  #scrim { position: absolute; left: 0; right: 0; top: 0; height: 1000px; z-index: 15;
+    background: linear-gradient(180deg, rgba(243,239,230,.96) 0%, rgba(243,239,230,.9) 55%, rgba(243,239,230,0) 100%); }
+  .chip { position: absolute; z-index: 16; padding: 10px 22px 12px 18px; border-radius: 30px; background: var(--ink); color: var(--cream);
+    font-weight: 700; font-size: 34px; letter-spacing: -0.02em; white-space: nowrap; box-shadow: 0 16px 30px -14px rgba(0,0,0,.5); }
+  .chip i { display: inline-block; width: 14px; height: 14px; border-radius: 50%; background: var(--volt); margin-right: 12px; vertical-align: 3px; }
+  #glass { position: absolute; inset: 0; z-index: 14; background: rgba(243,239,230,.38); border-bottom: 6px solid var(--blaze); }
+  #hook { position: absolute; left: 72px; top: 590px; z-index: 20; font-weight: 700; font-size: 176px; letter-spacing: -0.045em; line-height: 1; color: var(--ink); white-space: nowrap; }
+  #hook .mk { position: absolute; left: -10px; right: -10px; bottom: 18px; height: 60px; border-radius: 6px; background: var(--volt); z-index: -1; transform-origin: 0 50%; }
+
+  /* phone scene */
+  #ph { position: absolute; left: 270px; top: 900px; width: 540px; height: 1060px; border-radius: 76px; background: #050506;
+    box-shadow: 0 60px 90px -40px rgba(0,0,0,.9), inset 0 0 0 3px #2a2a30; }
+  #ph .scr { position: absolute; left: 18px; top: 18px; right: 18px; bottom: 18px; border-radius: 60px; background: var(--ink3); overflow: hidden; }
+  #ph .notch { position: absolute; left: 50%; top: 18px; width: 150px; height: 40px; margin-left: -75px; border-radius: 22px; background: #050506; z-index: 3; }
+  #ph .sb { position: absolute; left: 50px; top: 24px; font: 500 28px "IBM Plex Mono", monospace; color: var(--muted); z-index: 3; }
+  #adcard { position: absolute; left: 24px; right: 24px; top: 96px; height: 170px; border-radius: 30px; background: var(--cream); color: var(--ink); transform-origin: 50% 0; }
+  #logoSlot { position: absolute; left: 24px; top: 24px; width: 122px; height: 122px; border-radius: 28px; background: var(--volt); }
+  #logoSlot b { position: absolute; left: 0; right: 0; top: 40px; text-align: center; font: 500 30px "IBM Plex Mono", monospace; letter-spacing: .08em; color: var(--ink); }
+  #adcard .t { position: absolute; left: 168px; top: 30px; font-weight: 700; font-size: 38px; letter-spacing: -0.02em; line-height: 1.02; }
+  #adcard .s { position: absolute; left: 168px; top: 116px; font: 500 22px "IBM Plex Mono", monospace; letter-spacing: .08em; color: var(--mutedl); }
+  #stack { position: absolute; left: 24px; right: 24px; top: 300px; height: 700px; }
+  .nt { position: absolute; left: 0; right: 0; top: 0; height: 150px; border-radius: 28px; background: var(--cream); color: var(--ink); overflow: hidden; }
+  .nt::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 14px; background: var(--volt); }
+  .nt .k { position: absolute; left: 36px; top: 20px; font: 500 22px "IBM Plex Mono", monospace; letter-spacing: .1em; color: var(--mutedl); }
+  .nt .t { position: absolute; left: 36px; top: 52px; font-weight: 700; font-size: 44px; letter-spacing: -0.02em; white-space: nowrap; }
+  .nt .s { position: absolute; left: 36px; top: 104px; font-weight: 500; font-size: 28px; color: var(--mutedl); white-space: nowrap; }
+  .buzz { position: absolute; top: 1110px; width: 40px; height: 120px; border-color: var(--volt); opacity: 0; }
+  #bzL { left: 186px; border-left: 6px solid; border-radius: 60px 0 0 60px; } #bzR { left: 854px; border-right: 6px solid; border-radius: 0 60px 60px 0; }
+
+  /* end card */
+  #map4 { position: absolute; left: 60px; top: 880px; font-weight: 700; font-size: 400px; letter-spacing: -0.06em; line-height: .8; color: var(--volt); white-space: nowrap; }
+  #brand { position: absolute; left: 72px; top: 1380px; }
+  #brand .b1 { font-weight: 700; font-size: 76px; letter-spacing: -0.03em; color: var(--cream); }
+  #brand .b2 { font: 500 28px "IBM Plex Mono", monospace; letter-spacing: .14em; color: var(--muted); margin-top: 6px; }
+  #haze { position: absolute; left: 540px; top: 900px; width: 1300px; height: 1300px; margin: -650px 0 0 -650px; border-radius: 50%; z-index: 1;
+    background: radial-gradient(circle, rgba(182,163,255,.13) 0%, rgba(182,163,255,0) 62%); }
+  #flash { position: absolute; inset: 0; z-index: 60; background: var(--cream); opacity: 0; }
+  /* v2 lead pop-ups */
+  #world2 { position: absolute; left: 0; top: 0; width: 2160px; height: 3840px; transform-origin: 0 0; opacity: .85;
+    filter: invert(1) hue-rotate(180deg) brightness(.42) contrast(1.15); }
+  #vig { position: absolute; inset: 0; background: radial-gradient(ellipse at 50% 62%, rgba(13,13,15,0) 0%, rgba(13,13,15,.55) 55%, rgba(13,13,15,.95) 100%); }
+  .fly { position: absolute; left: 0; top: 0; padding: 12px 22px 12px 14px; border-radius: 20px; background: var(--volt); color: var(--ink);
+    font: 500 26px "IBM Plex Mono", monospace; letter-spacing: .08em; white-space: nowrap; box-shadow: 0 18px 34px -12px rgba(0,0,0,.7); z-index: 30; opacity: 0; }
+  .fly i { display: inline-block; width: 12px; height: 12px; border-radius: 3px; background: var(--ink); margin-right: 12px; vertical-align: 2px; }
+  .orig { position: absolute; width: 90px; height: 90px; margin: -45px 0 0 -45px; border-radius: 50%; border: 5px solid var(--volt); opacity: 0; }
+  .pulse { position: absolute; left: 270px; top: 900px; width: 540px; height: 1060px; border-radius: 76px; border: 6px solid var(--volt); opacity: 0; box-sizing: border-box; }
+  #scrflash { position: absolute; inset: 0; background: var(--volt); opacity: 0; z-index: 5; }
+  #badge { position: absolute; left: 748px; top: 868px; width: 96px; height: 96px; border-radius: 50%; background: var(--blaze); color: var(--ink);
+    box-shadow: 0 0 0 8px var(--ink); z-index: 40; text-align: center; }
+  #badge b { display: block; font-weight: 700; font-size: 52px; line-height: 96px; letter-spacing: -0.04em; }
+  .nt .ic { position: absolute; left: 26px; top: 40px; width: 70px; height: 70px; border-radius: 18px; }
+  .nt .ic svg { position: absolute; left: 15px; top: 15px; width: 40px; height: 40px; }
+  .nt .k, .nt .t, .nt .s { left: 116px !important; }
+  .nt::before { display: none; }
+  .mini { position: absolute; left: 0; top: 0; width: 300px; padding: 16px 20px 16px 18px; border-radius: 22px; background: var(--cream); color: var(--ink);
+    box-shadow: 0 22px 40px -16px rgba(0,0,0,.8); z-index: 25; opacity: 0; }
+  .mini small { display: block; font: 500 20px "IBM Plex Mono", monospace; letter-spacing: .1em; color: var(--mutedl); }
+  .mini b { display: block; font-weight: 700; font-size: 34px; letter-spacing: -0.02em; white-space: nowrap; }
+  .mini i { position: absolute; right: 16px; top: 16px; width: 18px; height: 18px; border-radius: 5px; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-width="1080" data-height="1920" data-duration="21.7">
+  <div id="bg" class="full" data-layout-ignore></div>
+
+  <!-- 1 MAP 0–9.65: "Tradesmen. You've got leads already looking for you. People near you, searching for a sparky,
+       a plumber, a builder… right now. You just can't get to them." -->
+  <section id="s1" class="clip scene light" data-start="0" data-duration="9.65" data-track-index="1">
+    <div class="full" style="background:var(--land)" data-layout-ignore></div>
+    <div id="world" data-layout-ignore>
+      <svg class="map" id="map" viewBox="0 0 2160 3840"></svg>
+      <div id="figs"></div>
+    </div>
+    <div id="glass" data-layout-ignore></div>
+    <div id="scrim" data-layout-ignore></div>
+    <div id="chips" data-layout-ignore></div>
+    <div id="hook">Tradesmen,<span class="mk" id="hmk"></span></div>
+    <div class="cap" id="c1a"><span class="ld"><span class="w">you've</span> <span class="w">got</span> <span class="w">leads</span> <span class="w">already</span></span>
+      <span class="kw"><span class="w">looking<span class="ul" id="u1a"></span></span> <span class="w">for</span> <span class="w">you.</span></span></div>
+    <div class="cap" id="c1b"><span class="ld"><span class="w">people</span> <span class="w">near</span> <span class="w">you,</span></span>
+      <span class="kw"><span class="w">searching</span> <span class="w">right</span> <span class="w">now.<span class="ul" id="u1b"></span></span></span></div>
+    <div class="cap" id="c1c"><span class="ld"><span class="w">you</span> <span class="w">just</span></span>
+      <span class="kw" style="--k:136px"><span class="w">can't<span class="ul bad" id="u1c" style="background:var(--blaze);left:0;right:0;bottom:-8px;height:12px;z-index:0;border-radius:3px"></span></span> <span class="w">get</span> <span class="w">to</span> <span class="w">them.</span></span></div>
+  </section>
+
+  <!-- 2 TURN 9.65–11.05 (ink): "So we do it for you." -->
+  <section id="s2" class="clip scene dark" data-start="9.65" data-duration="1.4" data-track-index="1">
+    <div id="haze" data-layout-ignore></div>
+    <div class="cam" id="cam2">
+      <div class="cap" id="c2" style="top:680px"><span class="ld"><span class="w">so</span> <span class="w">we</span> <span class="w">do</span> <span class="w">it</span></span>
+        <span class="kw" style="--k:190px"><span class="w">for</span> <span class="w">you.<span class="ul" id="u2"></span></span></span></div>
+    </div>
+  </section>
+
+  <!-- 3 PHONE 11.05–18.4: "We run Facebook and Instagram ads for your business, and the enquiries come straight to your phone.
+       Again. And again." Leads fly off the dark map into the phone, slam in one by one, then burst out around it. -->
+  <section id="s3" class="clip scene dark" data-start="11.05" data-duration="7.35" data-track-index="1">
+    <div id="world2" data-layout-ignore></div>
+    <div id="vig" data-layout-ignore></div>
+    <div class="cam" id="cam3">
+      <div class="label" style="top:400px">Southline · for your business</div>
+      <div class="cap" id="c3a" style="top:460px"><span class="ld"><span class="w">we</span> <span class="w">run</span></span>
+        <span class="kw" style="--k:104px"><span class="w">Facebook</span> <span class="w">+</span> <span class="w">Instagram</span> <span class="w">ads.<span class="ul" id="u3a"></span></span></span></div>
+      <div class="cap" id="c3b" style="top:460px"><span class="ld"><span class="w">and</span> <span class="w">the</span> <span class="w">enquiries</span> <span class="w">come</span></span>
+        <span class="kw" style="--k:104px"><span class="w">straight</span> <span class="w">to</span> <span class="w">your</span> <span class="w">phone.<span class="ul" id="u3b"></span></span></span></div>
+      <div class="cap" id="c3c" style="top:460px"><span class="kw" style="--k:160px"><span class="w">again.</span> <span class="w">and</span> <span class="w">again.<span class="ul" id="u3c"></span></span></span></div>
+      <div id="burst" data-layout-ignore></div>
+      <div id="pulses" data-layout-ignore></div>
+      <div id="flyers" data-layout-ignore></div>
+      <div id="ph" data-layout-ignore><div class="notch"></div><div class="sb">20:47</div>
+        <div class="scr">
+          <div id="scrflash"></div>
+          <div id="adcard"><div id="logoSlot"><b>ADS</b></div><div class="t">Facebook +<br>Instagram ads</div><div class="s">LIVE · YOUR AREA</div></div>
+          <div id="stack"></div>
+        </div>
+      </div>
+      <div id="badge" data-layout-ignore><b id="badgeN">0</b></div>
+    </div>
+  </section>
+
+  <!-- 4 CTA 18.4–21.7: "Comment MAP and we'll show you how." -->
+  <section id="s4" class="clip scene dark" data-start="18.4" data-duration="3.3" data-track-index="1">
+    <div class="cam" id="cam4">
+      <div id="map4" data-layout-ignore>MAP</div>
+      <div class="cap" id="c4" style="top:600px"><span class="ld"><span class="w">we'll</span> <span class="w">show</span> <span class="w">you</span> <span class="w">how</span></span>
+        <span class="kw" style="--k:160px"><span class="w">comment</span></span></div>
+      <div id="brand"><div class="b1">Southline</div><div class="b2">META ADS FOR TRADESMEN · IRELAND</div></div>
+    </div>
+  </section>
+
+  <div id="flash" data-layout-ignore></div>
+  <div id="grain" class="full" data-layout-ignore></div>
+  <audio id="score" src="assets/audio.wav" data-start="0" data-duration="21.7" data-track-index="10" data-volume="1"></audio>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const TL = gsap.timeline({ paused: true });
+  const DUR = 21.7;
+  // Positions are authored on the Sean read (../vo_words_sean.json); WARP maps them onto another read. ../retime.py fills it in.
+  const WARP = [[0, 0], [21.7, 21.7]]; // @warp
+  const W = t => {
+    if (t <= WARP[0][0]) return t;
+    for (let i = 1; i < WARP.length; i++) if (t <= WARP[i][0]) { const [a0, b0] = WARP[i - 1], [a1, b1] = WARP[i]; return b0 + (t - a0) * (b1 - b0) / (a1 - a0); }
+    const [a, bb] = WARP[WARP.length - 1]; return bb + (t - a);
+  };
+  const span = (t0, t1) => W(t1) - W(t0);
+  const tl = { to: (a, v, p) => TL.to(a, v, W(p)), fromTo: (a, f, v, p) => TL.fromTo(a, f, v, W(p)), set: (a, v, p) => TL.set(a, v, W(p)) };
+  const E = { in: "expo.out", cam: "sine.inOut", ui: "back.out(1.4)" };
+  const rnd = i => { const x = Math.sin(i * 12.9898 + 78.233) * 43758.5453; return x - Math.floor(x); };   // deterministic 0..1
+
+  function words(capSel, t0, step, times) {
+    const ws = document.querySelectorAll(capSel + " .w");
+    ws.forEach((w, i) => tl.fromTo(w, { y: 24, opacity: 0, filter: "blur(8px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.18, ease: E.in }, times ? times[i] : t0 + i * step));
+  }
+  const under = (sel, t) => tl.fromTo(sel, { scaleX: 0 }, { scaleX: 1, duration: 0.22, ease: E.in }, t);
+  const exit = (sel, t) => tl.to(sel, { opacity: 0, y: -12, duration: 0.12, ease: "power2.in" }, t);
+  const drift = (sel, t0, t1, amt = 0.05) => tl.fromTo(sel, { scale: 1 }, { scale: 1 + amt, duration: span(t0, t1), ease: E.cam }, t0);
+  const punch = (sel, t) => tl.fromTo(sel, { scale: 1.12 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, t);
+  const shake = (sel, t, px = 8) => tl.fromTo(sel, { x: 0, y: 0 }, { keyframes: { x: [px, -px * .8, px * .5, -px * .3, 0], y: [-px * .6, px * .5, -px * .3, px * .2, 0] }, duration: 0.2, ease: "none" }, t);
+
+  // ===== the map (soft street-map tones, no brand): land, parks, river, blocks, streets, main roads
+  const NS = "http://www.w3.org/2000/svg", map = document.getElementById("map");
+  const el = (tag, attrs) => { const e = document.createElementNS(NS, tag); for (const k in attrs) e.setAttribute(k, attrs[k]); map.appendChild(e); return e; };
+  el("rect", { x: 0, y: 0, width: 2160, height: 3840, fill: "#ece8df" });
+  [[180, 1250, 440, 320], [1480, 2260, 520, 400], [260, 2980, 400, 440], [1300, 380, 460, 260], [1650, 3320, 380, 300]].forEach(([x, y, w, h]) =>
+    el("rect", { x, y, width: w, height: h, rx: 18, fill: "#cfe5be" }));
+  el("path", { d: "M-60 760 C 520 520, 1150 1080, 2220 860", fill: "none", stroke: "#bcd6e6", "stroke-width": 150 });
+  for (let i = 0; i < 260; i++) {                                     // building blocks
+    const x = Math.floor(rnd(i) * 2100), y = Math.floor(rnd(i + 500) * 3780), w = 60 + rnd(i + 900) * 90, h = 50 + rnd(i + 1300) * 80;
+    el("rect", { x, y, width: w, height: h, rx: 6, fill: i % 3 ? "#e0dacf" : "#d9d3c7" });
+  }
+  const road = (d, w, fill, edge) => { el("path", { d, fill: "none", stroke: edge, "stroke-width": w + 10, "stroke-linecap": "round" }); el("path", { d, fill: "none", stroke: fill, "stroke-width": w, "stroke-linecap": "round" }); };
+  for (let y = 240; y < 3840; y += 330) road(`M-20 ${y} L 2180 ${y + 40}`, 26, "#ffffff", "#d8d2c6");
+  for (let x = 140; x < 2160; x += 360) road(`M${x} -20 L ${x + 60} 3860`, 26, "#ffffff", "#d8d2c6");
+  road("M-40 1120 C 700 1060, 1400 1180, 2200 1100", 48, "#ffffff", "#d3ccbe");
+  road("M1180 -40 C 1150 900, 1260 2100, 1200 3880", 48, "#ffffff", "#d3ccbe");
+  road("M-40 3600 C 700 3000, 1300 2300, 2200 1480", 62, "#f6e3a8", "#e2c97f");   // main road
+  [["Main St", 1250, 1940, 90], ["Church Rd", 1000, 2090, 0], ["Mill Lane", 560, 1520, 90], ["Harbour Rd", 1500, 1095, 0], ["Green Park", 1560, 2470, 0]].forEach(([t, x, y, r]) => {
+    const e = el("text", { x, y, transform: `rotate(${r} ${x} ${y})`, fill: "#8a8478", "font-family": "Instrument Sans", "font-weight": 500, "font-size": 30, "letter-spacing": 1 });
+    e.textContent = t; });
+
+  // ===== the people: one close up, then dozens across the town
+  const figs = document.getElementById("figs");
+  const man = '<svg viewBox="0 0 40 64"><circle cx="20" cy="9" r="8" fill="none" stroke="#0d0d0f" stroke-width="5"/>' +
+    '<path d="M20 17 L20 41 M20 24 L7 34 M20 24 L31 18 M20 41 L9 61 M20 41 L31 61" fill="none" stroke="#0d0d0f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>' +
+    '<rect x="28" y="9" width="8" height="13" rx="2" fill="#0d0d0f"/></svg>';            // holding a phone up
+  const P = [[1150, 2000]];
+  for (let i = 0; i < 48; i++) {
+    const x = 150 + (i % 6) * 360 + (rnd(i + 7) - 0.5) * 200, y = 260 + Math.floor(i / 6) * 450 + (rnd(i + 70) - 0.5) * 220;
+    if (Math.hypot(x - 1150, y - 2000) > 260) P.push([Math.round(x), Math.round(y)]);
+  }
+  P.forEach(([x, y], i) => {
+    const d = document.createElement("div"); d.className = "fig"; d.id = "f" + i; d.style.left = x + "px"; d.style.top = y + "px";
+    d.innerHTML = '<span class="hl" id="hl' + i + '"></span><span class="pd"></span>' + man; figs.appendChild(d);
+  });
+  // camera: world point (px,py) at screen (sx,sy), scale s
+  const cam = (s, px, py, sx = 540, sy = 1180) => ({ scale: s, x: sx - s * px, y: sy - s * py });
+  tl.set("#world", cam(3.0, 1150, 2000), 0);
+  tl.to("#world", { ...cam(3.15, 1150, 2000), duration: span(0, 2.95), ease: "none" }, 0);
+  tl.to("#world", { scale: 0.5, x: 0, y: 0, duration: 1.9, ease: "power3.inOut" }, 2.95);         // zoom out to the whole town
+  tl.to("#world", { ...cam(0.53, 1080, 1920, 540, 960), duration: span(4.9, 9.65), ease: E.cam }, 4.9);
+  for (let i = 0; i < 3; i++)                                                                 // the hero's location dot pulses
+    tl.fromTo("#hl0", { scale: 0.5, opacity: 0.9 }, { scale: 1.8, opacity: 0, duration: 0.9, ease: "power2.out" }, 0.2 + i * 0.95);
+  tl.fromTo("#f0", { scale: 0.6, y: 20 }, { scale: 1, y: 0, duration: 0.4, ease: E.ui }, 0.05);
+  P.slice(1).forEach((_, k) => {
+    const i = k + 1, t = 3.2 + k * 0.075;
+    tl.fromTo("#f" + i, { scale: 0, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: E.ui }, t);
+    tl.fromTo("#hl" + i, { scale: 0.5, opacity: 0.9 }, { scale: 1.8, opacity: 0, duration: 0.9, ease: "power2.out" }, t + 0.1);
+  });
+  // what they're searching for, said in the VO ("a sparky… a plumber… a builder")
+  const chipAt = (i, txt, t, dx = 26, dy = -96) => {
+    const [x, y] = P[i], c = document.createElement("div"); c.className = "chip"; c.id = "ch" + i;
+    c.style.left = Math.round(x * 0.5 + dx) + "px"; c.style.top = Math.round(y * 0.5 + dy) + "px"; c.innerHTML = "<i></i>" + txt;
+    document.getElementById("chips").appendChild(c);
+    tl.fromTo("#ch" + i, { scale: 0.5, opacity: 0, y: 20 }, { scale: 1, opacity: 1, y: 0, duration: 0.3, ease: E.ui }, t);
+    tl.fromTo("#hl" + i, { scale: 0.5, opacity: 0.9 }, { scale: 2.2, opacity: 0, duration: 0.8, ease: "power2.out", immediateRender: false }, t);
+  };
+  const near = (sx, sy) => { let b = 1, bd = 1e9; P.forEach(([x, y], i) => { if (!i) return; const d = Math.hypot(x * 0.5 - sx, y * 0.5 - sy); if (d < bd) { bd = d; b = i; } }); return b; };
+  const A = near(210, 1130), B = near(700, 1260), C = near(330, 1440);
+  chipAt(A, "needs a sparky", 4.96); chipAt(B, "needs a plumber", 5.6, -330); chipAt(C, "needs a builder", 6.56);
+
+  // hook + captions
+  tl.fromTo("#hook", { x: -900, filter: "blur(10px)" }, { x: 0, filter: "blur(0px)", duration: 0.35, ease: "expo.out" }, 0.0);
+  tl.fromTo("#hmk", { scaleX: 0 }, { scaleX: 1, duration: 0.25, ease: E.in }, 0.3);
+  tl.to("#hook", { y: -30, opacity: 0, duration: 0.15, ease: "power2.in" }, 0.85);
+  words("#c1a", 0, 0, [0.96, 1.2, 1.36, 1.68, 2.24, 2.6, 2.72]); under("#u1a", 2.24); punch("#c1a", 2.72);
+  exit("#c1a", 3.08);
+  tl.set("#c1b", { opacity: 1 }, 3.18);
+  words("#c1b", 0, 0, [3.2, 3.52, 3.84, 4.16, 7.04, 7.36]); under("#u1b", 7.36); punch("#c1b", 7.36);
+  exit("#c1b", 7.9);
+  // "You just can't get to them.": glass drops between you and them, the town blurs out of reach
+  tl.fromTo("#glass", { y: -1960 }, { y: 0, duration: 0.45, ease: "power3.out" }, 8.08);
+  tl.to("#world", { filter: "blur(9px)", duration: 0.5, ease: "power2.out" }, 8.2);
+  tl.to("#chips", { opacity: 0, duration: 0.25 }, 8.1);
+  tl.set("#c1c", { opacity: 1 }, 8.0);
+  words("#c1c", 0, 0, [8.08, 8.24, 8.4, 8.72, 8.88, 9.2]); under("#u1c", 8.4); punch("#c1c", 9.2);
+  shake("#s1", 8.5, 6);
+
+  // ===== 2 "So we do it for you."
+  drift("#cam2", 9.65, 11.05, 0.05);
+  tl.set("#flash", { opacity: 0.5 }, 9.65); tl.to("#flash", { opacity: 0, duration: 0.2 }, 9.66);
+  words("#c2", 0, 0, [9.79, 9.92, 10.12, 10.24, 10.4, 10.8]); under("#u2", 10.8); punch("#c2", 10.8);
+
+  // ===== 3 the phone over the dark town: the leads fly in from the map, slam onto the phone, then burst out around it
+  drift("#cam3", 11.05, 18.4, 0.04);
+  const w2 = document.getElementById("world2"), mapClone = document.getElementById("map").cloneNode(true), figClone = document.getElementById("figs").cloneNode(true);
+  [mapClone, figClone].forEach(c => { c.removeAttribute("id"); c.querySelectorAll("[id]").forEach(e => e.removeAttribute("id")); w2.appendChild(c); });
+  tl.fromTo("#world2", { scale: 0.62, x: -130, y: -280 }, { scale: 0.56, x: -65, y: -150, duration: span(11.05, 18.4), ease: E.cam }, 11.05);
+  tl.fromTo("#ph", { y: 900, rotation: 6 }, { y: 0, rotation: 0, duration: 0.6, ease: E.ui }, 11.05);
+  tl.fromTo("#badge", { scale: 0 }, { scale: 1, duration: 0.35, ease: "back.out(2.4)" }, 11.5);
+  words("#c3a", 0, 0, [11.12, 11.4, 11.6, 12.08, 12.4, 12.72]); under("#u3a", 12.72);
+  tl.fromTo("#adcard", { scale: 0.4, opacity: 0, y: 140 }, { scale: 1, opacity: 1, y: 0, duration: 0.45, ease: "back.out(1.8)" }, 11.6);
+  tl.fromTo("#logoSlot", { rotation: -25, scale: 0.3 }, { rotation: 0, scale: 1, duration: 0.5, ease: "back.out(2.2)" }, 11.75);
+  punch("#adcard", 12.72);
+  exit("#c3a", 13.95); tl.to("#u3a", { opacity: 0, duration: 0.1 }, 13.95);
+  tl.set("#c3b", { opacity: 1 }, 14.0);
+  words("#c3b", 0, 0, [14.05, 14.16, 14.24, 14.92, 15.2, 15.48, 15.6, 16.0]); under("#u3b", 16.0);
+  exit("#c3b", 16.32); tl.to("#u3b", { opacity: 0, duration: 0.1 }, 16.32);
+  tl.set("#c3c", { opacity: 1 }, 16.36);
+  words("#c3c", 0, 0, [16.4, 17.2, 17.44]); under("#u3c", 17.44); punch("#c3c", 17.44);
+
+  // "the enquiries come…": lead chips launch off people on the dark map and arc into the phone
+  const fl = document.getElementById("flyers");
+  [[130, 1290, 14.24], [960, 1180, 14.6], [190, 1660, 14.92], [930, 1600, 15.2], [520, 1780, 15.48]].forEach(([x, y, t], i) => {
+    const o = document.createElement("div"); o.className = "orig"; o.id = "or" + i; o.style.left = x + "px"; o.style.top = y + "px"; fl.appendChild(o);
+    const f = document.createElement("div"); f.className = "fly"; f.id = "fy" + i; f.innerHTML = "<i></i>ENQUIRY"; fl.appendChild(f);
+    tl.fromTo("#or" + i, { scale: 0.3, opacity: 1 }, { scale: 1.6, opacity: 0, duration: 0.6, ease: "power2.out" }, t);
+    tl.set("#fy" + i, { x: x - 100, y: y - 30, opacity: 1, scale: 0.6 }, t);
+    tl.to("#fy" + i, { x: 440, duration: 0.7, ease: "power1.out" }, t);                      // x and y on different eases = a curved arc
+    tl.to("#fy" + i, { y: 1180, duration: 0.7, ease: "back.in(1.6)" }, t);
+    tl.to("#fy" + i, { scale: 1.1, duration: 0.35, ease: "power2.out" }, t);
+    tl.to("#fy" + i, { scale: 0.3, opacity: 0, duration: 0.2, ease: "power2.in" }, t + 0.55);
+  });
+
+  // the main enquiries slam onto the phone: oversized + tilted, snap in, buzz, lime flash, phone-shaped pulse, badge ticks up
+  const ico = {
+    bolt: '<svg viewBox="0 0 40 40"><path d="M23 2 L6 23 H18 L15 38 L34 15 H22 Z" fill="#0d0d0f"/></svg>',
+    drop: '<svg viewBox="0 0 40 40"><path d="M20 3 C 12 15, 7 21, 7 27 A 13 13 0 0 0 33 27 C 33 21, 28 15, 20 3 Z" fill="#0d0d0f"/></svg>',
+    house: '<svg viewBox="0 0 40 40"><path d="M4 19 L20 5 L36 19 V36 H25 V25 H15 V36 H4 Z" fill="#0d0d0f"/></svg>' };
+  const leads = [["bolt", "#d7ff3c", "Full rewire", "Naas · this week"], ["drop", "#b6a3ff", "Boiler swap", "Lucan · tomorrow"],
+                 ["house", "#ff5b1f", "Extension", "Navan · spring"], ["bolt", "#d7ff3c", "EV charger", "Swords · this week"]];
+  const stack = document.getElementById("stack"), pz = document.getElementById("pulses");
+  const LT = [16.0, 16.4, 17.2, 17.44];
+  leads.forEach(([ic, col, t, s], i) => {
+    const n = document.createElement("div"); n.className = "nt"; n.id = "nt" + i;
+    n.innerHTML = '<div class="ic" style="background:' + col + '">' + ico[ic] + '</div><div class="k">NEW ENQUIRY · NOW</div><div class="t">' + t + '</div><div class="s">' + s + '</div>';
+    stack.appendChild(n);
+    const p = document.createElement("div"); p.className = "pulse"; p.id = "pu" + i; pz.appendChild(p);
+    tl.fromTo("#nt" + i, { y: -260, opacity: 0, scale: 1.55, rotation: i % 2 ? 7 : -7 }, { y: 0, opacity: 1, scale: 1, rotation: 0, duration: 0.42, ease: "back.out(2.2)" }, LT[i]);
+    for (let j = 0; j < i; j++)
+      tl.to("#nt" + j, { y: (i - j) * 166, opacity: 1 - (i - j) * 0.14, duration: 0.3, ease: E.in }, LT[i]);
+    tl.fromTo("#ph", { x: 0, rotation: 0 }, { keyframes: { x: [10, -10, 8, -8, 4, 0], rotation: [1.2, -1.2, 0.8, -0.6, 0, 0] }, duration: 0.32, ease: "none", immediateRender: false }, LT[i]);
+    tl.fromTo("#scrflash", { opacity: 0.55 }, { opacity: 0, duration: 0.25, ease: "power2.out", immediateRender: false }, LT[i]);
+    tl.fromTo("#pu" + i, { scale: 1, opacity: 0.9 }, { scale: 1.22, opacity: 0, duration: 0.6, ease: "power2.out" }, LT[i]);
+    tl.set("#badgeN", { innerText: String(i + 1) }, LT[i]);
+    tl.fromTo("#badge", { scale: 1.5 }, { scale: 1, duration: 0.35, ease: "back.out(2.4)", immediateRender: false }, LT[i]);
+  });
+  tl.to("#adcard", { scale: 0.86, y: -20, duration: 0.3, ease: E.in }, 16.0);
+
+  // "…and again.": a burst of leads springs out around the phone, the badge rolls up to 12
+  const minis = [["Bathroom refit", "BRAY", "#b6a3ff", 34, 1010, -8], ["Leak repair", "DOUGLAS", "#ff5b1f", 744, 1060, 7], ["Attic conversion", "SALTHILL", "#d7ff3c", 30, 1240, 4],
+                 ["Fuse board", "LUCAN", "#d7ff3c", 746, 1300, -6], ["Shower install", "SWORDS", "#b6a3ff", 34, 1460, -4], ["Garden room", "NAAS", "#ff5b1f", 740, 1520, 8],
+                 ["Socket install", "NAVAN", "#d7ff3c", 60, 880, 6], ["Rewire", "BRAY", "#b6a3ff", 730, 830, -7]];
+  const bu = document.getElementById("burst");
+  minis.forEach(([t, place, col, x, y, r], i) => {
+    const m = document.createElement("div"); m.className = "mini"; m.id = "mi" + i;
+    m.innerHTML = '<i style="background:' + col + '"></i><small>NEW · ' + place + '</small><b>' + t + '</b>'; bu.appendChild(m);
+    const at = 17.66 + i * 0.075;
+    tl.set("#mi" + i, { x: 390, y: 1200, rotation: 0, opacity: 1, scale: 0.2 }, at);
+    tl.to("#mi" + i, { x: x, y: y, rotation: r, scale: 1, duration: 0.45, ease: "back.out(1.7)" }, at);
+    tl.set("#badgeN", { innerText: String(5 + i) }, at);
+  });
+  tl.fromTo("#badge", { scale: 1.6 }, { scale: 1, duration: 0.3, ease: "back.out(2.4)", immediateRender: false }, 17.66);
+  tl.to("#cam3", { scale: 1.12, duration: 0.5, ease: "power2.in" }, 17.95);                   // punch into the end card
+  shake("#cam3", 17.7, 7);
+
+  // ===== 4 CTA
+  drift("#cam4", 18.4, DUR, 0.04);
+  words("#c4", 0, 0, [19.12, 19.36, 19.52, 19.68, 18.44]);
+  tl.fromTo("#map4", { x: 700, filter: "blur(12px)" }, { x: 0, filter: "blur(0px)", duration: 0.35, ease: "expo.out" }, 18.64);
+  shake("#cam4", 18.7, 7);
+  tl.fromTo("#brand", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: E.in }, 19.0);
+
+  window.__timelines["main"] = TL;
+</script>
+</body>
+</html>

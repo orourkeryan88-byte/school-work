@@ -24,3 +24,11 @@ ffmpeg -i vo_sean.mp3 -af "highpass=f=70,loudnorm=I=-12:TP=-1:LRA=7" -ar 44100 -
 python3 build_audio.py cues.json vo.wav --bed-db -3 -o hyperframes/assets/audio.wav    # then +0.4 dB → -14 LUFS
 cd hyperframes && npx --yes hyperframes check && npx --yes hyperframes render -q delivery -f 30 -o ../southline_tradesmen_map_leads_v2.mp4
 ```
+
+## Soft female voiceover version
+`southline_tradesmen_map_leads_v2_female.mp4` (22.2 s): ElevenLabs **Sinéad** (soft, warm Irish female), `eleven_v4`,
+same script with `[softly]` on the problem and `[warmly]` from "So we do it for you" → `vo_sinead.mp3`,
+word timings `vo_words_sinead.json`. `index.template.html` holds the composition on the Sean timings;
+`python3 retime.py vo_words_sinead.json` moves every cut, caption word and SFX onto her read (writes
+`hyperframes/index.html` + `cues.json`). `python3 retime.py vo_words_sean.json` goes back to the male timing.
+Mix: VO `loudnorm I=-12`, `--bed-db -3`, +0.2 dB → -14 LUFS.
