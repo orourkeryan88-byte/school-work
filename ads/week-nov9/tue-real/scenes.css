@@ -1,0 +1,25 @@
+  .odo { position: absolute; left: 60px; top: 930px; font-weight: 700; font-size: 470px; letter-spacing: -0.07em; line-height: .85; color: var(--volt); white-space: nowrap; }
+  .odo .d { display: inline-block; }
+  .odo .strike { position: absolute; left: -20px; right: -20px; top: 46%; height: 34px; border-radius: 8px; background: var(--blaze); transform-origin: 0 50%; }
+  #grid { position: absolute; left: 150px; top: 930px; width: 780px; height: 600px; }
+  .dot { position: absolute; width: 52px; height: 52px; border-radius: 14px; background: #3a3a42; }
+  .dot.real { background: var(--volt); }
+  #gl { position: absolute; left: 150px; top: 870px; font: 500 28px "IBM Plex Mono", monospace; letter-spacing: .12em; color: var(--muted); }
+  #rc { position: absolute; left: 70px; top: 860px; width: 940px; height: 600px; border-radius: 40px; background: #fff; box-shadow: 0 40px 70px -40px rgba(13,13,15,.45); overflow: hidden; }
+  #rc .hd { position: absolute; left: 0; right: 0; top: 0; height: 110px; background: var(--volt); }
+  #rc .hd b { position: absolute; left: 44px; top: 36px; font: 500 34px "IBM Plex Mono", monospace; letter-spacing: .14em; color: var(--ink); }
+  .row { position: absolute; left: 44px; right: 44px; height: 130px; border-bottom: 2px solid #e6e1d6; }
+  .row .tx { position: absolute; left: 110px; top: 34px; font-weight: 700; font-size: 58px; letter-spacing: -0.035em; color: var(--ink); white-space: nowrap; }
+  .row .bx { position: absolute; left: 0; top: 30px; width: 76px; height: 76px; border-radius: 16px; border: 6px solid var(--ink); box-sizing: border-box; }
+  .row .bx i { position: absolute; inset: 0; border-radius: 8px; background: var(--volt); transform: scale(0); }
+  .row svg { position: absolute; left: 10px; top: 10px; width: 44px; height: 44px; overflow: visible; }
+  #ph5 { position: absolute; left: 330px; top: 960px; width: 420px; height: 760px; border-radius: 64px; background: #050506; box-shadow: inset 0 0 0 4px #2a2a30; }
+  #ph5 .scr { position: absolute; left: 16px; top: 16px; right: 16px; bottom: 16px; border-radius: 50px; background: var(--ink3); overflow: hidden; }
+  #nt5 { position: absolute; left: 20px; right: 20px; top: 70px; height: 150px; border-radius: 26px; background: var(--cream); }
+  #nt5 .k { position: absolute; left: 22px; top: 18px; font: 500 22px "IBM Plex Mono", monospace; letter-spacing: .1em; color: var(--mutedl); }
+  #nt5 .t { position: absolute; left: 22px; top: 52px; font-weight: 700; font-size: 40px; letter-spacing: -0.02em; color: var(--ink); }
+  #nt5 .s { position: absolute; left: 22px; top: 102px; font-weight: 500; font-size: 26px; color: var(--mutedl); }
+  #nt5::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 12px; background: var(--volt); border-radius: 26px 0 0 26px; }
+  .fw { position: absolute; width: 52px; height: 52px; border-radius: 14px; background: #3a3a42; }
+  .mj { position: absolute; width: 230px; height: 120px; border-radius: 24px; background: var(--volt); color: var(--ink); font-weight: 700; font-size: 36px; letter-spacing: -0.02em; padding: 22px 0 0 26px; box-sizing: border-box; }
+  .mj small { display: block; font: 500 20px "IBM Plex Mono", monospace; letter-spacing: .1em; opacity: .7; margin-bottom: 6px; }

@@ -1,0 +1,19 @@
+  #q3big { position: absolute; right: -60px; top: 520px; font-weight: 700; font-size: 1150px; line-height: .8; color: var(--lilac); letter-spacing: -0.08em; }
+  .qc { position: absolute; left: 60px; width: 960px; height: 250px; border-radius: 34px; background: #fff; box-shadow: 0 30px 50px -30px rgba(13,13,15,.35); }
+  .qc .num { position: absolute; left: 28px; top: 28px; width: 110px; height: 110px; border-radius: 26px; background: var(--lilac); color: var(--ink);
+    font-weight: 700; font-size: 76px; line-height: 110px; text-align: center; letter-spacing: -0.04em; }
+  .qc .qt { position: absolute; left: 168px; top: 30px; width: 600px; font-weight: 700; font-size: 62px; letter-spacing: -0.035em; line-height: 1.0; color: var(--ink); }
+  .qc .qt .w { display: inline-block; }
+  .qc .box { position: absolute; right: 34px; top: 50px; width: 140px; height: 140px; border-radius: 22px; border: 8px solid var(--ink); box-sizing: border-box; }
+  .qc .fill { position: absolute; inset: 0; border-radius: 12px; background: var(--volt); transform-origin: 50% 50%; }
+  .qc svg { position: absolute; left: 14px; top: 14px; width: 96px; height: 96px; overflow: visible; }
+  .qc .yes { position: absolute; right: 52px; top: 200px; font: 500 30px "IBM Plex Mono", monospace; letter-spacing: .14em; color: var(--ink); opacity: 0; }
+  .mini { position: absolute; top: 1010px; width: 170px; height: 170px; border-radius: 30px; background: var(--volt); border: 9px solid var(--ink); box-sizing: border-box; }
+  .mini svg { position: absolute; left: 22px; top: 22px; width: 108px; height: 108px; }
+  .strike { position: absolute; left: -10px; right: -10px; top: 52%; height: 16px; border-radius: 4px; background: var(--blaze); transform-origin: 0 50%; }
+  .sq { position: absolute; left: 540px; top: 1240px; width: 300px; height: 300px; margin: -150px 0 0 -150px; border-radius: 70px; border: 8px solid var(--lilac); opacity: 0; box-sizing: border-box; }
+  .enq { position: absolute; left: 140px; width: 800px; height: 190px; border-radius: 32px; background: var(--cream); color: var(--ink); box-shadow: 0 34px 60px -26px rgba(13,13,15,.55); overflow: hidden; }
+  .enq::before { content: ""; position: absolute; left: 0; top: 0; bottom: 0; width: 18px; background: var(--volt); }
+  .enq .k { position: absolute; left: 50px; top: 26px; font: 500 26px "IBM Plex Mono", monospace; letter-spacing: .1em; color: var(--mutedl); }
+  .enq .t { position: absolute; left: 50px; top: 64px; font-weight: 700; font-size: 60px; letter-spacing: -0.03em; white-space: nowrap; }
+  .enq .s { position: absolute; left: 50px; top: 136px; font-weight: 500; font-size: 32px; color: var(--mutedl); white-space: nowrap; }
