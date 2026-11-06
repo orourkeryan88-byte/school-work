@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Score builder for Southline video ads (Southline Edit Style §7).
 
-    python3 build_audio.py cues.json [vo.mp3] [--music track.mp3] -o out.wav
+    python3 build_audio.py cues.json [vo.mp3] [--music track.mp3] [--bed-db -3] -o out.wav
 
 cues.json:
     {"duration": 25.6, "bpm": 124, "dropouts": [[19.19, 19.44]],
@@ -58,6 +58,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("cues"); ap.add_argument("vo", nargs="?"); ap.add_argument("-o", "--out", required=True)
     ap.add_argument("--music", help="your own music file; replaces the synth bed")
+    ap.add_argument("--bed-db", type=float, default=0.0, help="music level in dB (e.g. -3 under a soft voice)")
     a = ap.parse_args()
     cue = json.load(open(a.cues))
     D = float(cue["duration"]); bpm = float(cue.get("bpm", 124)); B = 60 / bpm
@@ -99,6 +100,7 @@ def main():
             c = ac if talk[k] > prev else rc; prev = c * prev + (1 - c) * talk[k]; g[k] = prev
         music *= 10 ** (-9 * g / 20)
 
+    music *= 10 ** (a.bed_db / 20)
     mix = (music + sfx * 0.9 + vo)[:N]
     mix = np.tanh(mix * 1.1) / np.tanh(1.1)
     tmp = tempfile.mktemp(suffix=".wav")

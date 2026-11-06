@@ -4,6 +4,8 @@ Meta ad (Reels / Facebook / Instagram), 9:16 1080×1920, 34.3 s, 30 fps. Caption
 voiceover is Ryan's own recording (not in yet). CTA: comment **Q4**.
 
 Outputs:
+- `southline_clothing_q4_vo_colour_sinead.mp4`: **with voiceover** (soft Irish female voice, ElevenLabs "Sinéad"), colour cut, 37.7 s.
+- `southline_clothing_q4_vo_green_sinead.mp4`: the same voiceover on the green cut.
 - `southline_clothing_q4_vo_colour.mp4`: the current version, a bold colour cut (what `hyperframes/index.html` builds now).
 - `southline_clothing_q4_vo.mp4`: the first cut in the green Southline house colours (source in git history).
 
@@ -76,3 +78,19 @@ cd hyperframes && npx --yes hyperframes check && npx --yes hyperframes render -q
 ```
 Delivered mix: -13.8 LUFS, -2.4 dBFS peak (temporary bed, no VO yet). After the render the soundtrack was muxed in
 with ffmpeg so the MP4 carries exactly `assets/audio.wav`.
+
+## Voiceover (ElevenLabs, soft female)
+- Voice: **Sinéad (Confident, Irish, warm)**, `eleven_v4`, take 1 of 2 → `vo_sinead.mp3`. Script word for word, with
+  `[softly]` on the problems/payoff and `[warmly]` on the fix and CTA. Word timings: `vo_words_sinead.json` (Scribe).
+- Her natural read is 36.2 s, so the ad runs **37.7 s** (1.55 s end-card hold).
+- Re-timing: the composition is authored once in `index.template.html` (green: `index.template.green.html`) on the
+  estimated timings. `python3 retime.py vo_words_sinead.json` matches the read to the script and writes
+  `hyperframes/index.html` + `cues.json` with every cut, caption word, SFX and the music drop-out moved onto her words.
+  (`TEMPLATE=index.template.green.html python3 retime.py …` for the green cut.)
+- Mix: VO levelled (`loudnorm I=-12`), music bed 3 dB down (`--bed-db -3`) and ducked ~9 dB under speech, so the
+  voice sits ~15 dB over the music; final -14 LUFS.
+```
+ffmpeg -i vo_sinead.mp3 -af "highpass=f=70,loudnorm=I=-12:TP=-1:LRA=7" -ar 44100 -ac 1 vo.wav
+python3 build_audio.py cues.json vo.wav --bed-db -3 -o hyperframes/assets/audio.wav   # then +0.5 dB
+```
+- To use a different voice or your own read: transcribe it, save the words JSON, run `retime.py` on it and remix.

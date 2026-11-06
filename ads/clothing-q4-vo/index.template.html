@@ -1,0 +1,535 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Southline: Q4 problems (voiceover cut)</title>
+<script src="assets/vendor/gsap.min.js"></script>
+<style>
+  /* Bold colour cut: black/cream bases. Orange marks problems, lime marks fixes and the CTA, lilac is the product/brand pop.
+     Caption words sit on the estimated VO word times in ../vo_words.json; re-time them to the real recording. */
+  @font-face { font-family: "Instrument Sans"; src: url(assets/fonts/is-500.woff2) format("woff2"); font-weight: 500; }
+  @font-face { font-family: "Instrument Sans"; src: url(assets/fonts/is-700.woff2) format("woff2"); font-weight: 700; }
+  @font-face { font-family: "Instrument Serif"; src: url(assets/fonts/iserif-italic.woff2) format("woff2"); font-style: italic; font-weight: 400; }
+  @font-face { font-family: "IBM Plex Mono"; src: url(assets/fonts/plex-500.woff2) format("woff2"); font-weight: 500; }
+  :root { --cream: #f3efe6; --ink: #0d0d0f; --ink2: #18181c; --ink3: #25252b; --muted: #8c8a93; --mutedl: #6b6873;
+          --volt: #d7ff3c; --blaze: #ff5b1f; --lilac: #b6a3ff; --lilacd: #8f78f0; }
+  html, body { margin: 0; background: var(--ink); }
+  body { font-family: "Instrument Sans", sans-serif; -webkit-font-smoothing: antialiased; }
+  #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; }
+  .full { position: absolute; inset: 0; }
+  #bg { z-index: 0; background: var(--ink); }
+  #haze { position: absolute; left: 540px; top: 760px; width: 1300px; height: 1300px; margin: -650px 0 0 -650px; border-radius: 50%; z-index: 1;
+    background: radial-gradient(circle, rgba(182,163,255,.12) 0%, rgba(182,163,255,0) 62%); }
+  #grain { z-index: 90; opacity: .06; mix-blend-mode: overlay; inset: -200px;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='2' stitchTiles='stitch'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>"); }
+  .scene { position: absolute; inset: 0; z-index: 10; overflow: hidden; }
+  .cam { position: absolute; inset: 0; transform-origin: 50% 40%; }
+  .light { color: var(--ink); } .dark { color: var(--cream); }
+  .cloudbg { position: absolute; inset: 0; background: var(--cream); }
+
+  /* measure marks */
+  .label { position: absolute; left: 72px; top: 470px; font: 500 28px "IBM Plex Mono", monospace; letter-spacing: .12em; text-transform: uppercase; }
+  .dark .label { color: var(--muted); } .light .label { color: var(--mutedl); }
+  .corner { position: absolute; width: 28px; height: 28px; border-color: currentColor; opacity: .5; }
+  .corner.tl { left: 56px; top: 420px; border-left: 2px solid; border-top: 2px solid; }
+  .corner.br { right: 56px; top: 1480px; border-right: 2px solid; border-bottom: 2px solid; }
+  .ruler { position: absolute; left: 72px; width: 936px; height: 18px; transform-origin: 0 50%;
+    background: repeating-linear-gradient(90deg, currentColor 0 2px, transparent 2px 24px); opacity: .3; }
+  .ghost { position: absolute; font-weight: 700; letter-spacing: -0.06em; line-height: 1; white-space: nowrap;
+    color: transparent; -webkit-text-stroke: 2px currentColor; opacity: .11; }
+
+  /* captions: serif-italic lead over a tight bold key line, 30–45 % down the frame */
+  .cap { position: absolute; left: 72px; width: 936px; top: 590px; transform-origin: 0% 50%; }
+  .cap .ld { font-family: "Instrument Serif", serif; font-style: italic; font-size: 72px; line-height: 1.05; opacity: .8; display: block; margin-bottom: 14px; }
+  .cap .kw { font-weight: 700; font-size: var(--k, 160px); letter-spacing: -0.04em; line-height: .95; display: block; }
+  .cap .w { display: inline-block; position: relative; }
+  .ul { position: absolute; left: 0; right: 0; bottom: -8px; height: 12px; border-radius: 3px; transform-origin: 0 50%; display: block; }
+  .dark .ul { background: var(--blaze); }
+  .light .ul { background: var(--volt); left: -8px; right: -8px; bottom: 4px; height: 42%; border-radius: 4px; z-index: -1; }   /* marker highlight */
+
+  /* S1 phone-POV opener (illustrated stand-in for the founder's own footage) */
+  #room { position: absolute; inset: -900px; background: linear-gradient(180deg, #232823 0%, #171b18 55%, #0f1311 100%); }
+  #lamp { position: absolute; left: 640px; top: 120px; width: 900px; height: 900px; margin: -450px 0 0 -450px; border-radius: 50%;
+    background: radial-gradient(circle, rgba(240,180,85,.30) 0%, rgba(240,180,85,0) 60%); }
+  #shelf { position: absolute; left: -40px; top: 520px; width: 1200px; height: 22px; background: #2a2620; }
+  .box { position: absolute; background: #6b5a44; border-radius: 6px; }
+  .box::after { content: ""; position: absolute; left: 44%; top: 0; width: 12%; height: 100%; background: rgba(214,200,170,.35); }
+  .tee { position: absolute; width: 230px; height: 46px; border-radius: 10px 10px 6px 6px; box-shadow: inset 0 -8px 0 rgba(0,0,0,.18); }
+  #desk { position: absolute; left: -900px; top: 1130px; width: 2900px; height: 1700px; background: linear-gradient(180deg, #3b3228 0%, #2b241d 100%); }
+  #laptop { position: absolute; left: 640px; top: 860px; width: 400px; height: 270px; border-radius: 16px 16px 4px 4px; background: #101412; transform: skewX(-4deg); }
+  #laptop .ls { position: absolute; left: 12px; top: 12px; right: 12px; bottom: 12px; border-radius: 8px; background: #1d2b26; overflow: hidden; }
+  #laptop .ls i { position: absolute; left: 22px; width: 160px; height: 12px; border-radius: 3px; background: #3b5a4e; }
+  #laptop .ls b { position: absolute; bottom: 24px; width: 26px; border-radius: 3px 3px 0 0; background: #4d7062; }
+  #laptop .lb { position: absolute; left: -30px; right: -30px; bottom: -22px; height: 22px; border-radius: 0 0 14px 14px; background: #2a302d; }
+  .mailer { position: absolute; width: 330px; height: 230px; border-radius: 10px; background: #d9d4cb; box-shadow: 0 18px 30px -16px rgba(0,0,0,.6); }
+  .mailer::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 34px; border-radius: 10px 10px 0 0; background: #c8c2b6; }
+  .mailer i { position: absolute; left: 34px; top: 84px; width: 150px; height: 70px; background: #f4f2ee; border-radius: 4px; }
+  .mailer i::after { content: ""; position: absolute; left: 14px; top: 16px; width: 100px; height: 8px; background: #9a948a; box-shadow: 0 18px 0 #b6b0a5, 0 36px 0 #b6b0a5; }
+  #tape { position: absolute; left: 500px; top: 1330px; width: 150px; height: 62px; border-radius: 14px; background: #9c8f78; }
+  #phone { position: absolute; left: 740px; top: 1270px; width: 190px; height: 340px; border-radius: 30px; background: #0d0f0e; transform: rotate(-12deg); }
+  #screen { position: absolute; left: 12px; top: 14px; right: 12px; bottom: 14px; border-radius: 22px; background: #1c2a25; overflow: hidden; }
+  .nt { position: absolute; left: 10px; right: 10px; height: 50px; border-radius: 12px; background: rgba(236,238,237,.92); }
+  .nt b { position: absolute; left: 12px; top: 10px; font: 500 14px "IBM Plex Mono", monospace; letter-spacing: .06em; color: #0e1412; }
+  .nt s { position: absolute; left: 12px; top: 30px; width: 90px; height: 6px; background: #9fb0a8; }
+  .stk { position: absolute; left: 0; right: 0; text-align: center; z-index: 5; }
+  .stk span { display: inline-block; font-weight: 700; color: var(--ink); background: #fff; border-radius: 16px; letter-spacing: -0.02em; }
+  #pov1 { top: 520px; } #pov1 span { font-size: 92px; padding: 8px 30px 10px; }
+  #pov2 { top: 668px; } #pov2 span { font-size: 58px; font-weight: 500; padding: 6px 22px 8px; }
+  .role { position: absolute; font-weight: 700; font-size: 54px; color: var(--ink); background: #fff; border-radius: 14px; padding: 4px 20px 8px; white-space: nowrap;
+    box-shadow: 0 14px 24px -12px rgba(0,0,0,.6); z-index: 4; }
+  #rew { position: absolute; left: 72px; top: 300px; font: 500 30px "IBM Plex Mono", monospace; letter-spacing: .14em; color: #fff; opacity: 0; z-index: 6; }
+  #rew em { display: inline-block; width: 0; height: 0; border-top: 14px solid transparent; border-bottom: 14px solid transparent; border-right: 22px solid #fff; margin-right: 2px; vertical-align: -4px; }
+  #scan { position: absolute; inset: 0; z-index: 7; opacity: 0; background: repeating-linear-gradient(0deg, rgba(255,255,255,.10) 0 2px, transparent 2px 9px); }
+
+  /* S2: "nobody" bursts out of a crop-corner box, bigger than the frame */
+  #box2 { position: absolute; left: 150px; top: 630px; width: 780px; height: 420px; color: var(--muted); }
+  #box2 i { position: absolute; width: 44px; height: 44px; border-color: currentColor; opacity: .8; }
+  #box2 .a { left: 0; top: 0; border-left: 3px solid; border-top: 3px solid; } #box2 .b { right: 0; top: 0; border-right: 3px solid; border-top: 3px solid; }
+  #box2 .c { left: 0; bottom: 0; border-left: 3px solid; border-bottom: 3px solid; } #box2 .d { right: 0; bottom: 0; border-right: 3px solid; border-bottom: 3px solid; }
+  #nb { position: absolute; left: 860px; top: 600px; font-weight: 700; font-size: 500px; letter-spacing: -0.06em; line-height: 1; color: var(--volt); white-space: nowrap; }
+  #c2a { top: 500px; } #c2b { top: 1130px; }
+
+  /* S3 phone feeds (abstract, Southline-styled; no platform UI) */
+  .pf { position: absolute; width: 230px; height: 420px; border-radius: 40px; background: #050506; box-shadow: 0 30px 50px -30px rgba(0,0,0,.8); }
+  .pf .ps { position: absolute; left: 10px; top: 10px; right: 10px; bottom: 10px; border-radius: 30px; background: var(--ink3); overflow: hidden; }
+  .pf .pp { position: absolute; left: 14px; right: 14px; height: 170px; border-radius: 16px; background: var(--lilac); }
+  .pf .pp.p2 { background: var(--cream); }
+  .pf .pp.p1 { top: 34px; } .pf .pp.p2 { top: 218px; }
+  .pf .pp svg { position: absolute; left: 50%; top: 18px; width: 110px; margin-left: -55px; }
+  .pf .pp::after { content: ""; position: absolute; left: 14px; top: 146px; width: 90px; height: 10px; border-radius: 3px; background: rgba(13,13,15,.35); }
+  .bigword { position: absolute; font-weight: 700; letter-spacing: -0.05em; white-space: nowrap; line-height: 1; color: rgba(182,163,255,.15); }
+  #bar3 { position: absolute; left: 880px; top: 1010px; width: 110px; height: 470px; border-radius: 8px; background: var(--blaze); transform-origin: 50% 100%; }
+  #bl3 { position: absolute; left: 600px; top: 1478px; padding: 8px 16px 6px; border-radius: 8px; background: var(--ink); font: 500 28px "IBM Plex Mono", monospace; letter-spacing: .12em; color: var(--cream); }
+
+  /* S4 ad fatigue */
+  .fc { position: absolute; width: 270px; height: 360px; border-radius: 28px; background: var(--lilac); box-sizing: border-box; }
+  .fc::before { content: ""; position: absolute; left: 22px; top: 22px; width: 40px; height: 40px; border-radius: 8px; background: rgba(13,13,15,.3); }
+  .fc::after { content: ""; position: absolute; left: 76px; top: 32px; width: 120px; height: 10px; background: rgba(13,13,15,.35); box-shadow: 0 16px 0 -2px rgba(13,13,15,.2); }
+  .fc .ph { position: absolute; left: 22px; right: 22px; top: 80px; height: 210px; border-radius: 14px; background: var(--lilacd); }
+  .fc svg { position: absolute; left: 50%; top: 92px; width: 150px; margin-left: -75px; }
+  .fc .bt { position: absolute; left: 22px; bottom: 22px; width: 110px; height: 16px; border-radius: 4px; background: var(--ink); }
+  .fc.sc { background: var(--ink2); border: 2px solid var(--ink3); } .fc.sc .ph { background: var(--ink3); } .fc.sc .bt { background: var(--ink3); }
+  #gr4 { position: absolute; left: 72px; top: 1090px; width: 936px; height: 360px; overflow: visible; }
+  #gl4 { position: absolute; left: 72px; top: 1040px; font: 500 28px "IBM Plex Mono", monospace; letter-spacing: .12em; color: var(--muted); }
+
+  /* S5 cart card (Southline-styled, no store UI) */
+  #cartc { position: absolute; left: 190px; top: 1040px; width: 700px; height: 380px; border-radius: 32px; background: var(--cream); box-sizing: border-box; }
+  #cartc .cl { position: absolute; left: 40px; top: 36px; font: 500 28px "IBM Plex Mono", monospace; letter-spacing: .12em; color: var(--mutedl); }
+  #item5 { position: absolute; left: 40px; top: 96px; width: 620px; height: 240px; }
+  #item5 .th { position: absolute; left: 0; top: 0; width: 240px; height: 240px; border-radius: 20px; background: var(--lilac); }
+  #item5 .th svg { position: absolute; left: 30px; top: 22px; width: 180px; }
+  #item5 .nm { position: absolute; left: 280px; top: 50px; font-weight: 700; font-size: 52px; letter-spacing: -0.03em; color: var(--ink); white-space: nowrap; }
+  #item5 .sz { position: absolute; left: 280px; top: 128px; font: 500 28px "IBM Plex Mono", monospace; letter-spacing: .12em; color: var(--mutedl); }
+  .chk { position: absolute; left: 72px; font-weight: 700; font-size: 104px; letter-spacing: -0.04em; color: var(--cream); white-space: nowrap; }
+  .chk .st { position: absolute; left: -6px; top: 62px; height: 11px; background: var(--blaze); border-radius: 3px; transform-origin: 0 50%; }
+
+  /* S7 the fix */
+  #sub7 { position: absolute; left: 72px; top: 760px; width: 936px; font-family: "Instrument Serif", serif; font-style: italic; font-size: 60px; line-height: 1.05; color: var(--ink); opacity: .8; }
+  #sub7 .w { display: inline-block; }
+  .li { position: absolute; isolation: isolate; left: 72px; font-weight: 700; font-size: 88px; letter-spacing: -0.035em; color: var(--ink); white-space: nowrap; }
+  .li .w { display: inline-block; }
+  .li .mk { position: absolute; left: 38px; right: -12px; bottom: 10px; height: 44px; border-radius: 4px; background: var(--volt); z-index: -1; transform-origin: 0 50%; }
+  .li i { display: inline-block; width: 16px; height: 70px; background: var(--ink); border-radius: 4px; margin-right: 30px; vertical-align: -6px; transform-origin: 50% 100%; }
+  #mail { position: absolute; left: 110px; top: 1250px; width: 860px; height: 230px; padding: 36px 50px; box-sizing: border-box; border-radius: 32px; background: var(--lilac); color: var(--ink); transform-origin: 50% 100%; }
+  #mail small { display: block; font: 500 28px "IBM Plex Mono", monospace; letter-spacing: .12em; color: #3d3466; margin-bottom: 12px; }
+  #mail b { display: block; font-weight: 700; font-size: 64px; letter-spacing: -0.03em; line-height: 1; white-space: nowrap; }
+  #mail span { display: block; font-weight: 500; font-size: 34px; color: rgba(13,13,15,.72); margin-top: 10px; white-space: nowrap; }
+  #ico { position: absolute; right: 40px; top: 56px; width: 270px; height: 120px; overflow: visible; }
+
+  /* S8 payoff */
+  #goldbar { position: absolute; left: 330px; top: 960px; width: 420px; height: 420px; background: var(--volt); border-radius: 8px; }
+  #hood8 { position: absolute; left: 230px; top: 820px; width: 620px; filter: drop-shadow(0 40px 30px rgba(14,20,18,.28)); }
+  .clothes { position: absolute; left: 72px; top: 1000px; font-weight: 700; font-size: 190px; letter-spacing: -0.045em; line-height: 1; color: var(--ink); white-space: nowrap; }
+
+  /* S9 end card */
+  #c9 { top: 600px; }
+  #q4 { position: absolute; left: 330px; top: 830px; font-weight: 700; font-size: 640px; letter-spacing: -0.06em; line-height: .8; color: var(--volt); white-space: nowrap; }
+  #brand { position: absolute; left: 72px; top: 1390px; }
+  #brand .b1 { font-weight: 700; font-size: 76px; letter-spacing: -0.03em; color: var(--cream); }
+  #brand .b2 { font: 500 28px "IBM Plex Mono", monospace; letter-spacing: .14em; color: var(--muted); margin-top: 6px; }
+
+  #wipe { position: absolute; top: 0; bottom: 0; width: 1200px; left: -1200px; z-index: 60; background: var(--cream); }
+  #wipe i { position: absolute; right: 0; top: 0; bottom: 0; width: 14px; background: var(--volt); }
+  #streak { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; z-index: 60; opacity: 0;
+    background: repeating-linear-gradient(0deg, rgba(243,239,230,.18) 0 3px, transparent 3px 22px); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-width="1080" data-height="1920" data-duration="34.3">
+  <div id="bg" class="full" data-layout-ignore></div>
+  <div id="haze" data-layout-ignore></div>
+
+  <!-- 1 VIRAL OPENER 0–3.15, then 2 FREEZE + REWIND 3.15–3.8 on the same shot.
+       VO: "This is what Q4 looks like when you run your clothing brand's ads yourself." / "And here's what…" -->
+  <section id="s1" class="clip scene dark" data-start="0" data-duration="3.8" data-track-index="1">
+    <div class="cam" id="cam1z" style="transform-origin:50% 50%"><div class="cam" id="cam1" style="transform-origin:50% 50%">
+      <div id="room" data-layout-ignore></div>
+      <div id="lamp" data-layout-ignore></div>
+      <div id="shelf" data-layout-ignore></div>
+      <div class="box" style="left:40px;top:330px;width:260px;height:190px" data-layout-ignore></div>
+      <div class="box" style="left:320px;top:380px;width:200px;height:140px;background:#5f503d" data-layout-ignore></div>
+      <div class="box" style="left:90px;top:200px;width:180px;height:130px;background:#74624a" data-layout-ignore></div>
+      <div class="tee" style="left:640px;top:474px;background:#c9c4b8" data-layout-ignore></div>
+      <div class="tee" style="left:650px;top:430px;background:#2b2f2d" data-layout-ignore></div>
+      <div class="tee" style="left:636px;top:386px;background:#d8d3c8" data-layout-ignore></div>
+      <div class="tee" style="left:646px;top:342px;background:#3d4a44" data-layout-ignore></div>
+      <div class="tee" style="left:880px;top:474px;background:#2b2f2d" data-layout-ignore></div>
+      <div class="tee" style="left:890px;top:430px;background:#c9c4b8" data-layout-ignore></div>
+      <div id="desk" data-layout-ignore></div>
+      <div id="laptop" data-layout-ignore><div class="ls">
+        <i style="top:22px"></i><i style="top:46px;width:110px;opacity:.7"></i>
+        <b style="left:30px;height:60px"></b><b style="left:68px;height:90px"></b><b style="left:106px;height:70px"></b><b style="left:144px;height:120px"></b><b style="left:182px;height:96px"></b>
+      </div><div class="lb"></div></div>
+      <div class="mailer m0" style="left:90px;top:1240px" data-layout-ignore><i></i></div>
+      <div class="mailer m1" style="left:120px;top:1200px;transform:rotate(-4deg)" data-layout-ignore><i></i></div>
+      <div class="mailer m2" style="left:80px;top:1158px;transform:rotate(5deg)" data-layout-ignore><i></i></div>
+      <div class="mailer m3" style="left:130px;top:1118px;transform:rotate(-7deg)" data-layout-ignore><i></i></div>
+      <div class="mailer m4" style="left:96px;top:1078px;transform:rotate(3deg)" data-layout-ignore><i></i></div>
+      <div class="mailer m5" style="left:118px;top:1036px;transform:rotate(-3deg)" data-layout-ignore><i></i></div>
+      <div id="tape" data-layout-ignore></div>
+      <div class="role" id="r1" style="left:640px;top:1000px;transform:rotate(-4deg);background:#b6a3ff">designer</div>
+      <div class="role" id="r2" style="left:120px;top:940px;transform:rotate(3deg);background:#ff5b1f">packer</div>
+      <div class="role" id="r3" style="left:560px;top:1440px;transform:rotate(-3deg);background:#d7ff3c">ads guy</div>
+      <div id="phone" data-layout-ignore><div id="screen">
+        <div class="nt" id="n1" style="top:16px"><b>NEW ORDER</b><s></s></div>
+        <div class="nt" id="n2" style="top:74px"><b>NEW ORDER</b><s></s></div>
+        <div class="nt" id="n3" style="top:132px"><b>NEW ORDER</b><s></s></div>
+      </div></div>
+    </div></div>
+    <div class="stk" id="pov1"><span>POV: it's Q4</span></div>
+    <div class="stk" id="pov2"><span>and you're the…</span></div>
+    <div id="rew"><em></em><em></em> REWIND</div>
+    <div id="scan" data-layout-ignore></div>
+  </section>
+
+  <!-- 2 (cont.) 3.8–5.0 hard cut to Pine: "…nobody tells you." -->
+  <section id="s2" class="clip scene dark" data-start="3.8" data-duration="1.2" data-track-index="1">
+    <div class="cam" id="cam2">
+      <div id="box2" data-layout-ignore><i class="a"></i><i class="b"></i><i class="c"></i><i class="d"></i></div>
+      <div class="cap" id="c2a"><span class="ld"><span class="w">here's</span> <span class="w">what</span></span></div>
+      <div id="nb" data-layout-ignore>nobody</div>
+      <div class="cap" id="c2b" style="--k:150px"><span class="kw"><span class="w">tells</span> <span class="w">you.<span class="ul" id="u2"></span></span></span></div>
+    </div>
+  </section>
+
+  <!-- 3 PAIN 1 5.0–10.0: "Every brand is fighting for the same feeds right now, so your ads cost more." -->
+  <section id="s3" class="clip scene dark" data-start="5" data-duration="5" data-track-index="1">
+    <div class="cam" id="cam3">
+      <div class="bigword" id="bw3" style="left:1100px;top:1080px;font-size:420px" data-layout-ignore>every brand · every brand</div>
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="label">01 — Q4 competition</div>
+      <div id="feed3" data-layout-ignore></div>
+      <div id="bar3" data-layout-ignore></div>
+      <div id="bl3">YOUR AD COSTS</div>
+      <div class="cap" id="c3a" style="--k:150px"><span class="ld"><span class="w">every</span> <span class="w">brand</span> <span class="w">is</span></span>
+        <span class="kw"><span class="w">fighting</span> <span class="w">for</span> <span class="w">feeds.<span class="ul" id="u3a"></span></span></span></div>
+      <div class="cap" id="c3b"><span class="ld"><span class="w">so</span> <span class="w">your</span> <span class="w">ads</span></span>
+        <span class="kw"><span class="w">cost</span> <span class="w">more.</span></span></div>
+    </div>
+  </section>
+
+  <!-- 4 PAIN 2 10.0–14.0: "Same ad for weeks? People scroll past it. Sales slow down mid-rush." -->
+  <section id="s4" class="clip scene dark" data-start="10" data-duration="4" data-track-index="1">
+    <div class="cam" id="cam4">
+      <div class="bigword" id="bw4a" style="left:0;top:980px;font-size:230px" data-layout-ignore>same ad · same ad · same ad · same ad</div>
+      <div class="bigword" id="bw4b" style="left:-1400px;top:1230px;font-size:230px" data-layout-ignore>same ad · same ad · same ad · same ad</div>
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="label">02 — Ad fatigue</div>
+      <div id="rep4" data-layout-ignore></div>
+      <div id="scroll4" data-layout-ignore></div>
+      <div id="gl4">SALES</div>
+      <svg id="gr4" viewBox="0 0 936 360" data-layout-ignore>
+        <path id="gp4" d="M0 330 C 110 310, 190 170, 320 110 S 500 60, 590 72 S 760 170, 936 250" fill="none" stroke="#ff5b1f" stroke-width="8" stroke-linecap="round" stroke-dasharray="1300" stroke-dashoffset="1300"/>
+      </svg>
+      <div class="ruler" id="ru4" style="top:1460px" data-layout-ignore></div>
+      <div class="cap" id="c4a"><span class="ld"><span class="w">same</span> <span class="w">ad</span> <span class="w">for</span> <span class="w">weeks?</span></span>
+        <span class="kw"><span class="w">scroll</span> <span class="w">past<span class="ul" id="u4"></span></span> <span class="w">it.</span></span></div>
+      <div class="cap" id="c4b"><span class="ld"><span class="w">sales</span> <span class="w">slow</span> <span class="w">down</span></span>
+        <span class="kw"><span class="w">mid-rush.</span></span></div>
+    </div>
+  </section>
+
+  <!-- 5 PAIN 3 14.0–19.0: "And everyone who added to cart and left? No retargeting, no emails, they're gone." -->
+  <section id="s5" class="clip scene dark" data-start="14" data-duration="5" data-track-index="1">
+    <div class="cam" id="cam5">
+      <div class="ghost" id="g5" style="left:-40px;top:1180px;font-size:600px" data-layout-ignore>gone</div>
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="label">03 — Lost buyers</div>
+      <div id="cartc" data-layout-ignore>
+        <div class="cl" id="cl5">YOUR CART · 1 ITEM</div>
+        <div id="item5"><div class="th"><svg viewBox="0 0 400 420"><path d="M150 40 Q200 0 250 40 L262 70 L330 95 Q360 110 368 150 L392 300 L345 312 L322 190 L318 400 L82 400 L78 190 L55 312 L8 300 L32 150 Q40 110 70 95 L138 70 Z" fill="#0d0d0f"/><path d="M160 48 Q200 20 240 48 L232 92 Q200 112 168 92 Z" fill="#3a3a42"/><path d="M130 300 L270 300 L285 360 L115 360 Z" fill="none" stroke="#3a3a42" stroke-width="6"/></svg></div>
+          <div class="nm">Heavy hoodie</div><div class="sz">SIZE M · BONE</div></div>
+      </div>
+      <div class="cap" id="c5a"><span class="ld"><span class="w">added</span> <span class="w">to</span> <span class="w">cart…</span></span>
+        <span class="kw"><span class="w">and</span> <span class="w">left?<span class="ul" id="u5"></span></span></span></div>
+      <div id="c5b">
+        <div class="chk" id="k1" style="top:560px">retargeting<span class="st" style="width:640px"></span></div>
+        <div class="chk" id="k2" style="top:690px">cart email<span class="st" style="width:540px"></span></div>
+        <div class="chk" id="k3" style="top:820px">welcome flow<span class="st" style="width:690px"></span></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 THE TURN 19.0–22.0: "That's not a product problem. | It's a system problem." -->
+  <section id="s6a" class="clip scene dark" data-start="19" data-duration="1.6" data-track-index="1">
+    <div class="cam" id="cam6a">
+      <div class="ghost" id="g6a" style="left:-60px;top:1180px;font-size:520px" data-layout-ignore>product</div>
+      <div class="cap" id="c6a" style="--k:170px"><span class="ld"><span class="w">that's</span> <span class="w">not</span> <span class="w">a</span></span>
+        <span class="kw"><span class="w">product<span class="ul" id="u6a"></span></span> <span class="w">problem.</span></span></div>
+    </div>
+  </section>
+  <section id="s6b" class="clip scene light" data-start="20.6" data-duration="1.4" data-track-index="1">
+    <div class="cloudbg" data-layout-ignore></div>
+    <div class="cam" id="cam6b">
+      <div class="ghost" id="g6b" style="left:-40px;top:1180px;font-size:560px" data-layout-ignore>system</div>
+      <div class="cap" id="c6b" style="--k:170px"><span class="ld"><span class="w">it's</span> <span class="w">a</span></span>
+        <span class="kw"><span class="w">system<span class="ul" id="u6b"></span></span> <span class="w">problem.</span></span></div>
+    </div>
+  </section>
+
+  <!-- 7 SOLUTION 22.0–29.0: "Southline runs your Facebook and Instagram ads. Fresh creatives, proper tracking, retargeting.
+       Plus the emails that bring buyers back." -->
+  <section id="s7" class="clip scene light" data-start="22" data-duration="7" data-track-index="1">
+    <div class="cloudbg" data-layout-ignore></div>
+    <div class="cam" id="cam7">
+      <div class="ghost" id="g7" style="left:-30px;top:1520px;font-size:420px" data-layout-ignore>the fix</div>
+      <span class="corner tl"></span><span class="corner br"></span>
+      <div class="label">04 — The fix</div>
+      <div class="cap" id="c7" style="top:540px;--k:170px"><span class="kw"><span class="w">Southline</span></span></div>
+      <div id="sub7"><span class="w">runs</span> <span class="w">your</span> <span class="w">Facebook</span> <span class="w">and</span> <span class="w">Instagram</span> <span class="w">ads.</span></div>
+      <div class="li" id="l1" style="top:880px"><b class="mk"></b><i></i><span class="w">fresh</span> <span class="w">creatives</span></div>
+      <div class="li" id="l2" style="top:990px"><b class="mk"></b><i></i><span class="w">proper</span> <span class="w">tracking</span></div>
+      <div class="li" id="l3" style="top:1100px"><b class="mk"></b><i></i><span class="w">retargeting</span></div>
+      <div id="mail"><small>ADD-ON</small><b>+ email flows</b><span>that bring buyers back</span>
+        <svg id="ico" viewBox="0 0 270 120" data-layout-ignore>
+          <path id="env" d="M6 18 H132 V104 H6 Z M6 18 L69 66 L132 18" fill="none" stroke="#0d0d0f" stroke-width="5" stroke-linejoin="round" stroke-dasharray="480" stroke-dashoffset="480"/>
+          <path id="crt" d="M162 40 H180 L194 92 H246 L260 54 H186" fill="none" stroke="#0d0d0f" stroke-width="5" stroke-linejoin="round" stroke-linecap="round" stroke-dasharray="260" stroke-dashoffset="260"/>
+          <path id="ret" d="M248 24 C 236 4, 196 2, 184 22 M184 22 L184 6 M184 22 L200 24" fill="none" stroke="#0d0d0f" stroke-width="5" stroke-linecap="round" stroke-dasharray="140" stroke-dashoffset="140"/>
+          <rect id="w1" x="196" y="102" width="14" height="10" rx="2" fill="#0d0d0f" opacity="0"/><rect id="w2" x="230" y="102" width="14" height="10" rx="2" fill="#0d0d0f" opacity="0"/>
+        </svg>
+      </div>
+    </div>
+  </section>
+
+  <!-- 8 PAYOFF 29.0–31.0 (music drops out just before): "You focus on the clothes." -->
+  <section id="s8" class="clip scene light" data-start="29" data-duration="2" data-track-index="1">
+    <div class="cloudbg" data-layout-ignore></div>
+    <div class="cam" id="cam8">
+      <div class="cap" id="c8" style="top:540px"><span class="ld"><span class="w">you</span> <span class="w">focus</span> <span class="w">on</span> <span class="w">the</span></span></div>
+      <div class="clothes" id="cl8back" data-layout-ignore>clothes.</div>
+      <div id="goldbar" data-layout-ignore></div>
+      <svg id="hood8" viewBox="0 0 400 420" data-layout-ignore><path d="M150 40 Q200 0 250 40 L262 70 L330 95 Q360 110 368 150 L392 300 L345 312 L322 190 L318 400 L82 400 L78 190 L55 312 L8 300 L32 150 Q40 110 70 95 L138 70 Z" fill="#b6a3ff"/><path d="M160 48 Q200 20 240 48 L232 92 Q200 112 168 92 Z" fill="#8f78f0"/><path d="M130 300 L270 300 L285 360 L115 360 Z" fill="none" stroke="#7a63e0" stroke-width="6"/><path d="M186 96 L182 150 M214 96 L218 150" stroke="#0d0d0f" stroke-width="6"/></svg>
+      <div class="clothes" id="cl8front">clothes.</div>
+    </div>
+  </section>
+
+  <!-- 9 CTA 31.0–34.3 (Pine): "Comment Q4 and we'll show you how." Holds 1.5 s, loops to frame 1. -->
+  <section id="s9" class="clip scene dark" data-start="31" data-duration="3.3" data-track-index="1">
+    <div class="cam" id="cam9">
+      <div id="q4" data-layout-ignore>Q4</div>
+      <div class="cap" id="c9"><span class="ld"><span class="w">we'll</span> <span class="w">show</span> <span class="w">you</span> <span class="w">how</span></span>
+        <span class="kw"><span class="w">comment</span></span></div>
+      <div id="brand"><div class="b1">Southline</div><div class="b2">META ADS FOR CLOTHING BRANDS</div></div>
+    </div>
+  </section>
+
+  <div id="wipe" data-layout-ignore><i></i></div>
+  <div id="streak" data-layout-ignore></div>
+  <div id="grain" class="full" data-layout-ignore></div>
+  <audio id="score" src="assets/audio.wav" data-start="0" data-duration="34.3" data-track-index="10" data-volume="1"></audio>
+</div>
+
+<script>
+  window.__timelines = window.__timelines || {};
+  const TL = gsap.timeline({ paused: true });
+  const DUR = 34.3;
+  // Positions below are authored on the script's estimated word times (../vo_words.json). WARP maps them onto the real
+  // voiceover (pairs of [estimated s, real s]); ../retime.py fills it in. Identity = the estimated timings.
+  const WARP = [[0, 0], [34.3, 34.3]]; // @warp
+  const W = t => {
+    if (t <= WARP[0][0]) return t - WARP[0][0] + WARP[0][1];
+    for (let i = 1; i < WARP.length; i++) if (t <= WARP[i][0]) { const [a0, b0] = WARP[i - 1], [a1, b1] = WARP[i]; return b0 + (t - a0) * (b1 - b0) / (a1 - a0); }
+    const [a, bb] = WARP[WARP.length - 1]; return bb + (t - a);
+  };
+  const span = (t0, t1) => W(t1) - W(t0);       // a duration that should stretch with the read
+  const tl = { to: (a, v, p) => TL.to(a, v, W(p)), fromTo: (a, f, v, p) => TL.fromTo(a, f, v, W(p)), set: (a, v, p) => TL.set(a, v, W(p)) };
+  const E = { in: "expo.out", cam: "sine.inOut", ui: "back.out(1.4)" };
+  const rnd = i => Math.sin(i * 12.9898) * 43758.5453 % 1;   // deterministic jitter
+
+  // caption words: blur-rise 24px, 180 ms, expo-out; times[] = when each word is spoken (vo_words.json)
+  function words(capSel, t0, step, times) {
+    const ws = document.querySelectorAll(capSel + " .w");
+    ws.forEach((w, i) => tl.fromTo(w, { y: 24, opacity: 0, filter: "blur(8px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.18, ease: E.in }, times ? times[i] : t0 + i * step));
+  }
+  const under = (sel, t) => tl.fromTo(sel, { scaleX: 0 }, { scaleX: 1, duration: 0.22, ease: E.in }, t);
+  const exit = (sel, t) => tl.to(sel, { opacity: 0, y: -12, duration: 0.12, ease: "power2.in" }, t);
+  const drift = (sel, t0, t1, amt = 0.05) => tl.fromTo(sel, { scale: 1 }, { scale: 1 + amt, duration: span(t0, t1), ease: E.cam }, t0);
+  const punch = (sel, t) => tl.fromTo(sel, { scale: 1.12 }, { scale: 1, duration: 0.3, ease: "expo.out", immediateRender: false }, t);
+  const lineWipe = t => tl.fromTo("#wipe", { x: 0 }, { x: 2400, duration: 0.42, ease: "power2.inOut" }, t - 0.22);
+  const whip = (outCam, inCam, t) => {
+    tl.fromTo("#streak", { opacity: 0, x: 0 }, { keyframes: { opacity: [0, 1, 0], x: [0, -220, -440] }, duration: 0.3, ease: "power2.inOut" }, t - 0.15);
+    tl.to(outCam, { x: -300, duration: 0.15, ease: "power3.in" }, t - 0.15);
+    tl.fromTo(inCam, { x: 300 }, { x: 0, duration: 0.25, ease: E.in }, t);
+  };
+  const shake = (sel, t, px = 8) => tl.fromTo(sel, { x: 0, y: 0 }, { keyframes: { x: [px, -px * .8, px * .5, -px * .3, 0], y: [-px * .6, px * .5, -px * .3, px * .2, 0] }, duration: 0.2, ease: "none" }, t);
+  const hood = fill => '<svg viewBox="0 0 400 420"><path d="M150 40 Q200 0 250 40 L262 70 L330 95 Q360 110 368 150 L392 300 L345 312 L322 190 L318 400 L82 400 L78 190 L55 312 L8 300 L32 150 Q40 110 70 95 L138 70 Z" fill="' + fill + '"/></svg>';
+
+  tl.fromTo("#haze", { x: -120, y: 0 }, { x: 140, y: 120, duration: W(DUR), ease: "sine.inOut" }, 0);
+  tl.fromTo("#grain", { x: 0, y: 0 }, { x: 140, y: -120, duration: W(DUR), ease: `steps(${Math.floor(W(DUR) * 12)})` }, 0);
+
+  // ===== 1 VIRAL OPENER: handheld phone POV, packing at night, phone buzzing, native sticker text
+  const FRZ = 3.15;
+  for (let i = 0; i < 32; i++)                                          // handheld wobble until the freeze
+    tl.to("#cam1", { x: rnd(i) * 14, y: rnd(i + 40) * 12, rotation: rnd(i + 80) * 0.9, scale: 1.04 + i * 0.001, duration: 0.1, ease: "sine.inOut" }, i * 0.1);
+  for (let k = 0; k < 6; k++)                                           // a mailer lands on the pile every ~0.4 s
+    tl.fromTo(".m" + k, { y: -520, opacity: 0, rotation: (k % 2 ? 9 : -9) }, { y: 0, opacity: 1, rotation: (k % 2 ? -3 : 4), duration: 0.32, ease: E.ui }, k * 0.42);
+  [0.5, 1.45, 2.4].forEach((t, i) => {                                   // phone buzz + a new order card slides in
+    tl.fromTo("#phone", { x: 0 }, { keyframes: { x: [6, -6, 5, -5, 3, 0] }, duration: 0.3, ease: "none" }, t);
+    tl.fromTo("#n" + (i + 1), { x: 200, opacity: 0 }, { x: 0, opacity: 1, duration: 0.3, ease: E.in }, t);
+  });
+  tl.fromTo("#pov1", { scale: 1.25, opacity: 1 }, { scale: 1, duration: 0.25, ease: "expo.out" }, 0);   // readable on frame 1
+  tl.fromTo("#pov2", { y: 24, opacity: 0, filter: "blur(8px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.18, ease: E.in }, 0.7);
+  // snap the camera to each job: scale sc about the centre and move point (px, py) to (540, 1290), under the stickers
+  const go = (px, py, sc, t, d = 0.28) => tl.to("#cam1z", { scale: sc, x: -sc * (px - 540), y: 330 - sc * (py - 960), duration: d, ease: "expo.out" }, t);
+  tl.fromTo("#cam1z", { scale: 1.35 }, { scale: 1.0, duration: 0.6, ease: "expo.out" }, 0);       // crash zoom out on frame 1
+  go(780, 1150, 1.2, 1.3);  tl.fromTo("#r1", { scale: 1.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: E.ui }, 1.3);
+  go(255, 1250, 1.2, 1.85); tl.fromTo("#r2", { scale: 1.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: E.ui }, 1.85);
+  go(760, 1460, 1.2, 2.4);  tl.fromTo("#r3", { scale: 1.6, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: E.ui }, 2.4);
+
+  // ===== 2 FREEZE + REWIND: freeze, desaturate, rewind scrub with a glitch, then hard cut to Pine
+  tl.to("#cam1", { filter: "grayscale(1) contrast(1.25) brightness(.8)", duration: 0.06, ease: "none" }, FRZ);
+  tl.to("#cam1z", { scale: 1, x: 0, y: 0, duration: 0.3, ease: "power3.in" }, FRZ + 0.1);
+  tl.set("#rew", { opacity: 1 }, FRZ + 0.08);
+  tl.fromTo("#scan", { opacity: 0 }, { keyframes: { opacity: [0, .9, .5, 1, .6] }, duration: 0.5, ease: "none" }, FRZ + 0.06);
+  tl.to("#cam1", { keyframes: { x: [-26, 22, -14, 30, -8, 0], skewX: [3, -4, 2, -3, 0, 0] }, duration: 0.5, ease: "none" }, FRZ + 0.06);
+  for (let k = 5; k >= 0; k--)                                          // rewind: the parcels fly back up, newest first
+    tl.to(".m" + k, { y: -520, rotation: 8, duration: 0.07, ease: "power2.in" }, FRZ + 0.1 + (5 - k) * 0.06);
+  tl.to("#n1, #n2, #n3", { x: 200, opacity: 0, duration: 0.08, ease: "power2.in" }, FRZ + 0.3);
+  tl.to("#r1, #r2, #r3", { opacity: 0, scale: 0.6, duration: 0.08, ease: "power2.in" }, FRZ + 0.36);
+
+  drift("#cam2", 3.8, 5.0, 0.05);
+  words("#c2a", 0, 0, [3.82, 3.9]);
+  tl.fromTo("#box2 i", { scale: 0.3, opacity: 0 }, { scale: 1, opacity: .8, duration: 0.2, ease: E.in, stagger: 0.03 }, 3.8);
+  tl.set("#nb", { xPercent: -50 }, 0);
+  tl.fromTo("#nb", { scale: 0.42, x: -320, opacity: 1, filter: "blur(10px)" }, { scale: 1, x: 0, filter: "blur(0px)", duration: 0.32, ease: "expo.out" }, 3.85);   // bursts out of the box and the frame
+  tl.to("#box2 .a, #box2 .c", { x: -120, duration: 0.3, ease: E.in }, 3.88); tl.to("#box2 .b, #box2 .d", { x: 120, duration: 0.3, ease: E.in }, 3.88);
+  shake("#cam2", 3.92, 8);
+  tl.fromTo("#nb", { x: 0 }, { x: -560, duration: span(4.17, 5.0), ease: "none", immediateRender: false }, 4.17);          // slides left: "nobo…" then "…body"
+  words("#c2b", 0, 0, [4.45, 4.65]); under("#u2", 4.65); punch("#c2b", 4.65);
+
+  // ===== 3 PAIN 1: identical phone feeds crowd in from every edge; a gold bar rises on "cost more"
+  drift("#cam3", 5.0, 10.0, 0.06);
+  tl.fromTo("#bw3", { x: 0 }, { x: -3600, duration: span(5.0, 10.0), ease: "none" }, 5.0);                  // oversized words slide through
+  const feed3 = document.getElementById("feed3");
+  const slots = [[40, 1000, -6, -900, 0], [810, 980, 5, 900, 0], [425, 1090, 2, 0, 900], [-70, 1060, 8, -900, 300], [930, 1050, -8, 900, 300],
+                 [240, 960, -3, -600, -700], [620, 1010, 6, 700, -700], [160, 1100, -4, -300, 900], [690, 1110, 3, 300, 900]];
+  slots.forEach((s, i) => {
+    const d = document.createElement("div"); d.className = "pf"; d.id = "pf" + i; d.style.left = s[0] + "px"; d.style.top = s[1] + "px";
+    d.innerHTML = '<div class="ps"><div class="pp p1">' + hood("#0d0d0f") + '</div><div class="pp p2">' + hood("#0d0d0f") + '</div></div>'; feed3.appendChild(d);
+    tl.fromTo("#pf" + i, { x: s[3], y: s[4], rotation: s[2] * 2, opacity: 1 }, { x: 0, y: 0, rotation: s[2], duration: 0.45, ease: E.in }, 5.15 + i * 0.32);
+  });
+  words("#c3a", 0, 0, [5.05, 5.54, 5.78, 6.02, 6.51, 7.24]); under("#u3a", 7.24); punch("#c3a", 7.24);
+  tl.to("#feed3 .pf", { scale: 1.1, x: (i) => (i % 2 ? -40 : 40), duration: 0.3, ease: E.ui, stagger: 0.02 }, 7.24);   // the crowd squeezes in
+  exit("#c3a", 7.95);
+  tl.set("#c3b", { opacity: 1 }, 8.1);
+  words("#c3b", 0, 0, [8.13, 8.38, 8.62, 8.86, 9.11]); punch("#c3b", 9.11);
+  tl.to("#feed3", { opacity: 0.3, duration: 0.3 }, 8.7);
+  tl.fromTo("#bar3", { scaleY: 0 }, { scaleY: 1, duration: 0.9, ease: "power3.out" }, 8.86);    // illustrative, no numbers
+  tl.fromTo("#bl3", { opacity: 0, x: -20 }, { opacity: 1, x: 0, duration: 0.3, ease: E.in }, 8.6);
+
+  // ===== 4 PAIN 2: the same ad repeats faster and faster, the feed scrolls past it, sales flatten
+  whip("#cam3", "#cam4", 10.0);
+  drift("#cam4", 10.0, 14.0, 0.05);
+  tl.fromTo("#bw4a", { x: 0 }, { x: -1400, duration: span(10.0, 14.0), ease: "none" }, 10.0);
+  tl.fromTo("#bw4b", { x: 0 }, { x: 1400, duration: span(10.0, 14.0), ease: "none" }, 10.0);
+  const rep4 = document.getElementById("rep4"), scr4 = document.getElementById("scroll4");
+  [0, 0.3, 0.55, 0.75, 0.9, 1.0, 1.08, 1.14].forEach((dt, i) => {
+    const d = document.createElement("div"); d.className = "fc"; d.id = "rp" + i; d.style.left = (395 + i * 8) + "px"; d.style.top = (1000 + i * 18) + "px";
+    d.innerHTML = '<div class="ph"></div>' + hood("#0d0d0f") + '<div class="bt"></div>'; rep4.appendChild(d);
+    tl.fromTo("#rp" + i, { scale: 1.15, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.12, ease: E.in }, 10.1 + dt);
+  });
+  for (let i = 0; i < 8; i++) {                                         // the feed scrolls past it, blurred
+    const d = document.createElement("div"); d.className = "fc sc"; d.id = "sc" + i; d.style.left = (120 + (i % 3) * 300) + "px"; d.style.top = (1960 + Math.floor(i / 3) * 400) + "px";
+    d.innerHTML = '<div class="ph"></div>' + hood("#3a3a42") + '<div class="bt"></div>'; scr4.appendChild(d);
+  }
+  tl.fromTo("#scroll4", { y: 0, filter: "blur(0px)" }, { y: -1700, filter: "blur(6px)", duration: 0.9, ease: "power2.in" }, 11.5);
+  tl.to("#rep4", { y: -500, opacity: 0, filter: "blur(10px)", duration: 0.45, ease: "power2.in" }, 11.8);
+  tl.to("#scroll4", { opacity: 0, duration: 0.25, ease: "power2.in" }, 12.25);                  // gone once it has scrolled past
+  words("#c4a", 0, 0, [10.05, 10.26, 10.47, 10.68, 11.59, 11.8, 12.0]); under("#u4", 11.8); punch("#c4a", 11.8);
+  exit("#c4a", 12.35); tl.to("#u4", { opacity: 0, duration: 0.1 }, 12.35);
+  tl.set("#c4b", { opacity: 1 }, 12.47);
+  words("#c4b", 0, 0, [12.49, 12.91, 13.12, 13.33]); punch("#c4b", 13.33);
+  tl.fromTo("#gl4", { opacity: 0 }, { opacity: 1, duration: 0.2 }, 12.45);
+  tl.fromTo("#ru4", { scaleX: 0 }, { scaleX: 1, duration: 0.3, ease: E.in }, 12.45);
+  tl.fromTo("#gp4", { strokeDashoffset: 1300 }, { strokeDashoffset: 0, duration: 1.2, ease: "power1.inOut" }, 12.5);   // rises, then flattens and dips
+
+  // ===== 5 PAIN 3: the hoodie leaves the cart, the missing pieces get struck, then everything is gone
+  whip("#cam4", "#cam5", 14.0);
+  drift("#cam5", 14.0, 19.0, 0.05);
+  tl.fromTo("#g5", { x: 0 }, { x: -260, duration: span(14.0, 19.0), ease: "none" }, 14.0);
+  tl.fromTo("#cartc", { y: 160, rotationX: 8, rotation: -6, opacity: 0, transformPerspective: 900 }, { y: 0, rotationX: 0, rotation: -2, opacity: 1, duration: 0.5, ease: E.ui }, 14.1);
+  words("#c5a", 0, 0, [15.04, 15.43, 15.63, 15.83, 16.03]); under("#u5", 16.03); punch("#c5a", 16.03);
+  tl.to("#item5", { x: 900, y: -320, rotation: 16, opacity: 0, filter: "blur(6px)", duration: 0.9, ease: "power2.in" }, 16.03);   // drifts out of frame
+  tl.set("#cl5", { innerText: "YOUR CART · EMPTY" }, 16.75);
+  tl.fromTo("#cl5", { opacity: 0.3 }, { opacity: 1, duration: 0.25, immediateRender: false }, 16.75);
+  exit("#c5a", 16.42); tl.to("#u5", { opacity: 0, duration: 0.1 }, 16.42);
+  tl.to("#cartc", { scale: 0.92, duration: 0.3, ease: E.cam }, 16.5);
+  [["#k1", 16.5, 16.95], ["#k2", 17.65, 17.9], ["#k3", 17.95, 18.2]].forEach(([k, a, s]) => {
+    tl.fromTo(k, { y: 24, opacity: 0, filter: "blur(8px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.18, ease: E.in }, a);
+    tl.fromTo(k + " .st", { scaleX: 0 }, { scaleX: 1, duration: 0.22, ease: E.in }, s);
+    tl.to(k, { opacity: 0.5, duration: 0.2 }, s + 0.1);
+  });
+  // "they're gone.": the struck list and the empty cart leave the frame
+  [["#k1", -1300, -80, -8], ["#k2", 1300, 40, 6], ["#k3", -1300, 120, -5]].forEach(([k, x, y, r], i) =>
+    tl.to(k, { x: x, y: y, rotation: r, opacity: 0, duration: 0.45, ease: "power3.in" }, 18.55 + i * 0.04));
+  tl.to("#cartc", { y: 700, rotation: 8, opacity: 0, duration: 0.5, ease: "power3.in" }, 18.6);
+  shake("#cam5", 18.62, 6);
+
+  // ===== 6 THE TURN: "product problem" is wiped away by the gold line, "system problem" builds on Cloud
+  drift("#cam6a", 19.0, 20.6, 0.05);
+  tl.fromTo("#g6a", { x: 0 }, { x: -260, duration: span(19.0, 20.6), ease: "none" }, 19.0);
+  words("#c6a", 0, 0, [19.05, 19.24, 19.43, 19.62, 20.0]); under("#u6a", 19.62); punch("#c6a", 20.0);
+  lineWipe(20.6);
+  drift("#cam6b", 20.6, 22.0, 0.05);
+  tl.fromTo("#g6b", { x: 0 }, { x: -260, duration: span(20.6, 22.0), ease: "none" }, 20.6);
+  words("#c6b", 0, 0, [20.66, 20.85, 21.04, 21.42]); under("#u6b", 21.04); punch("#c6b", 21.42);
+
+  // ===== 7 THE FIX (Cloud): Southline, the build-on list with gold bars, then the email add-on card tilts in
+  drift("#cam7", 22.0, 29.0, 0.05);
+  tl.fromTo("#g7", { x: 0 }, { x: -300, duration: span(22.0, 29.0), ease: "none" }, 22.0);
+  words("#c7", 0, 0, [22.05]); punch("#c7", 22.05);
+  words("#sub7", 0, 0, [22.42, 22.61, 22.79, 23.17, 23.35, 23.91]);
+  [["#l1", [24.38, 24.56]], ["#l2", [25.28, 25.65]], ["#l3", [26.19]]].forEach(([l, ts]) => {
+    tl.fromTo(l + " i", { scaleY: 0 }, { scaleY: 1, duration: 0.25, ease: E.ui }, ts[0]);
+    tl.fromTo(l + " .mk", { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: E.in }, ts[0] + 0.05);   // lime marker sweeps behind
+    words(l, 0, 0, ts);
+  });
+  tl.fromTo("#mail", { rotationX: 8, rotation: -6, y: 120, opacity: 0, transformPerspective: 900 }, { rotationX: 0, rotation: -2, y: 0, opacity: 1, duration: 0.5, ease: E.ui }, 27.21);
+  tl.fromTo("#env", { strokeDashoffset: 480 }, { strokeDashoffset: 0, duration: 0.5, ease: "power2.out" }, 27.58);   // envelope draws on "emails"
+  tl.fromTo("#crt", { strokeDashoffset: 260 }, { strokeDashoffset: 0, duration: 0.4, ease: "power2.out" }, 28.14);
+  tl.set("#w1, #w2", { opacity: 1 }, 28.4);
+  tl.fromTo("#ret", { strokeDashoffset: 140 }, { strokeDashoffset: 0, duration: 0.35, ease: "power2.out" }, 28.33);   // the buyer comes back
+  punch("#mail", 28.51);
+
+  // ===== 8 PAYOFF (music drops out just before): the hoodie is pulled on, "clothes." pops in front on the beat
+  drift("#cam8", 29.0, 31.0, 0.05);
+  words("#c8", 0, 0, [29.15, 29.37, 29.8, 30.02]);
+  tl.fromTo("#hood8", { y: -700, scaleY: 1.15, opacity: 1 }, { y: 0, scaleY: 1, duration: 0.55, ease: "back.out(1.2)" }, 29.05);   // pulled down over
+  tl.fromTo("#goldbar", { scaleY: 0, transformOrigin: "50% 100%" }, { scaleY: 1, duration: 0.4, ease: E.in }, 29.3);
+  tl.fromTo("#cl8back", { y: 24, opacity: 0 }, { y: 0, opacity: 1, duration: 0.18, ease: E.in }, 29.95);
+  tl.set("#cl8front", { opacity: 0 }, 29.0);
+  tl.set("#cl8front", { opacity: 1 }, 30.23);                          // behind the hoodie, then in front on the beat
+  punch("#cl8front", 30.23);
+
+  // ===== 9 CTA: "comment Q4", Q4 bleeding off the right edge, "we'll show you how", wordmark; holds, loops to frame 1
+  drift("#cam9", 31.0, DUR, 0.04);
+  words("#c9", 0, 0, [31.99, 32.18, 32.37, 32.56, 31.05]);
+  tl.fromTo("#q4", { x: 700, opacity: 1, filter: "blur(12px)" }, { x: 0, filter: "blur(0px)", duration: 0.35, ease: "expo.out" }, 31.43);
+  shake("#cam9", 31.5, 7);
+  tl.fromTo("#brand", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: E.in }, 32.2);
+
+  window.__timelines["main"] = TL;
+</script>
+</body>
+</html>
