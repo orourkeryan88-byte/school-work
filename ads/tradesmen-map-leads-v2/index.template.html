@@ -104,10 +104,14 @@
   .mini small { display: block; font: 500 20px "IBM Plex Mono", monospace; letter-spacing: .1em; color: var(--mutedl); }
   .mini b { display: block; font-weight: 700; font-size: 34px; letter-spacing: -0.02em; white-space: nowrap; }
   .mini i { position: absolute; right: 16px; top: 16px; width: 18px; height: 18px; border-radius: 5px; }
+  /* guarantee */
+  #g10 { position: absolute; left: 60px; top: 500px; font-weight: 700; font-size: 520px; letter-spacing: -0.07em; line-height: .9; color: var(--ink); }
+  #gstamp { position: absolute; left: 72px; top: 1300px; padding: 22px 40px 26px; border-radius: 24px; background: var(--ink); color: var(--volt);
+    font-weight: 700; font-size: 76px; letter-spacing: -0.03em; white-space: nowrap; transform: rotate(-4deg); box-shadow: 0 30px 50px -20px rgba(0,0,0,.45); }
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="main" data-width="1080" data-height="1920" data-duration="21.7">
+<div id="root" data-composition-id="main" data-width="1080" data-height="1920" data-duration="24.7">
   <div id="bg" class="full" data-layout-ignore></div>
 
   <!-- 1 MAP 0–9.65: "Tradesmen. You've got leads already looking for you. People near you, searching for a sparky,
@@ -165,8 +169,20 @@
     </div>
   </section>
 
-  <!-- 4 CTA 18.4–21.7: "Comment MAP and we'll show you how." -->
-  <section id="s4" class="clip scene dark" data-start="18.4" data-duration="3.3" data-track-index="1">
+  <!-- 3g GUARANTEE 18.4–21.4 (lime): "Ten qualified leads in thirty days, or your money back." -->
+  <section id="s3g" class="clip scene light" data-start="18.4" data-duration="3.0" data-track-index="1">
+    <div class="full" style="background:var(--volt)" data-layout-ignore></div>
+    <div class="cam" id="camg">
+      <div class="label" style="color:var(--ink);opacity:.7">The guarantee</div>
+      <div id="g10">0</div>
+      <div class="cap" id="cg1" style="top:1010px"><span class="kw" style="--k:118px"><span class="w">qualified</span> <span class="w">leads</span></span></div>
+      <div class="cap" id="cg2" style="top:1140px"><span class="ld" style="font-size:96px;opacity:1"><span class="w">in</span> <span class="w">30</span> <span class="w">days,</span></span></div>
+      <div id="gstamp">or your money back</div>
+    </div>
+  </section>
+
+  <!-- 4 CTA 21.4–24.7: "Comment MAP and we'll show you how." -->
+  <section id="s4" class="clip scene dark" data-start="21.4" data-duration="3.3" data-track-index="1">
     <div class="cam" id="cam4">
       <div id="map4" data-layout-ignore>MAP</div>
       <div class="cap" id="c4" style="top:600px"><span class="ld"><span class="w">we'll</span> <span class="w">show</span> <span class="w">you</span> <span class="w">how</span></span>
@@ -177,15 +193,15 @@
 
   <div id="flash" data-layout-ignore></div>
   <div id="grain" class="full" data-layout-ignore></div>
-  <audio id="score" src="assets/audio.wav" data-start="0" data-duration="21.7" data-track-index="10" data-volume="1"></audio>
+  <audio id="score" src="assets/audio.wav" data-start="0" data-duration="24.7" data-track-index="10" data-volume="1"></audio>
 </div>
 
 <script>
   window.__timelines = window.__timelines || {};
   const TL = gsap.timeline({ paused: true });
-  const DUR = 21.7;
+  const DUR = 24.7;
   // Positions are authored on the Sean read (../vo_words_sean.json); WARP maps them onto another read. ../retime.py fills it in.
-  const WARP = [[0, 0], [21.7, 21.7]]; // @warp
+  const WARP = [[0, 0], [24.7, 24.7]]; // @warp
   const W = t => {
     if (t <= WARP[0][0]) return t;
     for (let i = 1; i < WARP.length; i++) if (t <= WARP[i][0]) { const [a0, b0] = WARP[i - 1], [a1, b1] = WARP[i]; return b0 + (t - a0) * (b1 - b0) / (a1 - a0); }
@@ -362,12 +378,24 @@
   tl.to("#cam3", { scale: 1.12, duration: 0.5, ease: "power2.in" }, 17.95);                   // punch into the end card
   shake("#cam3", 17.7, 7);
 
+  // ===== 3g GUARANTEE: 10 counts up, "qualified leads in 30 days", then the money-back stamp slams down
+  tl.set("#flash", { opacity: 0.6 }, 18.4); tl.to("#flash", { opacity: 0, duration: 0.2 }, 18.41);
+  drift("#camg", 18.4, 21.4, 0.05);
+  tl.fromTo("#g10", { scale: 0.4, opacity: 0, transformOrigin: "0% 60%" }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.8)" }, 18.6);
+  for (let i = 1; i <= 10; i++) tl.set("#g10", { innerText: String(i) }, 18.6 + i * 0.045);
+  punch("#g10", 19.1);
+  words("#cg1", 0, 0, [18.85, 19.25]);
+  words("#cg2", 0, 0, [19.55, 19.7, 19.95]);
+  tl.fromTo("#gstamp", { scale: 2.4, opacity: 0, rotation: -14 }, { scale: 1, opacity: 1, rotation: -4, duration: 0.28, ease: "power4.in" }, 20.3);
+  shake("#camg", 20.58, 10);
+  tl.to("#gstamp", { keyframes: { scaleX: [1.08, 0.97, 1], scaleY: [0.9, 1.04, 1] }, duration: 0.3, ease: "none" }, 20.58);
+
   // ===== 4 CTA
-  drift("#cam4", 18.4, DUR, 0.04);
-  words("#c4", 0, 0, [19.12, 19.36, 19.52, 19.68, 18.44]);
-  tl.fromTo("#map4", { x: 700, filter: "blur(12px)" }, { x: 0, filter: "blur(0px)", duration: 0.35, ease: "expo.out" }, 18.64);
-  shake("#cam4", 18.7, 7);
-  tl.fromTo("#brand", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: E.in }, 19.0);
+  drift("#cam4", 21.40, DUR, 0.04);
+  words("#c4", 0, 0, [22.12, 22.36, 22.52, 22.68, 21.44]);
+  tl.fromTo("#map4", { x: 700, filter: "blur(12px)" }, { x: 0, filter: "blur(0px)", duration: 0.35, ease: "expo.out" }, 21.64);
+  shake("#cam4", 21.70, 7);
+  tl.fromTo("#brand", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: E.in }, 22.00);
 
   window.__timelines["main"] = TL;
 </script>

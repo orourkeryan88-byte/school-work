@@ -104,15 +104,19 @@
   .mini small { display: block; font: 500 20px "IBM Plex Mono", monospace; letter-spacing: .1em; color: var(--mutedl); }
   .mini b { display: block; font-weight: 700; font-size: 34px; letter-spacing: -0.02em; white-space: nowrap; }
   .mini i { position: absolute; right: 16px; top: 16px; width: 18px; height: 18px; border-radius: 5px; }
+  /* guarantee */
+  #g10 { position: absolute; left: 60px; top: 500px; font-weight: 700; font-size: 520px; letter-spacing: -0.07em; line-height: .9; color: var(--ink); }
+  #gstamp { position: absolute; left: 72px; top: 1300px; padding: 22px 40px 26px; border-radius: 24px; background: var(--ink); color: var(--volt);
+    font-weight: 700; font-size: 76px; letter-spacing: -0.03em; white-space: nowrap; transform: rotate(-4deg); box-shadow: 0 30px 50px -20px rgba(0,0,0,.45); }
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="main" data-width="1080" data-height="1920" data-duration="23.38">
+<div id="root" data-composition-id="main" data-width="1080" data-height="1920" data-duration="27.38">
   <div id="bg" class="full" data-layout-ignore></div>
 
   <!-- 1 MAP 0–9.65: "Tradesmen. You've got leads already looking for you. People near you, searching for a sparky,
        a plumber, a builder… right now. You just can't get to them." -->
-  <section id="s1" class="clip scene light" data-start="0.0" data-duration="10.405" data-track-index="1">
+  <section id="s1" class="clip scene light" data-start="0.0" data-duration="10.473" data-track-index="1">
     <div class="full" style="background:var(--land)" data-layout-ignore></div>
     <div id="world" data-layout-ignore>
       <svg class="map" id="map" viewBox="0 0 2160 3840"></svg>
@@ -131,7 +135,7 @@
   </section>
 
   <!-- 2 TURN 9.65–11.05 (ink): "So we do it for you." -->
-  <section id="s2" class="clip scene dark" data-start="10.405" data-duration="1.713" data-track-index="1">
+  <section id="s2" class="clip scene dark" data-start="10.473" data-duration="1.707" data-track-index="1">
     <div id="haze" data-layout-ignore></div>
     <div class="cam" id="cam2">
       <div class="cap" id="c2" style="top:680px"><span class="ld"><span class="w">so</span> <span class="w">we</span> <span class="w">do</span> <span class="w">it</span></span>
@@ -141,7 +145,7 @@
 
   <!-- 3 PHONE 11.05–18.4: "We run Facebook and Instagram ads for your business, and the enquiries come straight to your phone.
        Again. And again." Leads fly off the dark map into the phone, slam in one by one, then burst out around it. -->
-  <section id="s3" class="clip scene dark" data-start="12.118" data-duration="7.684" data-track-index="1">
+  <section id="s3" class="clip scene dark" data-start="12.18" data-duration="7.445" data-track-index="1">
     <div id="world2" data-layout-ignore></div>
     <div id="vig" data-layout-ignore></div>
     <div class="cam" id="cam3">
@@ -165,8 +169,20 @@
     </div>
   </section>
 
-  <!-- 4 CTA 18.4–21.7: "Comment MAP and we'll show you how." -->
-  <section id="s4" class="clip scene dark" data-start="19.802" data-duration="3.578" data-track-index="1">
+  <!-- 3g GUARANTEE 18.4–21.4 (lime): "Ten qualified leads in thirty days, or your money back." -->
+  <section id="s3g" class="clip scene light" data-start="19.625" data-duration="3.777" data-track-index="1">
+    <div class="full" style="background:var(--volt)" data-layout-ignore></div>
+    <div class="cam" id="camg">
+      <div class="label" style="color:var(--ink);opacity:.7">The guarantee</div>
+      <div id="g10">0</div>
+      <div class="cap" id="cg1" style="top:1010px"><span class="kw" style="--k:118px"><span class="w">qualified</span> <span class="w">leads</span></span></div>
+      <div class="cap" id="cg2" style="top:1140px"><span class="ld" style="font-size:96px;opacity:1"><span class="w">in</span> <span class="w">30</span> <span class="w">days,</span></span></div>
+      <div id="gstamp">or your money back</div>
+    </div>
+  </section>
+
+  <!-- 4 CTA 21.4–24.7: "Comment MAP and we'll show you how." -->
+  <section id="s4" class="clip scene dark" data-start="23.402" data-duration="3.978" data-track-index="1">
     <div class="cam" id="cam4">
       <div id="map4" data-layout-ignore>MAP</div>
       <div class="cap" id="c4" style="top:600px"><span class="ld"><span class="w">we'll</span> <span class="w">show</span> <span class="w">you</span> <span class="w">how</span></span>
@@ -177,15 +193,15 @@
 
   <div id="flash" data-layout-ignore></div>
   <div id="grain" class="full" data-layout-ignore></div>
-  <audio id="score" src="assets/audio.wav" data-start="0" data-duration="23.38" data-track-index="10" data-volume="1"></audio>
+  <audio id="score" src="assets/audio.wav" data-start="0" data-duration="27.38" data-track-index="10" data-volume="1"></audio>
 </div>
 
 <script>
   window.__timelines = window.__timelines || {};
   const TL = gsap.timeline({ paused: true });
-  const DUR = 21.7;
+  const DUR = 24.7;
   // Positions are authored on the Sean read (../vo_words_sean.json); WARP maps them onto another read. ../retime.py fills it in.
-  const WARP = [[0.0, 0.0], [0.152, 0.272], [0.96, 1.36], [1.2, 1.6], [1.36, 1.76], [1.68, 2.08], [2.24, 2.64], [2.6, 3.04], [2.72, 3.28], [3.2, 3.84], [3.52, 4.24], [3.84, 4.56], [4.16, 4.88], [4.52, 5.28], [4.64, 5.44], [4.96, 5.76], [5.44, 6.32], [5.6, 6.48], [6.08, 7.04], [6.56, 7.48], [7.04, 7.92], [7.36, 8.32], [8.08, 9.013], [8.24, 9.12], [8.4, 9.32], [8.72, 9.6], [8.88, 9.8], [9.2, 9.92], [9.794, 10.56], [9.92, 11.04], [10.12, 11.16], [10.24, 11.28], [10.4, 11.44], [10.8, 11.68], [11.12, 12.24], [11.4, 12.52], [11.6, 12.72], [12.08, 13.2], [12.4, 13.52], [12.72, 13.84], [13.04, 14.16], [13.2, 14.32], [13.68, 14.56], [14.053, 15.093], [14.16, 15.2], [14.24, 15.28], [14.92, 15.92], [15.2, 16.32], [15.48, 16.6], [15.6, 16.72], [16.0, 17.2], [16.4, 18.107], [17.2, 18.48], [17.44, 18.88], [18.44, 19.84], [18.64, 20.16], [18.96, 20.56], [19.12, 20.68], [19.36, 20.96], [19.52, 21.12], [19.68, 21.28], [20.08, 21.76], [21.7, 23.38]]; // @warp
+  const WARP = [[0.0, 0.0], [0.152, 0.208], [0.96, 1.28], [1.2, 1.52], [1.36, 1.68], [1.68, 2.0], [2.24, 2.56], [2.6, 2.96], [2.72, 3.2], [3.2, 3.76], [3.52, 4.16], [3.84, 4.48], [4.16, 4.8], [4.52, 5.2], [4.64, 5.32], [4.96, 5.44], [5.44, 6.24], [5.6, 6.4], [6.08, 6.96], [6.56, 7.44], [7.04, 8.0], [7.36, 8.6], [8.08, 9.04], [8.24, 9.2], [8.4, 9.4], [8.72, 9.68], [8.88, 9.84], [9.2, 10.2], [9.794, 10.56], [9.92, 11.04], [10.12, 11.2], [10.24, 11.36], [10.4, 11.52], [10.8, 11.68], [11.12, 12.32], [11.4, 12.6], [11.6, 12.8], [12.08, 13.28], [12.4, 13.6], [12.72, 13.92], [13.04, 14.24], [13.2, 14.4], [13.68, 14.64], [14.053, 15.227], [14.16, 15.32], [14.24, 15.44], [14.92, 16.12], [15.2, 16.4], [15.48, 16.68], [15.6, 16.8], [16.0, 17.28], [16.4, 18.187], [17.2, 18.56], [17.44, 18.72], [18.6, 19.813], [18.85, 19.92], [19.25, 20.48], [19.55, 20.8], [19.7, 21.04], [19.95, 21.36], [20.25, 21.867], [20.4, 22.04], [20.58, 22.28], [20.85, 22.56], [21.44, 23.463], [21.64, 23.68], [21.96, 24.56], [22.12, 24.76], [22.36, 25.04], [22.52, 25.2], [22.68, 25.36], [23.08, 25.76], [24.7, 27.38]]; // @warp
   const W = t => {
     if (t <= WARP[0][0]) return t;
     for (let i = 1; i < WARP.length; i++) if (t <= WARP[i][0]) { const [a0, b0] = WARP[i - 1], [a1, b1] = WARP[i]; return b0 + (t - a0) * (b1 - b0) / (a1 - a0); }
@@ -362,12 +378,24 @@
   tl.to("#cam3", { scale: 1.12, duration: 0.5, ease: "power2.in" }, 17.95);                   // punch into the end card
   shake("#cam3", 17.7, 7);
 
+  // ===== 3g GUARANTEE: 10 counts up, "qualified leads in 30 days", then the money-back stamp slams down
+  tl.set("#flash", { opacity: 0.6 }, 18.4); tl.to("#flash", { opacity: 0, duration: 0.2 }, 18.41);
+  drift("#camg", 18.4, 21.4, 0.05);
+  tl.fromTo("#g10", { scale: 0.4, opacity: 0, transformOrigin: "0% 60%" }, { scale: 1, opacity: 1, duration: 0.35, ease: "back.out(1.8)" }, 18.6);
+  for (let i = 1; i <= 10; i++) tl.set("#g10", { innerText: String(i) }, 18.6 + i * 0.045);
+  punch("#g10", 19.1);
+  words("#cg1", 0, 0, [18.85, 19.25]);
+  words("#cg2", 0, 0, [19.55, 19.7, 19.95]);
+  tl.fromTo("#gstamp", { scale: 2.4, opacity: 0, rotation: -14 }, { scale: 1, opacity: 1, rotation: -4, duration: 0.28, ease: "power4.in" }, 20.3);
+  shake("#camg", 20.58, 10);
+  tl.to("#gstamp", { keyframes: { scaleX: [1.08, 0.97, 1], scaleY: [0.9, 1.04, 1] }, duration: 0.3, ease: "none" }, 20.58);
+
   // ===== 4 CTA
-  drift("#cam4", 18.4, DUR, 0.04);
-  words("#c4", 0, 0, [19.12, 19.36, 19.52, 19.68, 18.44]);
-  tl.fromTo("#map4", { x: 700, filter: "blur(12px)" }, { x: 0, filter: "blur(0px)", duration: 0.35, ease: "expo.out" }, 18.64);
-  shake("#cam4", 18.7, 7);
-  tl.fromTo("#brand", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: E.in }, 19.0);
+  drift("#cam4", 21.40, DUR, 0.04);
+  words("#c4", 0, 0, [22.12, 22.36, 22.52, 22.68, 21.44]);
+  tl.fromTo("#map4", { x: 700, filter: "blur(12px)" }, { x: 0, filter: "blur(0px)", duration: 0.35, ease: "expo.out" }, 21.64);
+  shake("#cam4", 21.70, 7);
+  tl.fromTo("#brand", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.4, ease: E.in }, 22.00);
 
   window.__timelines["main"] = TL;
 </script>

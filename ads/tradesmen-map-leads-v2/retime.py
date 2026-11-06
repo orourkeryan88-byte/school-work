@@ -7,14 +7,13 @@ cues.json (SFX, word ticks and the music drop-out warped). With no transcript it
 The end card holds HOLD seconds after the last word."""
 import difflib, json, re, subprocess, sys
 
-HOLD, EST_DUR, EST_LAST_END = 1.62, 21.7, 20.08
-_e = json.load(open("vo_words_sean.json")); _e = _e.get("words", _e)
-est = [{"word": w["text"], "start": w["start"]} for w in _e if not w["text"].startswith("[") and not w["text"].endswith("]")]
+HOLD, EST_DUR, EST_LAST_END = 1.62, 24.7, 23.08
+est = json.load(open("vo_words_est.json"))   # Sean read + the guarantee line, the template's timing
 
 def norm(w):
     w = w.lower().replace("’", "'")
     w = re.sub(r"[^a-z0-9']", "", w)
-    return {"qfour": "q4", "q": "q4"}.get(w, w)
+    return {"qfour": "q4", "q": "q4", "thirty": "30", "ten": "10"}.get(w, w)
 
 anchors = [(0.0, 0.0)]
 if len(sys.argv) > 1:
@@ -51,13 +50,13 @@ def W(t):
 DUR = round(W(EST_DUR), 3)
 import os
 html = open(os.environ.get("TEMPLATE", "index.template.html")).read()
-html = html.replace("const WARP = [[0, 0], [21.7, 21.7]]; // @warp",
+html = html.replace("const WARP = [[0, 0], [24.7, 24.7]]; // @warp",
                     "const WARP = " + json.dumps([[round(a, 3), round(b, 3)] for a, b in anchors]) + "; // @warp")
 def clip(m):
     s0, d0 = float(m.group(2)), float(m.group(3))
     return f'{m.group(1)}data-start="{round(W(s0), 3)}" data-duration="{round(W(s0 + d0) - W(s0), 3)}"'
 html = re.sub(r'(<section [^>]*?)data-start="([\d.]+)" data-duration="([\d.]+)"', clip, html)
-html = html.replace('data-duration="21.7"', f'data-duration="{DUR}"')   # root + audio
+html = html.replace('data-duration="24.7"', f'data-duration="{DUR}"')   # root + audio
 open("hyperframes/index.html", "w").write(html)
 
 subprocess.run([sys.executable, "../make_cues.py", ".", str(EST_DUR), "accents.json"], check=True, cwd=".", capture_output=True)
@@ -66,4 +65,4 @@ cues["duration"] = DUR
 cues["events"] = [[round(W(t), 3), n, g] for t, n, g in cues["events"]]
 cues["dropouts"] = [[round(W(a), 3), round(W(b), 3)] for a, b in cues.get("dropouts", [])]
 json.dump(cues, open("cues.json", "w"), indent=1)
-print(f"duration {EST_DUR} -> {DUR}; scenes:", [round(W(t), 2) for t in (2.95, 4.9, 8.08, 9.65, 11.05, 16.0, 18.4)])
+print(f"duration {EST_DUR} -> {DUR}; scenes:", [round(W(t), 2) for t in (2.95, 4.9, 8.08, 9.65, 11.05, 16.0, 18.4, 20.58, 21.4)])

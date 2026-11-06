@@ -37,3 +37,15 @@ Mix: VO `loudnorm I=-12`, `--bed-db -3`, +0.2 dB → -14 LUFS.
 `southline_tradesmen_map_leads_v2_laura.mp4` (23.4 s): ElevenLabs **Laura | Warm, Natural Irish Voice**, `eleven_v4`,
 take 2 of 2 → `vo_laura.mp3`, one `[warmly]` tag only (no `[softly]`, which can sound breathy). Timings:
 `vo_words_laura.json`; `python3 retime.py vo_words_laura.json` (current `hyperframes/index.html`). Mix +0.9 dB → -14.1 LUFS.
+
+## Guarantee version (current `hyperframes/index.html`)
+`southline_tradesmen_map_leads_guarantee.mp4` (27.4 s, Laura): adds a lime guarantee beat after "again and again":
+a big **10** counts up, "qualified leads / in 30 days," builds word by word, then an **"or your money back"** stamp
+slams down. VO line added: "Ten qualified leads in thirty days, or your money back." (`vo_laura_guarantee.mp3`,
+`vo_words_laura_guarantee.json`). The end card moved 3 s later in the template (`vo_words_est.json` = the template's
+timing incl. the new line); `python3 retime.py vo_words_laura_guarantee.json`. Mix +0.9 dB → -14.1 LUFS.
+
+Before running it: the guarantee was asked for by the owner. Write down what counts as a "qualified lead" (e.g. a
+real person, in the service area, asking for a job the business does, contactable) in the client contract and the
+comment-DM reply, when the 30 days start (e.g. from the day ads go live), and exactly what is refunded if it's missed
+(the management fee; ad spend is paid to Meta and isn't refundable by Southline).
