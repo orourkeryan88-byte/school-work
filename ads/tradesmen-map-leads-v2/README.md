@@ -32,3 +32,8 @@ word timings `vo_words_sinead.json`. `index.template.html` holds the composition
 `python3 retime.py vo_words_sinead.json` moves every cut, caption word and SFX onto her read (writes
 `hyperframes/index.html` + `cues.json`). `python3 retime.py vo_words_sean.json` goes back to the male timing.
 Mix: VO `loudnorm I=-12`, `--bed-db -3`, +0.2 dB → -14 LUFS.
+
+## Laura voiceover version (replaces Sinéad, which sounded off)
+`southline_tradesmen_map_leads_v2_laura.mp4` (23.4 s): ElevenLabs **Laura | Warm, Natural Irish Voice**, `eleven_v4`,
+take 2 of 2 → `vo_laura.mp3`, one `[warmly]` tag only (no `[softly]`, which can sound breathy). Timings:
+`vo_words_laura.json`; `python3 retime.py vo_words_laura.json` (current `hyperframes/index.html`). Mix +0.9 dB → -14.1 LUFS.
