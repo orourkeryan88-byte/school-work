@@ -1,0 +1,26 @@
+# Southline: "Leads already looking for you" v2 (tradesmen, map), more engaging lead pop-ups
+
+Same voiceover (ElevenLabs Sean, `vo_sean.mp3`), map opener and end card as `../tradesmen-map-leads/`; the phone
+section (11.05–18.4 s) is rebuilt so the leads land harder. 21.7 s, comment **MAP**. Output: `southline_tradesmen_map_leads_v2.mp4`.
+
+## What's new in the lead section
+- The phone sits over a **dark version of the same town** (stick men still there), with a vignette.
+- **"…and the enquiries come…"**: five lime ENQUIRY chips launch off people on the map (a ring pulses where each one
+  starts) and arc into the phone.
+- **"…straight to your phone. Again. And again."**: four enquiries **slam** onto the screen one per beat: they come
+  in oversized and tilted, snap into place with a bounce, the phone buzzes and rocks, the screen flashes lime, a
+  phone-shaped pulse ripples out, and a counter badge ticks 1, 2, 3, 4. Each card has a job icon (bolt / drop / house).
+- **Final "again."**: eight more lead cards spring out around the phone, the badge rolls up to 12, and the camera
+  punches in to the end card.
+- Sounds: whoosh per flying lead, ding + buzz + thump per slam, rapid pops for the burst.
+
+The jobs and towns are illustrations, not client results. The phone card's lime "ADS" square is the slot for the
+official Meta logo file if you want it there. "Comment MAP" needs a comment-to-DM automation.
+
+## Re-render
+```
+python3 ../make_cues.py . 21.7 accents.json
+ffmpeg -i vo_sean.mp3 -af "highpass=f=70,loudnorm=I=-12:TP=-1:LRA=7" -ar 44100 -ac 1 vo.wav
+python3 build_audio.py cues.json vo.wav --bed-db -3 -o hyperframes/assets/audio.wav    # then +0.4 dB → -14 LUFS
+cd hyperframes && npx --yes hyperframes check && npx --yes hyperframes render -q delivery -f 30 -o ../southline_tradesmen_map_leads_v2.mp4
+```
