@@ -76,3 +76,11 @@ the session) with the **LibriTTS-high** model, speaker 675 (female; picked by pi
   `sun-risk/sun_risk_money_back.mp4` (19.5 s). All on bed A, -14 LUFS.
 - When ElevenLabs credits are back, any of these can be re-voiced with Laura: generate, transcribe, rebuild (the
   scenes are timed per word, so re-timing is a small edit).
+
+## Correction: these are organic posts, not paid ads
+Ryan: "They're not paid ads." All seven go out as organic Reels / TikToks on Southline's own pages (no ad spend,
+no Ads Manager setup). The videos stay as they are: none of them call themselves an ad, and they sell Southline's
+Meta ads service, which is the offer. What changes:
+- Each post needs a caption with the comment keyword and the voice credit (Wed–Sun: "Voice: Piper TTS, LibriTTS (CC BY 4.0)").
+- The comment-to-DM automations (ManyChat / GHL) work on organic posts too; set one per keyword.
+- No paid test setup (ad sets, daily budgets) applies to this week.
