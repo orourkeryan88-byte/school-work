@@ -14,7 +14,7 @@ for i in [4, 6, 8, 10, 12]: E(wt(i, 0), "shimmer", 0.9)                         
 for i, k in [(4, 19), (6, 16), (8, 21), (10, 15), (12, 15)]: E(wt(i, k), "coin", 0.35)   # HUD counters roll
 # 1 launch: suspension bump, click on publish, ping when live; rain + lamp hum in the office
 E(1.2, "knock", 0.5); E(1.45, "pop", 0.3); E(wt(0, 17), "click", 0.9); E(wt(0, 18), "ping", 0.6)
-E(wt(0, 11) - 0.05, "rain", 0.8); E(wt(0, 11) - 0.05, "hum", 1.0)
+E(wt(0, 11) - 0.05, "hum", 1.0)   # rain cut at Ryan's request
 # 2 refresh click, the zero lands
 E(wt(1, 2), "click", 0.8); E(wt(1, 4), "pop", 0.5)
 # 3 dominoes tap down one by one, HUD swishes in

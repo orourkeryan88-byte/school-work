@@ -403,7 +403,7 @@
     for (let i = 0; all.length < 24; i++) all.push([250 + rnd(i + 40) * 1750, 600 + rnd(i + 90) * 2900, null]);
     all.forEach(([x, y, chip], i) => { const p = document.createElement("div"); p.className = "pin" + (chip ? " good" : ""); p.id = "pn" + i; p.style.left = x + "px"; p.style.top = y + "px";
       p.innerHTML = "<b></b><i></i>"; pins.appendChild(p);
-      if (chip) { const c = document.createElement("div"); c.className = "mchip"; c.id = "mc" + i; c.style.left = (x > 1500 ? x - 640 : x + 60) + "px"; c.style.top = (y - 190) + "px";   // right-hand towns: chip to the left c.innerHTML = "<i></i>" + chip; pins.appendChild(c); } });
+      if (chip) { const c = document.createElement("div"); c.className = "mchip"; c.id = "mc" + i; c.style.left = (x > 1500 ? x - 640 : x + 60) + "px"; c.style.top = (y - 190) + "px"; c.innerHTML = "<i></i>" + chip; pins.appendChild(c); } });
     const here = document.getElementById("hereDot"); here.style.left = "1450px"; here.style.top = "1950px";
 
     // camera: world point (px,py) lands at screen (sx,sy), scale s
