@@ -1,0 +1,19 @@
+<!doctype html><html><head><meta charset="UTF-8">
+<script src="hyperframes/assets/vendor/three.min.js"></script><script src="hyperframes/assets/js/kit3d.js"></script><script src="hyperframes/assets/js/dec.js"></script>
+<style>body{margin:0;background:#ECEEED;font:600 22px monospace;color:#0E1412}#lab{position:absolute;inset:0}#lab div{position:absolute;width:400px;text-align:center}</style></head>
+<body><canvas id="c" width="2000" height="1200"></canvas><div id="lab"></div>
+<script>
+const R=new THREE.WebGLRenderer({canvas:c,antialias:true});R.setClearColor(0xECEEED);R.shadowMap.enabled=true;R.outputEncoding=THREE.sRGBEncoding;
+const sc=new THREE.Scene();const key=new THREE.DirectionalLight(0xffe6c0,1.25);key.position.set(3,5,4);sc.add(key,new THREE.HemisphereLight(0xdfe9e4,0x2f5a4c,0.75));
+const dec=DEC.make();sc.add(dec.root);
+const cam=new THREE.PerspectiveCamera(24,1,.1,50);
+const views=[["FRONT",0],["3/4",0.7],["SIDE",Math.PI/2],["BACK",Math.PI]];
+const ex=[["happy","idle","happy"],["shocked","idle","shocked"],["frustrated","idle","frustrated"],["defeated","idle","defeated"],["determined","point","determined"],["celebrating","cheer","celebrate"]];
+R.setScissorTest(true);
+function vp(x,y,w,h){R.setViewport(x,1200-y-h,w,h);R.setScissor(x,1200-y-h,w,h);cam.aspect=w/h;cam.updateProjectionMatrix();}
+views.forEach(([n,a],i)=>{dec.apply(DEC.P.idle,DEC.F.neutral,0,{still:1,noBlink:1});dec.root.rotation.y=a;vp(i*500,0,500,700);
+ cam.position.set(0,1.25,7.2);cam.lookAt(0,1.05,0);R.render(sc,cam);lab.innerHTML+=`<div style="left:${i*500+50}px;top:660px">${n}</div>`;});
+ex.forEach(([n,p,f],i)=>{const d=n=="frustrated"?"driver":null;dec.hold(d);dec.apply(DEC.P[p],DEC.F[f],0,{still:1,noBlink:1});dec.root.rotation.y=0.35;vp(i*333,700,333,500);
+ cam.position.set(0.25,1.72,2.6);cam.lookAt(0,1.62,0);R.render(sc,cam);lab.innerHTML+=`<div style="left:${i*333-33}px;top:1160px">${n.toUpperCase()}</div>`;});
+window.done=1;
+</script></body></html>

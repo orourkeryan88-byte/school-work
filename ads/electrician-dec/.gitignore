@@ -1,0 +1,6 @@
+hyperframes/assets/audio.wav
+hyperframes/.hyperframes/
+.render_tmp/
+render.log
+vo_lev.wav
+work-*/

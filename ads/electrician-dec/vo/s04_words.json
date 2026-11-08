@@ -1,0 +1,80 @@
+{
+"voice": "Piper en_GB-vctk-medium.onnx speaker 97",
+"words": [
+{
+"text": "Problem",
+"start": 0.15,
+"end": 0.479
+},
+{
+"text": "one.",
+"start": 0.479,
+"end": 0.808
+},
+{
+"text": "Your",
+"start": 1.148,
+"end": 1.359
+},
+{
+"text": "ad",
+"start": 1.359,
+"end": 1.57
+},
+{
+"text": "says",
+"start": 1.57,
+"end": 1.781
+},
+{
+"text": "free",
+"start": 1.781,
+"end": 1.992
+},
+{
+"text": "quotes.",
+"start": 1.992,
+"end": 2.414
+},
+{
+"text": "So",
+"start": 2.754,
+"end": 2.93
+},
+{
+"text": "does",
+"start": 2.93,
+"end": 3.106
+},
+{
+"text": "every",
+"start": 3.106,
+"end": 3.633
+},
+{
+"text": "other",
+"start": 3.633,
+"end": 3.984
+},
+{
+"text": "spark",
+"start": 3.984,
+"end": 4.16
+},
+{
+"text": "in",
+"start": 4.16,
+"end": 4.336
+},
+{
+"text": "the",
+"start": 4.336,
+"end": 4.512
+},
+{
+"text": "county.",
+"start": 4.512,
+"end": 4.863
+}
+]
+}

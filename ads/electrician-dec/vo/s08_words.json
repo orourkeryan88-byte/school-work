@@ -1,0 +1,95 @@
+{
+"voice": "Piper en_GB-vctk-medium.onnx speaker 97",
+"words": [
+{
+"text": "Problem",
+"start": 0.15,
+"end": 0.595
+},
+{
+"text": "three.",
+"start": 0.595,
+"end": 0.818
+},
+{
+"text": "The",
+"start": 1.158,
+"end": 1.378
+},
+{
+"text": "form's",
+"start": 1.378,
+"end": 1.598
+},
+{
+"text": "too",
+"start": 1.598,
+"end": 1.818
+},
+{
+"text": "easy.",
+"start": 1.818,
+"end": 2.259
+},
+{
+"text": "They",
+"start": 2.599,
+"end": 2.787
+},
+{
+"text": "tap",
+"start": 2.787,
+"end": 2.975
+},
+{
+"text": "submit",
+"start": 2.975,
+"end": 3.351
+},
+{
+"text": "for",
+"start": 3.351,
+"end": 3.539
+},
+{
+"text": "the",
+"start": 3.539,
+"end": 3.728
+},
+{
+"text": "crack.",
+"start": 3.728,
+"end": 3.916
+},
+{
+"text": "You",
+"start": 4.256,
+"end": 4.486
+},
+{
+"text": "drive",
+"start": 4.486,
+"end": 4.716
+},
+{
+"text": "to",
+"start": 4.716,
+"end": 4.946
+},
+{
+"text": "Nace\u2026",
+"start": 4.946,
+"end": 5.177
+},
+{
+"text": "for",
+"start": 5.517,
+"end": 5.69
+},
+{
+"text": "nothing.",
+"start": 5.69,
+"end": 6.037
+}
+]
+}

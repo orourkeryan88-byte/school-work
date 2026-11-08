@@ -1,0 +1,115 @@
+{
+"voice": "Piper en_GB-vctk-medium.onnx speaker 97",
+"words": [
+{
+"text": "Fix:",
+"start": 0.15,
+"end": 0.614
+},
+{
+"text": "a",
+"start": 0.774,
+"end": 0.992
+},
+{
+"text": "short",
+"start": 0.992,
+"end": 1.21
+},
+{
+"text": "video",
+"start": 1.21,
+"end": 1.647
+},
+{
+"text": "before",
+"start": 1.647,
+"end": 2.083
+},
+{
+"text": "the",
+"start": 2.083,
+"end": 2.301
+},
+{
+"text": "form.",
+"start": 2.301,
+"end": 2.519
+},
+{
+"text": "Who",
+"start": 2.859,
+"end": 3.005
+},
+{
+"text": "you",
+"start": 3.005,
+"end": 3.151
+},
+{
+"text": "are.",
+"start": 3.151,
+"end": 3.443
+},
+{
+"text": "How",
+"start": 3.783,
+"end": 4.036
+},
+{
+"text": "it",
+"start": 4.036,
+"end": 4.29
+},
+{
+"text": "works.",
+"start": 4.29,
+"end": 4.543
+},
+{
+"text": "And",
+"start": 4.883,
+"end": 5.124
+},
+{
+"text": "what",
+"start": 5.124,
+"end": 5.365
+},
+{
+"text": "it",
+"start": 5.365,
+"end": 5.606
+},
+{
+"text": "costs.",
+"start": 5.606,
+"end": 5.848
+},
+{
+"text": "Whoever",
+"start": 6.188,
+"end": 6.64
+},
+{
+"text": "still",
+"start": 6.64,
+"end": 6.866
+},
+{
+"text": "books",
+"start": 6.866,
+"end": 7.092
+},
+{
+"text": "is",
+"start": 7.092,
+"end": 7.319
+},
+{
+"text": "serious.",
+"start": 7.319,
+"end": 7.771
+}
+]
+}

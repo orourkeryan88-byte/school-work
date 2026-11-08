@@ -1,0 +1,55 @@
+{
+"voice": "Piper en_GB-vctk-medium.onnx speaker 97",
+"words": [
+{
+"text": "Offer.",
+"start": 0.15,
+"end": 0.522
+},
+{
+"text": "Message.",
+"start": 0.862,
+"end": 1.336
+},
+{
+"text": "Video.",
+"start": 1.676,
+"end": 2.137
+},
+{
+"text": "Speed.",
+"start": 2.477,
+"end": 2.907
+},
+{
+"text": "Always",
+"start": 3.247,
+"end": 3.648
+},
+{
+"text": "on.",
+"start": 3.648,
+"end": 3.848
+},
+{
+"text": "That's",
+"start": 4.188,
+"end": 4.358
+},
+{
+"text": "the",
+"start": 4.358,
+"end": 4.529
+},
+{
+"text": "whole",
+"start": 4.529,
+"end": 4.869
+},
+{
+"text": "system.",
+"start": 4.869,
+"end": 5.209
+}
+]
+}

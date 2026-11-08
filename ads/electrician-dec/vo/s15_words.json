@@ -1,0 +1,50 @@
+{
+"voice": "Piper en_GB-vctk-medium.onnx speaker 97",
+"words": [
+{
+"text": "Want",
+"start": 0.15,
+"end": 0.338
+},
+{
+"text": "this",
+"start": 0.338,
+"end": 0.526
+},
+{
+"text": "built",
+"start": 0.526,
+"end": 0.714
+},
+{
+"text": "for",
+"start": 0.714,
+"end": 0.902
+},
+{
+"text": "your",
+"start": 0.902,
+"end": 1.09
+},
+{
+"text": "business?",
+"start": 1.09,
+"end": 1.654
+},
+{
+"text": "Book",
+"start": 1.994,
+"end": 2.197
+},
+{
+"text": "a",
+"start": 2.197,
+"end": 2.401
+},
+{
+"text": "call.",
+"start": 2.401,
+"end": 2.605
+}
+]
+}

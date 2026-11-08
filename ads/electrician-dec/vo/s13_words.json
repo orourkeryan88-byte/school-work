@@ -1,0 +1,85 @@
+{
+"voice": "Piper en_GB-vctk-medium.onnx speaker 97",
+"words": [
+{
+"text": "Fix:",
+"start": 0.15,
+"end": 0.726
+},
+{
+"text": "never",
+"start": 0.886,
+"end": 1.312
+},
+{
+"text": "switch",
+"start": 1.312,
+"end": 1.525
+},
+{
+"text": "them",
+"start": 1.525,
+"end": 1.738
+},
+{
+"text": "off.",
+"start": 1.738,
+"end": 1.95
+},
+{
+"text": "When",
+"start": 2.29,
+"end": 2.446
+},
+{
+"text": "you're",
+"start": 2.446,
+"end": 2.601
+},
+{
+"text": "busy,",
+"start": 2.601,
+"end": 2.911
+},
+{
+"text": "raise",
+"start": 3.071,
+"end": 3.307
+},
+{
+"text": "your",
+"start": 3.307,
+"end": 3.542
+},
+{
+"text": "price",
+"start": 3.542,
+"end": 3.778
+},
+{
+"text": "and",
+"start": 3.778,
+"end": 4.013
+},
+{
+"text": "pick",
+"start": 4.013,
+"end": 4.248
+},
+{
+"text": "the",
+"start": 4.248,
+"end": 4.484
+},
+{
+"text": "best",
+"start": 4.484,
+"end": 4.719
+},
+{
+"text": "jobs.",
+"start": 4.719,
+"end": 4.955
+}
+]
+}

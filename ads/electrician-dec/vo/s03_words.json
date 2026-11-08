@@ -1,0 +1,90 @@
+{
+"voice": "Piper en_GB-vctk-medium.onnx speaker 97",
+"words": [
+{
+"text": "There",
+"start": 0.15,
+"end": 0.315
+},
+{
+"text": "are",
+"start": 0.315,
+"end": 0.645
+},
+{
+"text": "five",
+"start": 0.645,
+"end": 0.81
+},
+{
+"text": "problems",
+"start": 0.81,
+"end": 1.14
+},
+{
+"text": "between",
+"start": 1.14,
+"end": 1.47
+},
+{
+"text": "you",
+"start": 1.47,
+"end": 1.635
+},
+{
+"text": "and",
+"start": 1.635,
+"end": 1.8
+},
+{
+"text": "a",
+"start": 1.8,
+"end": 1.965
+},
+{
+"text": "full",
+"start": 1.965,
+"end": 2.13
+},
+{
+"text": "diary.",
+"start": 2.13,
+"end": 2.46
+},
+{
+"text": "And",
+"start": 2.8,
+"end": 2.96
+},
+{
+"text": "every",
+"start": 2.96,
+"end": 3.438
+},
+{
+"text": "fix",
+"start": 3.438,
+"end": 3.598
+},
+{
+"text": "brings",
+"start": 3.598,
+"end": 3.757
+},
+{
+"text": "the",
+"start": 3.757,
+"end": 3.917
+},
+{
+"text": "next",
+"start": 3.917,
+"end": 4.077
+},
+{
+"text": "one.",
+"start": 4.077,
+"end": 4.396
+}
+]
+}

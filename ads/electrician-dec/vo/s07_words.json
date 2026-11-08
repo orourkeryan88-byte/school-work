@@ -1,0 +1,95 @@
+{
+"voice": "Piper en_GB-vctk-medium.onnx speaker 97",
+"words": [
+{
+"text": "Fix:",
+"start": 0.15,
+"end": 0.732
+},
+{
+"text": "say",
+"start": 0.892,
+"end": 1.13
+},
+{
+"text": "who",
+"start": 1.13,
+"end": 1.367
+},
+{
+"text": "it's",
+"start": 1.367,
+"end": 1.604
+},
+{
+"text": "for,",
+"start": 1.604,
+"end": 1.842
+},
+{
+"text": "and",
+"start": 2.002,
+"end": 2.227
+},
+{
+"text": "the",
+"start": 2.227,
+"end": 2.453
+},
+{
+"text": "price.",
+"start": 2.453,
+"end": 2.679
+},
+{
+"text": "Three-bed",
+"start": 3.019,
+"end": 3.441
+},
+{
+"text": "rewires,",
+"start": 3.441,
+"end": 4.075
+},
+{
+"text": "Kildare,",
+"start": 4.235,
+"end": 4.699
+},
+{
+"text": "from",
+"start": 4.859,
+"end": 5.174
+},
+{
+"text": "nine",
+"start": 5.174,
+"end": 5.489
+},
+{
+"text": "grand.",
+"start": 5.489,
+"end": 5.804
+},
+{
+"text": "Fewer",
+"start": 6.144,
+"end": 6.625
+},
+{
+"text": "leads.",
+"start": 6.625,
+"end": 6.866
+},
+{
+"text": "Better",
+"start": 7.206,
+"end": 7.549
+},
+{
+"text": "ones.",
+"start": 7.549,
+"end": 7.892
+}
+]
+}

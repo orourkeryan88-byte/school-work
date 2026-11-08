@@ -1,0 +1,105 @@
+{
+"voice": "Piper en_GB-vctk-medium.onnx speaker 97",
+"words": [
+{
+"text": "Fix:",
+"start": 0.15,
+"end": 0.814
+},
+{
+"text": "sell",
+"start": 0.974,
+"end": 1.181
+},
+{
+"text": "the",
+"start": 1.181,
+"end": 1.389
+},
+{
+"text": "result.",
+"start": 1.389,
+"end": 1.803
+},
+{
+"text": "Full",
+"start": 2.143,
+"end": 2.405
+},
+{
+"text": "rewire",
+"start": 2.405,
+"end": 2.929
+},
+{
+"text": "in",
+"start": 2.929,
+"end": 3.191
+},
+{
+"text": "five",
+"start": 3.191,
+"end": 3.453
+},
+{
+"text": "days,",
+"start": 3.453,
+"end": 3.715
+},
+{
+"text": "certified,",
+"start": 3.875,
+"end": 4.578
+},
+{
+"text": "and",
+"start": 4.738,
+"end": 4.887
+},
+{
+"text": "the",
+"start": 4.887,
+"end": 5.035
+},
+{
+"text": "mess",
+"start": 5.035,
+"end": 5.184
+},
+{
+"text": "cleaned",
+"start": 5.184,
+"end": 5.482
+},
+{
+"text": "up.",
+"start": 5.482,
+"end": 5.631
+},
+{
+"text": "Now",
+"start": 5.971,
+"end": 6.181
+},
+{
+"text": "the",
+"start": 6.181,
+"end": 6.392
+},
+{
+"text": "phone",
+"start": 6.392,
+"end": 6.602
+},
+{
+"text": "won't",
+"start": 6.602,
+"end": 6.813
+},
+{
+"text": "stop.",
+"start": 6.813,
+"end": 7.023
+}
+]
+}

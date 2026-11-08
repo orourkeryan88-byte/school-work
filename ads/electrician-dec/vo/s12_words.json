@@ -1,0 +1,90 @@
+{
+"voice": "Piper en_GB-vctk-medium.onnx speaker 97",
+"words": [
+{
+"text": "Problem",
+"start": 0.15,
+"end": 0.709
+},
+{
+"text": "five.",
+"start": 0.709,
+"end": 0.988
+},
+{
+"text": "You",
+"start": 1.328,
+"end": 1.509
+},
+{
+"text": "get",
+"start": 1.509,
+"end": 1.691
+},
+{
+"text": "busy,",
+"start": 1.691,
+"end": 2.053
+},
+{
+"text": "so",
+"start": 2.213,
+"end": 2.43
+},
+{
+"text": "you",
+"start": 2.43,
+"end": 2.647
+},
+{
+"text": "switch",
+"start": 2.647,
+"end": 2.864
+},
+{
+"text": "the",
+"start": 2.864,
+"end": 3.081
+},
+{
+"text": "ads",
+"start": 3.081,
+"end": 3.298
+},
+{
+"text": "off.",
+"start": 3.298,
+"end": 3.515
+},
+{
+"text": "A",
+"start": 3.855,
+"end": 4.038
+},
+{
+"text": "month",
+"start": 4.038,
+"end": 4.221
+},
+{
+"text": "later\u2026",
+"start": 4.221,
+"end": 4.587
+},
+{
+"text": "the",
+"start": 4.927,
+"end": 5.114
+},
+{
+"text": "diary's",
+"start": 5.114,
+"end": 5.488
+},
+{
+"text": "empty.",
+"start": 5.488,
+"end": 5.863
+}
+]
+}

@@ -1,0 +1,95 @@
+{
+"voice": "Piper en_GB-vctk-medium.onnx speaker 97",
+"words": [
+{
+"text": "Problem",
+"start": 0.15,
+"end": 0.629
+},
+{
+"text": "four.",
+"start": 0.629,
+"end": 0.869
+},
+{
+"text": "A",
+"start": 1.209,
+"end": 1.432
+},
+{
+"text": "lead",
+"start": 1.432,
+"end": 1.654
+},
+{
+"text": "lands",
+"start": 1.654,
+"end": 1.877
+},
+{
+"text": "at",
+"start": 1.877,
+"end": 2.099
+},
+{
+"text": "noon.",
+"start": 2.099,
+"end": 2.321
+},
+{
+"text": "You're",
+"start": 2.661,
+"end": 2.82
+},
+{
+"text": "up",
+"start": 2.82,
+"end": 2.978
+},
+{
+"text": "in",
+"start": 2.978,
+"end": 3.137
+},
+{
+"text": "an",
+"start": 3.137,
+"end": 3.295
+},
+{
+"text": "attic.",
+"start": 3.295,
+"end": 3.612
+},
+{
+"text": "By",
+"start": 3.952,
+"end": 4.293
+},
+{
+"text": "five,",
+"start": 4.293,
+"end": 4.633
+},
+{
+"text": "they've",
+"start": 4.793,
+"end": 4.997
+},
+{
+"text": "hired",
+"start": 4.997,
+"end": 5.406
+},
+{
+"text": "someone",
+"start": 5.406,
+"end": 5.814
+},
+{
+"text": "else.",
+"start": 5.814,
+"end": 6.019
+}
+]
+}
