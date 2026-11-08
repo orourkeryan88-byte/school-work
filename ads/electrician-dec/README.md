@@ -59,6 +59,8 @@ Ryan sent the original reference ad (screen recordings) and asked for it to look
 | 15 | 88.8–93.3 | Want this built for your business? Book a call. | Pine end card: gold line wipe, extruded "Southline", "META ADS FOR ELECTRICIANS", the "Book a call." pill on the final hit, and the logo row. Dec waves; the house and van sit faintly behind at dusk. Holds 1.5 s. |
 
 ## Voice
+- **Current voiceover: Ryan's ElevenLabs take** (voice "Liam", one full read, `vo_liam.mp3`). It has no transcript, so `align_take.py` aligns it to the script: the local per-line reads in `vo/` already have word times, and a DTW match on the audio maps every word onto the take. `timing_take.py` then re-times every scene and caption to it. Re-run with `python3 align_take.py vo_liam.mp3 && python3 timing_take.py vo_liam.mp3 && python3 mkaudio.py`.
+- The notes below describe the earlier local voice, which is kept in `vo/` as the alignment reference.
 - **Not the Higgsfield "Cillian" voice:** the Higgsfield account has 0 credits, so it couldn't be generated. ElevenLabs is also out of credits for the month.
 - **Current read:** the free Piper TTS voice "en_GB VCTK", speaker **p245** (Irish male, Dublin), generated one line per scene (`lines.json`, `vo/`).
   - The VCTK recordings are CC BY 4.0. Credit if needed: "Voice: Piper TTS, VCTK corpus (CC BY 4.0)".

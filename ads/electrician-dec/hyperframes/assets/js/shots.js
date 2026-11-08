@@ -332,6 +332,7 @@
       show("I"); sets.I.userData.tone(true); extras.toggle.visible = true; extras.lock.visible = true;
       light(FIXL());
       extras.toggle.position.set(0.55, 0, -0.6); extras.toggle.userData.set(1 - eio(seg(lt, w[0] - 0.05, w[0] + 0.12)));
+      if (lt < w[5]) extras.toggle.userData.on.visible = extras.toggle.userData.off.visible = false;   // the NEVER / SWITCH THEM / OFF title owns the top
       const ld = seg(lt, w[3], w[4]); extras.lock.position.set(0.55, lerp(6.5, 1.1, ld * ld), 0.5); extras.lock.userData.sh.position.y = lt > w[4] ? 0.37 : 0.55;
       extras.lock.rotation.y = 0.15;
       act(lt, [-1.05, 0, 0.9], 0.45, [[0, "idle"], [w[9], "cross"]], [[0, "determined"], [w[9], "grin"]], { seed: 19 });

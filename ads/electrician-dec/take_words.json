@@ -1,0 +1,1406 @@
+[
+{
+"scene": "s01",
+"text": "You're",
+"start": 0.05,
+"end": 0.198
+},
+{
+"scene": "s01",
+"text": "an",
+"start": 0.198,
+"end": 0.346
+},
+{
+"scene": "s01",
+"text": "electrician.",
+"start": 0.346,
+"end": 1.019
+},
+{
+"scene": "s01",
+"text": "You",
+"start": 1.319,
+"end": 1.502
+},
+{
+"scene": "s01",
+"text": "put",
+"start": 1.502,
+"end": 1.785
+},
+{
+"scene": "s01",
+"text": "rewires",
+"start": 1.785,
+"end": 2.254
+},
+{
+"scene": "s01",
+"text": "dot",
+"start": 2.254,
+"end": 2.436
+},
+{
+"scene": "s01",
+"text": "co",
+"start": 2.436,
+"end": 2.659
+},
+{
+"scene": "s01",
+"text": "on",
+"start": 2.659,
+"end": 2.862
+},
+{
+"scene": "s01",
+"text": "the",
+"start": 2.862,
+"end": 3.085
+},
+{
+"scene": "s01",
+"text": "van,",
+"start": 3.085,
+"end": 3.248
+},
+{
+"scene": "s01",
+"text": "open",
+"start": 3.408,
+"end": 3.715
+},
+{
+"scene": "s01",
+"text": "the",
+"start": 3.715,
+"end": 3.869
+},
+{
+"scene": "s01",
+"text": "laptop,",
+"start": 3.869,
+"end": 4.236
+},
+{
+"scene": "s01",
+"text": "and",
+"start": 4.396,
+"end": 4.652
+},
+{
+"scene": "s01",
+"text": "post",
+"start": 4.652,
+"end": 4.868
+},
+{
+"scene": "s01",
+"text": "your",
+"start": 4.868,
+"end": 5.183
+},
+{
+"scene": "s01",
+"text": "first",
+"start": 5.183,
+"end": 5.419
+},
+{
+"scene": "s01",
+"text": "Facebook",
+"start": 5.419,
+"end": 6.106
+},
+{
+"scene": "s01",
+"text": "ads.",
+"start": 6.106,
+"end": 6.222
+},
+{
+"scene": "s02",
+"text": "You",
+"start": 6.562,
+"end": 6.788
+},
+{
+"scene": "s02",
+"text": "hit",
+"start": 6.788,
+"end": 7.074
+},
+{
+"scene": "s02",
+"text": "refresh.",
+"start": 7.074,
+"end": 7.606
+},
+{
+"scene": "s02",
+"text": "And\u2026",
+"start": 8.166,
+"end": 8.491
+},
+{
+"scene": "s02",
+"text": "nothing.",
+"start": 8.911,
+"end": 9.483
+},
+{
+"scene": "s03",
+"text": "There",
+"start": 9.982,
+"end": 10.167
+},
+{
+"scene": "s03",
+"text": "are",
+"start": 10.167,
+"end": 10.697
+},
+{
+"scene": "s03",
+"text": "five",
+"start": 10.697,
+"end": 10.922
+},
+{
+"scene": "s03",
+"text": "problems",
+"start": 10.922,
+"end": 11.272
+},
+{
+"scene": "s03",
+"text": "between",
+"start": 11.272,
+"end": 11.722
+},
+{
+"scene": "s03",
+"text": "you",
+"start": 11.722,
+"end": 12.067
+},
+{
+"scene": "s03",
+"text": "and",
+"start": 12.067,
+"end": 12.312
+},
+{
+"scene": "s03",
+"text": "a",
+"start": 12.312,
+"end": 12.557
+},
+{
+"scene": "s03",
+"text": "full",
+"start": 12.557,
+"end": 12.722
+},
+{
+"scene": "s03",
+"text": "diary.",
+"start": 12.722,
+"end": 13.152
+},
+{
+"scene": "s03",
+"text": "And",
+"start": 13.372,
+"end": 13.572
+},
+{
+"scene": "s03",
+"text": "every",
+"start": 13.572,
+"end": 14.23
+},
+{
+"scene": "s03",
+"text": "fix",
+"start": 14.23,
+"end": 14.53
+},
+{
+"scene": "s03",
+"text": "brings",
+"start": 14.53,
+"end": 14.649
+},
+{
+"scene": "s03",
+"text": "the",
+"start": 14.649,
+"end": 14.809
+},
+{
+"scene": "s03",
+"text": "next",
+"start": 14.809,
+"end": 14.969
+},
+{
+"scene": "s03",
+"text": "one.",
+"start": 14.969,
+"end": 15.308
+},
+{
+"scene": "s04",
+"text": "Problem",
+"start": 15.788,
+"end": 16.114
+},
+{
+"scene": "s04",
+"text": "one.",
+"start": 16.114,
+"end": 16.46
+},
+{
+"scene": "s04",
+"text": "Your",
+"start": 16.8,
+"end": 17.134
+},
+{
+"scene": "s04",
+"text": "ad",
+"start": 17.134,
+"end": 17.408
+},
+{
+"scene": "s04",
+"text": "says",
+"start": 17.408,
+"end": 17.741
+},
+{
+"scene": "s04",
+"text": "free",
+"start": 17.741,
+"end": 18.055
+},
+{
+"scene": "s04",
+"text": "quotes.",
+"start": 18.055,
+"end": 18.483
+},
+{
+"scene": "s04",
+"text": "So",
+"start": 18.783,
+"end": 18.912
+},
+{
+"scene": "s04",
+"text": "does",
+"start": 18.912,
+"end": 19.062
+},
+{
+"scene": "s04",
+"text": "every",
+"start": 19.062,
+"end": 19.549
+},
+{
+"scene": "s04",
+"text": "other",
+"start": 19.549,
+"end": 19.847
+},
+{
+"scene": "s04",
+"text": "electrician",
+"start": 19.847,
+"end": 20.324
+},
+{
+"scene": "s04",
+"text": "in",
+"start": 20.324,
+"end": 20.473
+},
+{
+"scene": "s04",
+"text": "the",
+"start": 20.473,
+"end": 20.58
+},
+{
+"scene": "s04",
+"text": "county.",
+"start": 20.58,
+"end": 20.861
+},
+{
+"scene": "s05",
+"text": "Fix:",
+"start": 21.34,
+"end": 21.905
+},
+{
+"scene": "s05",
+"text": "sell",
+"start": 22.065,
+"end": 22.372
+},
+{
+"scene": "s05",
+"text": "the",
+"start": 22.372,
+"end": 22.7
+},
+{
+"scene": "s05",
+"text": "result.",
+"start": 22.7,
+"end": 23.174
+},
+{
+"scene": "s05",
+"text": "Full",
+"start": 23.534,
+"end": 23.896
+},
+{
+"scene": "s05",
+"text": "rewire",
+"start": 23.896,
+"end": 24.42
+},
+{
+"scene": "s05",
+"text": "in",
+"start": 24.42,
+"end": 24.782
+},
+{
+"scene": "s05",
+"text": "five",
+"start": 24.782,
+"end": 25.064
+},
+{
+"scene": "s05",
+"text": "days,",
+"start": 25.064,
+"end": 25.326
+},
+{
+"scene": "s05",
+"text": "certified,",
+"start": 25.42,
+"end": 26.089
+},
+{
+"scene": "s05",
+"text": "and",
+"start": 26.229,
+"end": 26.378
+},
+{
+"scene": "s05",
+"text": "the",
+"start": 26.378,
+"end": 26.726
+},
+{
+"scene": "s05",
+"text": "mess",
+"start": 26.726,
+"end": 26.915
+},
+{
+"scene": "s05",
+"text": "cleaned",
+"start": 26.915,
+"end": 27.253
+},
+{
+"scene": "s05",
+"text": "up.",
+"start": 27.253,
+"end": 27.382
+},
+{
+"scene": "s05",
+"text": "Now",
+"start": 27.782,
+"end": 27.972
+},
+{
+"scene": "s05",
+"text": "the",
+"start": 27.972,
+"end": 28.183
+},
+{
+"scene": "s05",
+"text": "phone",
+"start": 28.183,
+"end": 28.393
+},
+{
+"scene": "s05",
+"text": "won't",
+"start": 28.393,
+"end": 28.604
+},
+{
+"scene": "s05",
+"text": "stop.",
+"start": 28.604,
+"end": 29.054
+},
+{
+"scene": "s06",
+"text": "Problem",
+"start": 29.614,
+"end": 30.07
+},
+{
+"scene": "s06",
+"text": "two.",
+"start": 30.07,
+"end": 30.298
+},
+{
+"scene": "s06",
+"text": "Half",
+"start": 30.678,
+"end": 30.826
+},
+{
+"scene": "s06",
+"text": "of",
+"start": 30.826,
+"end": 30.994
+},
+{
+"scene": "s06",
+"text": "them",
+"start": 30.994,
+"end": 31.142
+},
+{
+"scene": "s06",
+"text": "want",
+"start": 31.142,
+"end": 31.39
+},
+{
+"scene": "s06",
+"text": "one",
+"start": 31.39,
+"end": 31.886
+},
+{
+"scene": "s06",
+"text": "socket",
+"start": 31.886,
+"end": 32.261
+},
+{
+"scene": "s06",
+"text": "moved.",
+"start": 32.261,
+"end": 32.577
+},
+{
+"scene": "s06",
+"text": "Junk",
+"start": 32.917,
+"end": 33.279
+},
+{
+"scene": "s06",
+"text": "leads.",
+"start": 33.279,
+"end": 33.64
+},
+{
+"scene": "s07",
+"text": "Fix:",
+"start": 34.14,
+"end": 34.562
+},
+{
+"scene": "s07",
+"text": "say",
+"start": 34.722,
+"end": 34.96
+},
+{
+"scene": "s07",
+"text": "who",
+"start": 34.96,
+"end": 35.197
+},
+{
+"scene": "s07",
+"text": "it's",
+"start": 35.197,
+"end": 35.434
+},
+{
+"scene": "s07",
+"text": "for,",
+"start": 35.434,
+"end": 35.752
+},
+{
+"scene": "s07",
+"text": "and",
+"start": 35.912,
+"end": 36.137
+},
+{
+"scene": "s07",
+"text": "the",
+"start": 36.137,
+"end": 36.423
+},
+{
+"scene": "s07",
+"text": "price.",
+"start": 36.423,
+"end": 36.609
+},
+{
+"scene": "s07",
+"text": "Three-bed",
+"start": 36.949,
+"end": 37.411
+},
+{
+"scene": "s07",
+"text": "rewires,",
+"start": 37.411,
+"end": 38.005
+},
+{
+"scene": "s07",
+"text": "Kildare,",
+"start": 38.105,
+"end": 38.649
+},
+{
+"scene": "s07",
+"text": "from",
+"start": 38.72,
+"end": 39.024
+},
+{
+"scene": "s07",
+"text": "nine",
+"start": 39.024,
+"end": 39.359
+},
+{
+"scene": "s07",
+"text": "grand.",
+"start": 39.359,
+"end": 39.634
+},
+{
+"scene": "s07",
+"text": "Fewer",
+"start": 39.934,
+"end": 40.535
+},
+{
+"scene": "s07",
+"text": "leads.",
+"start": 40.535,
+"end": 40.696
+},
+{
+"scene": "s07",
+"text": "Better",
+"start": 40.996,
+"end": 41.339
+},
+{
+"scene": "s07",
+"text": "ones.",
+"start": 41.339,
+"end": 41.582
+},
+{
+"scene": "s08",
+"text": "Problem",
+"start": 42.042,
+"end": 42.506
+},
+{
+"scene": "s08",
+"text": "three.",
+"start": 42.506,
+"end": 42.778
+},
+{
+"scene": "s08",
+"text": "The",
+"start": 43.02,
+"end": 43.27
+},
+{
+"scene": "s08",
+"text": "form's",
+"start": 43.27,
+"end": 43.502
+},
+{
+"scene": "s08",
+"text": "too",
+"start": 43.502,
+"end": 43.674
+},
+{
+"scene": "s08",
+"text": "easy.",
+"start": 43.674,
+"end": 44.277
+},
+{
+"scene": "s08",
+"text": "They",
+"start": 44.477,
+"end": 44.658
+},
+{
+"scene": "s08",
+"text": "tap",
+"start": 44.658,
+"end": 44.858
+},
+{
+"scene": "s08",
+"text": "submit",
+"start": 44.858,
+"end": 45.459
+},
+{
+"scene": "s08",
+"text": "just",
+"start": 45.459,
+"end": 45.62
+},
+{
+"scene": "s08",
+"text": "to",
+"start": 45.62,
+"end": 45.78
+},
+{
+"scene": "s08",
+"text": "get",
+"start": 45.78,
+"end": 46.04
+},
+{
+"scene": "s08",
+"text": "a",
+"start": 46.04,
+"end": 46.221
+},
+{
+"scene": "s08",
+"text": "price.",
+"start": 46.221,
+"end": 46.401
+},
+{
+"scene": "s08",
+"text": "You",
+"start": 46.601,
+"end": 46.883
+},
+{
+"scene": "s08",
+"text": "drive",
+"start": 46.883,
+"end": 47.044
+},
+{
+"scene": "s08",
+"text": "to",
+"start": 47.044,
+"end": 47.226
+},
+{
+"scene": "s08",
+"text": "Nace\u2026",
+"start": 47.226,
+"end": 47.467
+},
+{
+"scene": "s08",
+"text": "for",
+"start": 47.727,
+"end": 47.953
+},
+{
+"scene": "s08",
+"text": "nothing.",
+"start": 47.953,
+"end": 48.423
+},
+{
+"scene": "s09",
+"text": "Fix:",
+"start": 48.844,
+"end": 49.348
+},
+{
+"scene": "s09",
+"text": "a",
+"start": 49.508,
+"end": 49.72
+},
+{
+"scene": "s09",
+"text": "short",
+"start": 49.72,
+"end": 49.924
+},
+{
+"scene": "s09",
+"text": "video",
+"start": 49.924,
+"end": 50.341
+},
+{
+"scene": "s09",
+"text": "before",
+"start": 50.341,
+"end": 50.797
+},
+{
+"scene": "s09",
+"text": "the",
+"start": 50.797,
+"end": 51.015
+},
+{
+"scene": "s09",
+"text": "form.",
+"start": 51.015,
+"end": 51.213
+},
+{
+"scene": "s09",
+"text": "Who",
+"start": 51.473,
+"end": 51.619
+},
+{
+"scene": "s09",
+"text": "you",
+"start": 51.619,
+"end": 51.765
+},
+{
+"scene": "s09",
+"text": "are.",
+"start": 51.765,
+"end": 52.057
+},
+{
+"scene": "s09",
+"text": "How",
+"start": 52.257,
+"end": 52.51
+},
+{
+"scene": "s09",
+"text": "it",
+"start": 52.51,
+"end": 52.804
+},
+{
+"scene": "s09",
+"text": "works.",
+"start": 52.804,
+"end": 52.9
+},
+{
+"scene": "s09",
+"text": "And",
+"start": 52.98,
+"end": 53.198
+},
+{
+"scene": "s09",
+"text": "what",
+"start": 53.198,
+"end": 53.439
+},
+{
+"scene": "s09",
+"text": "it",
+"start": 53.439,
+"end": 53.72
+},
+{
+"scene": "s09",
+"text": "costs.",
+"start": 53.72,
+"end": 53.902
+},
+{
+"scene": "s09",
+"text": "Whoever",
+"start": 54.142,
+"end": 54.554
+},
+{
+"scene": "s09",
+"text": "still",
+"start": 54.554,
+"end": 54.78
+},
+{
+"scene": "s09",
+"text": "books",
+"start": 54.78,
+"end": 55.206
+},
+{
+"scene": "s09",
+"text": "is",
+"start": 55.206,
+"end": 55.553
+},
+{
+"scene": "s09",
+"text": "serious.",
+"start": 55.553,
+"end": 56.005
+},
+{
+"scene": "s10",
+"text": "Problem",
+"start": 56.48,
+"end": 56.984
+},
+{
+"scene": "s10",
+"text": "four.",
+"start": 56.984,
+"end": 57.224
+},
+{
+"scene": "s10",
+"text": "A",
+"start": 57.464,
+"end": 57.687
+},
+{
+"scene": "s10",
+"text": "lead",
+"start": 57.687,
+"end": 57.989
+},
+{
+"scene": "s10",
+"text": "lands",
+"start": 57.989,
+"end": 58.212
+},
+{
+"scene": "s10",
+"text": "at",
+"start": 58.212,
+"end": 58.454
+},
+{
+"scene": "s10",
+"text": "noon.",
+"start": 58.454,
+"end": 58.676
+},
+{
+"scene": "s10",
+"text": "You're",
+"start": 58.936,
+"end": 59.115
+},
+{
+"scene": "s10",
+"text": "up",
+"start": 59.115,
+"end": 59.313
+},
+{
+"scene": "s10",
+"text": "in",
+"start": 59.313,
+"end": 59.472
+},
+{
+"scene": "s10",
+"text": "an",
+"start": 59.472,
+"end": 59.69
+},
+{
+"scene": "s10",
+"text": "attic.",
+"start": 59.69,
+"end": 59.967
+},
+{
+"scene": "s10",
+"text": "By",
+"start": 60.207,
+"end": 60.588
+},
+{
+"scene": "s10",
+"text": "five,",
+"start": 60.588,
+"end": 60.888
+},
+{
+"scene": "s10",
+"text": "they've",
+"start": 61.008,
+"end": 61.192
+},
+{
+"scene": "s10",
+"text": "hired",
+"start": 61.192,
+"end": 61.581
+},
+{
+"scene": "s10",
+"text": "someone",
+"start": 61.581,
+"end": 62.009
+},
+{
+"scene": "s10",
+"text": "else.",
+"start": 62.009,
+"end": 62.154
+},
+{
+"scene": "s11",
+"text": "Fix:",
+"start": 62.653,
+"end": 63.139
+},
+{
+"scene": "s11",
+"text": "speed",
+"start": 63.299,
+"end": 63.549
+},
+{
+"scene": "s11",
+"text": "is",
+"start": 63.549,
+"end": 63.94
+},
+{
+"scene": "s11",
+"text": "the",
+"start": 63.94,
+"end": 64.27
+},
+{
+"scene": "s11",
+"text": "system.",
+"start": 64.27,
+"end": 64.67
+},
+{
+"scene": "s11",
+"text": "Text",
+"start": 64.92,
+"end": 65.048
+},
+{
+"scene": "s11",
+"text": "in",
+"start": 65.048,
+"end": 65.186
+},
+{
+"scene": "s11",
+"text": "one",
+"start": 65.186,
+"end": 65.622
+},
+{
+"scene": "s11",
+"text": "minute.",
+"start": 65.622,
+"end": 65.978
+},
+{
+"scene": "s11",
+"text": "Call",
+"start": 66.118,
+"end": 66.386
+},
+{
+"scene": "s11",
+"text": "in",
+"start": 66.386,
+"end": 66.734
+},
+{
+"scene": "s11",
+"text": "five.",
+"start": 66.734,
+"end": 66.943
+},
+{
+"scene": "s11",
+"text": "Follow",
+"start": 67.183,
+"end": 67.466
+},
+{
+"scene": "s11",
+"text": "up",
+"start": 67.466,
+"end": 67.568
+},
+{
+"scene": "s11",
+"text": "every",
+"start": 67.568,
+"end": 68.153
+},
+{
+"scene": "s11",
+"text": "day.",
+"start": 68.153,
+"end": 68.34
+},
+{
+"scene": "s12",
+"text": "Problem",
+"start": 68.775,
+"end": 69.374
+},
+{
+"scene": "s12",
+"text": "five.",
+"start": 69.374,
+"end": 69.613
+},
+{
+"scene": "s12",
+"text": "You",
+"start": 69.833,
+"end": 70.014
+},
+{
+"scene": "s12",
+"text": "get",
+"start": 70.014,
+"end": 70.216
+},
+{
+"scene": "s12",
+"text": "busy,",
+"start": 70.216,
+"end": 70.578
+},
+{
+"scene": "s12",
+"text": "so",
+"start": 70.658,
+"end": 70.895
+},
+{
+"scene": "s12",
+"text": "you",
+"start": 70.895,
+"end": 71.152
+},
+{
+"scene": "s12",
+"text": "switch",
+"start": 71.152,
+"end": 71.309
+},
+{
+"scene": "s12",
+"text": "the",
+"start": 71.309,
+"end": 71.566
+},
+{
+"scene": "s12",
+"text": "ads",
+"start": 71.566,
+"end": 71.763
+},
+{
+"scene": "s12",
+"text": "off.",
+"start": 71.763,
+"end": 71.98
+},
+{
+"scene": "s12",
+"text": "A",
+"start": 72.3,
+"end": 72.463
+},
+{
+"scene": "s12",
+"text": "month",
+"start": 72.463,
+"end": 72.706
+},
+{
+"scene": "s12",
+"text": "later\u2026",
+"start": 72.706,
+"end": 73.072
+},
+{
+"scene": "s12",
+"text": "the",
+"start": 73.392,
+"end": 73.599
+},
+{
+"scene": "s12",
+"text": "diary's",
+"start": 73.599,
+"end": 73.993
+},
+{
+"scene": "s12",
+"text": "empty.",
+"start": 73.993,
+"end": 74.468
+},
+{
+"scene": "s13",
+"text": "Fix:",
+"start": 75.028,
+"end": 75.4
+},
+{
+"scene": "s13",
+"text": "never",
+"start": 75.544,
+"end": 76.15
+},
+{
+"scene": "s13",
+"text": "switch",
+"start": 76.15,
+"end": 76.363
+},
+{
+"scene": "s13",
+"text": "them",
+"start": 76.363,
+"end": 76.596
+},
+{
+"scene": "s13",
+"text": "off.",
+"start": 76.596,
+"end": 76.768
+},
+{
+"scene": "s13",
+"text": "When",
+"start": 76.968,
+"end": 77.104
+},
+{
+"scene": "s13",
+"text": "you're",
+"start": 77.104,
+"end": 77.299
+},
+{
+"scene": "s13",
+"text": "busy,",
+"start": 77.299,
+"end": 77.669
+},
+{
+"scene": "s13",
+"text": "raise",
+"start": 77.829,
+"end": 78.065
+},
+{
+"scene": "s13",
+"text": "your",
+"start": 78.065,
+"end": 78.32
+},
+{
+"scene": "s13",
+"text": "price",
+"start": 78.32,
+"end": 78.556
+},
+{
+"scene": "s13",
+"text": "and",
+"start": 78.556,
+"end": 78.811
+},
+{
+"scene": "s13",
+"text": "pick",
+"start": 78.811,
+"end": 79.146
+},
+{
+"scene": "s13",
+"text": "the",
+"start": 79.146,
+"end": 79.402
+},
+{
+"scene": "s13",
+"text": "best",
+"start": 79.402,
+"end": 79.717
+},
+{
+"scene": "s13",
+"text": "jobs.",
+"start": 79.717,
+"end": 79.873
+},
+{
+"scene": "s14",
+"text": "Offer.",
+"start": 80.193,
+"end": 80.585
+},
+{
+"scene": "s14",
+"text": "Message.",
+"start": 80.765,
+"end": 81.319
+},
+{
+"scene": "s14",
+"text": "Video.",
+"start": 81.419,
+"end": 82.04
+},
+{
+"scene": "s14",
+"text": "Speed.",
+"start": 82.26,
+"end": 82.64
+},
+{
+"scene": "s14",
+"text": "Always",
+"start": 82.95,
+"end": 83.371
+},
+{
+"scene": "s14",
+"text": "on.",
+"start": 83.371,
+"end": 83.631
+},
+{
+"scene": "s14",
+"text": "That's",
+"start": 83.911,
+"end": 84.101
+},
+{
+"scene": "s14",
+"text": "the",
+"start": 84.101,
+"end": 84.252
+},
+{
+"scene": "s14",
+"text": "whole",
+"start": 84.252,
+"end": 84.632
+},
+{
+"scene": "s14",
+"text": "system.",
+"start": 84.632,
+"end": 84.932
+},
+{
+"scene": "s15",
+"text": "Want",
+"start": 85.252,
+"end": 85.44
+},
+{
+"scene": "s15",
+"text": "this",
+"start": 85.44,
+"end": 85.608
+},
+{
+"scene": "s15",
+"text": "built",
+"start": 85.608,
+"end": 85.796
+},
+{
+"scene": "s15",
+"text": "for",
+"start": 85.796,
+"end": 85.844
+},
+{
+"scene": "s15",
+"text": "your",
+"start": 85.844,
+"end": 86.072
+},
+{
+"scene": "s15",
+"text": "business?",
+"start": 86.072,
+"end": 86.816
+},
+{
+"scene": "s15",
+"text": "Book",
+"start": 87.556,
+"end": 87.879
+},
+{
+"scene": "s15",
+"text": "a",
+"start": 87.879,
+"end": 88.103
+},
+{
+"scene": "s15",
+"text": "call.",
+"start": 88.103,
+"end": 88.307
+}
+]
