@@ -27,6 +27,7 @@ win = {"u1": "s01", "u2": "s02", "u4": "s04", "u11": "s11", "u5": "s05", "u6": "
 def setclip(h, cid, start, dur):
     return re.sub(r'(id="%s"[^>]*?data-start=")[\d.]+(" data-duration=")[\d.]+' % cid, r"\g<1>%s\g<2>%s" % (round(start, 2), round(dur, 2)), h)
 for cid, sid in win.items(): h = setclip(h, cid, sc[sid]["start"], sc[sid]["dur"])
+h = setclip(h, "mapsec", sc["s07"]["start"], sc["s07"]["dur"] + sc["s08"]["dur"])
 h = setclip(h, "hudc", sc["s03"]["start"], sc["s15"]["start"] - sc["s03"]["start"])
 for cid in ("world", "caps", "score"): h = setclip(h, cid, 0, D)
 h = re.sub(r'(data-composition-id="main" data-width="1080" data-height="1920" data-duration=")[\d.]+', r"\g<1>%s" % D, h)

@@ -39,7 +39,13 @@ Ryan sent the original reference ad (screen recordings) and asked for it to look
   - Phone close-ups: the free-quote feed, the junk messages, the quote form, and the 12:04 lock screen with the missed call.
 - **Kept our own:** Dec, the Southline palette and our own wording. The reference brand's mascot, logo and lines are not copied.
 
-## Scenes (times from the voiceover)
+## Street-map scenes
+- **Scene 7, "say who it's for":** a flat, unbranded street map in the style of the earlier map ad.
+  - It starts close on Naas's streets with a pulsing location dot, then zooms out to the county.
+  - On "Kildare" the boundary draws in gold. On "Fewer leads" 24 pins drop; 19 vanish and the 5 good ones turn gold with their jobs (3-bed · Naas, Newbridge, Celbridge, Maynooth, Kildare).
+- **Scene 8, the drive to Naas:** a navigation-style gold route from Lucan to Naas, with the van marker riding it and a "Naas · 38 km" chip.
+- The geography is illustrative: the towns are in roughly the right places.
+ (times from the voiceover)
 | # | Time | Line | On screen |
 |---|---|---|---|
 | 1 | 0.0–6.6 | You're an electrician… post your first Facebook ads. | Low angle: the rewires.co van rolls in and bounces; Dec hops out and waves. The camera cranes up as night falls, back to the box-room window, in through the rain, over his shoulder, into the laptop. The "Publish ad" card gets clicked, then "Ad is live" bursts out. |

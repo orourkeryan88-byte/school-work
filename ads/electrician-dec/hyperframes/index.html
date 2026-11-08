@@ -83,6 +83,26 @@
   #hudTag { position: absolute; left: 768px; top: 214px; z-index: 60; font: 500 18px "IBM Plex Mono", monospace; letter-spacing: .18em; color: rgba(236,238,237,.75);
     text-shadow: 0 1px 6px rgba(0,0,0,.5); }
 
+  /* street-map scenes (Kildare + the drive to Naas): flat, unbranded map tones; camera = transform on #mw */
+  #mapsec { position: absolute; inset: 0; z-index: 20; overflow: hidden; background: #ece6d8; opacity: 0; }
+  #mw { position: absolute; left: 0; top: 0; width: 2160px; height: 3840px; transform-origin: 0 0; }
+  #mw svg { position: absolute; left: 0; top: 0; width: 2160px; height: 3840px; }
+  .pin { position: absolute; width: 0; height: 0; }
+  .pin i { position: absolute; left: -36px; top: -96px; width: 72px; height: 72px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); background: #56605b;
+    box-shadow: 0 8px 14px rgba(0,0,0,.25); border: 6px solid #fff; }
+  .pin.good i { background: var(--goldd); }
+  .pin b { position: absolute; left: -60px; top: -60px; width: 120px; height: 120px; border-radius: 50%; border: 8px solid var(--goldd); opacity: 0; }
+  .mchip { position: absolute; white-space: nowrap; background: #0e1412; color: var(--cloud); border-radius: 40px; padding: 14px 30px 16px; font: 700 66px "Instrument Sans", sans-serif; }
+  .mchip i { display: inline-block; width: 22px; height: 22px; border-radius: 50%; background: var(--gold); margin-right: 16px; vertical-align: middle; }
+  #van { position: absolute; width: 0; height: 0; }
+  #van div { position: absolute; left: -54px; top: -54px; width: 108px; height: 108px; border-radius: 50%; background: #fff; box-shadow: 0 8px 20px rgba(0,0,0,.3);
+    display: flex; align-items: center; justify-content: center; }
+  #van div span { width: 62px; height: 40px; border-radius: 10px; background: #0e1412; position: relative; }
+  #van div span::after { content: ""; position: absolute; right: -12px; top: 10px; width: 16px; height: 22px; border-radius: 0 8px 8px 0; background: #0e1412; }
+  #hereDot { position: absolute; width: 0; height: 0; }
+  #hereDot i { position: absolute; left: -26px; top: -26px; width: 52px; height: 52px; border-radius: 50%; background: var(--goldd); border: 8px solid #fff; box-shadow: 0 6px 14px rgba(0,0,0,.25); }
+  #hereDot b { position: absolute; left: -70px; top: -70px; width: 140px; height: 140px; border-radius: 50%; background: rgba(201,130,31,.25); }
+
   /* full-screen paper infographic cards */
   .paper { position: absolute; inset: 0; z-index: 42; opacity: 0; color: var(--ink); background-color: #e9e4d7;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='500' height='500'><filter id='p'><feTurbulence type='fractalNoise' baseFrequency='.02 .11' numOctaves='3' seed='7'/><feColorMatrix values='0 0 0 0 .45 0 0 0 0 .42 0 0 0 0 .35 0 0 0 .22 0'/></filter><rect width='500' height='500' filter='url(%23p)'/></svg>"),
@@ -127,6 +147,12 @@
       <div id="tsT" class="ts"></div><div id="tsB" class="ts"></div>
     </div>
     <div id="paper" class="full"></div><div id="vig" class="full"></div><div id="shade" class="full"></div><div id="grain" class="full"></div><div id="riso" class="full"></div>
+  </section>
+
+  <!-- street map: Kildare (scene 7) and the drive to Naas (scene 8) -->
+  <section id="mapsec" class="clip" data-start="34.27" data-duration="14.7" data-track-index="6">
+    <div id="mw"><svg id="msvg" viewBox="0 0 2160 3840"></svg><div id="mpins"></div>
+      <div id="hereDot"><b></b><i></i></div><div id="van"><div><span></span></div></div></div>
   </section>
 
   <!-- scene 1: publish card on the laptop -->
@@ -195,7 +221,7 @@
   <!-- scene 7: the ad card rising out of the map -->
   <section id="u7" class="clip ui" data-start="34.27" data-duration="7.9" data-track-index="2">
     <div id="kil" class="mono" style="position:absolute; left:0; top:0; font-size:30px; letter-spacing:.3em; color:var(--ink); background:rgba(236,238,237,.85); padding:8px 18px; border-radius:12px;">KILDARE</div>
-    <div id="adc" class="card" style="left:70px; top:880px; width:860px; padding:34px 40px;">
+    <div id="adc" class="card" style="left:70px; top:300px; width:860px; padding:34px 40px;">
       <div style="display:flex; align-items:center; gap:22px;"><span class="slot" style="width:72px;height:72px;border-radius:20px;"><b style="font-size:18px;">ADS</b></span>
         <div><div style="font-size:40px; font-weight:700;">rewires.co</div><div class="mono" style="font-size:22px; color:var(--graphite);">SPONSORED</div></div></div>
       <div style="font-size:64px; font-weight:700; line-height:1.05; margin-top:26px; min-height:68px;"><span id="ty1"></span></div>
@@ -332,8 +358,93 @@
   [[4, 19, 500, 900], [6, 16, 900, 1450], [8, 21, 1450, 2100], [10, 15, 2100, 2850], [12, 15, 2850, 3600]].forEach(([i, k, a, b]) => roll("#nS", a, b, wt(i, k), "€"));
   [4, 6, 8, 10, 12].forEach((i) => punch(wt(i, 0) - 0.02));
   tl.set(".ts", { opacity: 0 }, 0);
-  tl.to(".ts", { opacity: 1, duration: 0.3 }, T0(6)); tl.to(".ts", { opacity: 0, duration: 0.1 }, T0(7) - 0.1);
-  tl.to(".ts", { opacity: 1, duration: 0.1 }, wt(7, 14) - 0.12); tl.to(".ts", { opacity: 0, duration: 0.1 }, wt(7, 18) - 0.25);
+  // (the tilt-shift bands are no longer used: the map scenes are flat street maps)
+
+  // ===== street map (Kildare + the drive to Naas). Illustrative geography: towns in roughly the right places, no brand.
+  (function () {
+    const NS = "http://www.w3.org/2000/svg", svg = document.getElementById("msvg"), pins = document.getElementById("mpins");
+    const el = (tag, a, parent = svg) => { const e = document.createElementNS(NS, tag); for (const k in a) e.setAttribute(k, a[k]); parent.appendChild(e); return e; };
+    const rnd = (i) => { const s = Math.sin(i * 127.1 + 311.7) * 43758.5453; return s - Math.floor(s); };
+    const T = { Maynooth: [1350, 900], Leixlip: [1720, 1010], Celbridge: [1600, 1260], Clane: [1150, 1470], Naas: [1450, 1950], Newbridge: [1050, 2170],
+                Kildare: [700, 2270], Athy: [920, 3010], Lucan: [1990, 1130] };
+    const county = "M420 760 L900 640 L1350 700 L1750 820 L1880 1150 L1800 1500 L1880 1900 L1740 2350 L1500 2700 L1360 3150 L1100 3400 L760 3350 L600 3000 L380 2700 L300 2250 L420 1800 L330 1350 Z";
+    el("rect", { x: 0, y: 0, width: 2160, height: 3840, fill: "#e4ddcd" });
+    el("path", { d: county, fill: "#f1ece0" });
+    [[600, 1150, 260, 180], [1180, 2500, 340, 220], [820, 2650, 300, 260], [1500, 1650, 200, 160], [520, 1900, 240, 200], [1250, 3200, 260, 180]].forEach(([x, y, w, h]) =>
+      el("rect", { x, y, width: w, height: h, rx: 40, fill: "#d3e2c2" }));
+    el("path", { d: "M2200 1060 C 1900 1180, 1700 1300, 1450 1380 S 1150 1700, 1180 2050 S 1000 2500, 880 2700 S 700 3100, 760 3600", fill: "none", stroke: "#cbd8cf", "stroke-width": 46, "stroke-linecap": "round" });
+    const road = (d, w, fill, edge) => { el("path", { d, fill: "none", stroke: edge, "stroke-width": w + 10, "stroke-linecap": "round", "stroke-linejoin": "round" });
+      el("path", { d, fill: "none", stroke: fill, "stroke-width": w, "stroke-linecap": "round", "stroke-linejoin": "round" }); };
+    // town street grids + blocks (visible when the camera is close)
+    Object.entries(T).forEach(([n, [cx, cy]], ti) => {
+      for (let i = 0; i < 70; i++) { const x = cx - 260 + rnd(ti * 100 + i) * 520, y = cy - 220 + rnd(ti * 100 + i + 50) * 440;
+        el("rect", { x, y, width: 26 + rnd(i + ti) * 34, height: 20 + rnd(i + ti + 9) * 30, rx: 4, fill: i % 3 ? "#ddd5c5" : "#d6cebd" }); }
+      for (let k = -3; k <= 3; k++) { road(`M${cx - 280} ${cy + k * 70 + (k % 2) * 8} L ${cx + 280} ${cy + k * 70 - (k % 2) * 8}`, 9, "#ffffff", "#d9d1c0");
+        road(`M${cx + k * 80} ${cy - 240} L ${cx + k * 80 + (k % 2) * 10} ${cy + 240}`, 9, "#ffffff", "#d9d1c0"); }
+    });
+    // regional roads, then the two motorways (yellow)
+    [["Naas", "Clane"], ["Clane", "Maynooth"], ["Clane", "Celbridge"], ["Celbridge", "Leixlip"], ["Naas", "Newbridge"], ["Newbridge", "Athy"], ["Kildare", "Athy"],
+     ["Naas", "Athy"], ["Clane", "Newbridge"], ["Newbridge", "Kildare"], ["Naas", "Celbridge"]].forEach(([a, b], i) => {
+      const [x1, y1] = T[a], [x2, y2] = T[b], mx = (x1 + x2) / 2 + (rnd(i) - 0.5) * 160, my = (y1 + y2) / 2 + (rnd(i + 5) - 0.5) * 160;
+      road(`M${x1} ${y1} Q ${mx} ${my} ${x2} ${y2}`, 18, "#ffffff", "#d3cbb9"); });
+    road("M2200 1180 C 1950 1320, 1760 1480, 1640 1640 S 1480 1880, 1420 2010 S 1150 2130, 1000 2200 S 640 2330, 160 2760", 34, "#f2d58a", "#dcbd6a");
+    road("M2200 960 C 1950 990, 1760 1000, 1600 980 S 1300 890, 1000 820 S 400 720, -40 700", 34, "#f2d58a", "#dcbd6a");
+    // labels
+    const lab = (t, x, y, size, fill = "#3f4743", weight = 600, ls = 1) => { const e = el("text", { x, y, fill, "font-family": "Instrument Sans", "font-weight": weight, "font-size": size, "letter-spacing": ls, "text-anchor": "middle" }); e.textContent = t; return e; };
+    Object.entries(T).forEach(([n, [x, y]]) => { el("circle", { cx: x, cy: y, r: 12, fill: "#3f4743" }); lab(n, x, y - 34, 68); });
+    [["Main St", 1450, 1932, 22], ["Sallins Rd", 1500, 1862, 22], ["Dublin Rd", 1590, 2002, 22], ["Fair Green", 1380, 2072, 22], ["Church Ln", 1310, 1862, 22]].forEach(([t, x, y, s]) => lab(t, x, y, s, "#8a8478", 500));
+    lab("DUBLIN", 2060, 820, 54, "#8a8478", 600, 14);
+    const cName = lab("KILDARE", 1080, 1760, 150, "#c9821f", 700, 30); cName.setAttribute("opacity", 0); cName.id = "kname";
+    const border = el("path", { d: county, fill: "rgba(240,180,85,.0)", stroke: "#c9821f", "stroke-width": 14, "stroke-linejoin": "round", "stroke-dasharray": "1 1", id: "kborder" });
+    const route = el("path", { d: "M1990 1130 C 1930 1250, 1820 1360, 1700 1560 S 1500 1840, 1450 1950", fill: "none", stroke: "#c9821f", "stroke-width": 22, "stroke-linecap": "round", id: "route", opacity: 0 });
+    // lead pins: 24, five good ones inside Kildare near towns, the rest scattered (inside and out)
+    const good = [[1470, 1890, "3-bed · Naas"], [1080, 2110, "3-bed · Newbridge"], [1610, 1200, "3-bed · Celbridge"], [1370, 850, "3-bed · Maynooth"], [720, 2210, "3-bed · Kildare"]];
+    const all = good.map((g) => [g[0], g[1], g[2]]);
+    for (let i = 0; all.length < 24; i++) all.push([250 + rnd(i + 40) * 1750, 600 + rnd(i + 90) * 2900, null]);
+    all.forEach(([x, y, chip], i) => { const p = document.createElement("div"); p.className = "pin" + (chip ? " good" : ""); p.id = "pn" + i; p.style.left = x + "px"; p.style.top = y + "px";
+      p.innerHTML = "<b></b><i></i>"; pins.appendChild(p);
+      if (chip) { const c = document.createElement("div"); c.className = "mchip"; c.id = "mc" + i; c.style.left = (x > 1500 ? x - 640 : x + 60) + "px"; c.style.top = (y - 190) + "px";   // right-hand towns: chip to the left c.innerHTML = "<i></i>" + chip; pins.appendChild(c); } });
+    const here = document.getElementById("hereDot"); here.style.left = "1450px"; here.style.top = "1950px";
+
+    // camera: world point (px,py) lands at screen (sx,sy), scale s
+    const cam = (s, px, py, sx = 540, sy = 1020) => ({ scale: s, x: sx - s * px, y: sy - s * py });
+    const S7 = (k) => wt(6, k), S8 = (k) => wt(7, k);
+    tl.set("#mapsec", { opacity: 1 }, T0(6)); tl.set("#mapsec", { opacity: 0 }, T0(7) - 0.02);
+    tl.set("#mapsec", { opacity: 1 }, S8(14) - 0.12); tl.set("#mapsec", { opacity: 0 }, S8(18) - 0.25);
+    // scene 7: close on Naas streets (you are here) → zoom out to the county → border draws on "Kildare"
+    tl.set("#mw", cam(2.0, 1450, 1950), T0(6));
+    tl.to("#mw", { ...cam(2.15, 1450, 1950), duration: S7(1) - T0(6), ease: "none" }, T0(6));
+    tl.to("#mw", { ...cam(0.47, 1100, 2020, 540, 1100), duration: 1.4, ease: "power3.inOut" }, S7(1));
+    tl.to("#mw", { ...cam(0.5, 1100, 2020, 540, 1100), duration: T0(7) - S7(1) - 1.4, ease: "none" }, S7(1) + 1.4);
+    for (let i = 0; i < 3; i++) tl.fromTo("#hereDot b", { scale: 0.4, opacity: 0.9 }, { scale: 1.8, opacity: 0, duration: 0.9, ease: "power2.out", immediateRender: false }, T0(6) + 0.1 + i * 0.9);
+    tl.set("#hereDot", { opacity: 1 }, T0(6)); tl.to("#hereDot", { opacity: 0, duration: 0.3 }, S7(8));
+    const bl = border.getTotalLength(); border.setAttribute("stroke-dasharray", bl); const B = { u: 0 };
+    tl.set(border, { attr: { "stroke-dashoffset": bl } }, 0);
+    tl.to(B, { u: 1, duration: 0.8, ease: "power2.inOut", onUpdate: () => border.setAttribute("stroke-dashoffset", bl * (1 - B.u)) }, S7(10) - 0.2);
+    tl.to(border, { attr: { fill: "rgba(240,180,85,.16)" }, duration: 0.4 }, S7(10) + 0.5);
+    tl.to("#kname", { attr: { opacity: 1 }, duration: 0.3 }, S7(10));
+    tl.to("#kname", { attr: { opacity: 0 }, duration: 0.3 }, S7(14) - 0.2);
+    // "Fewer leads. Better ones.": 24 pins drop, 19 go, the 5 good ones turn gold with their jobs
+    all.forEach(([, , chip], i) => {
+      tl.fromTo("#pn" + i, { y: -160, opacity: 0, scale: 0.6 }, { y: 0, opacity: 1, scale: 1, duration: 0.35, ease: "back.out(2)", immediateRender: false }, S7(14) - 0.1 + i * 0.022);
+      if (!chip) tl.to("#pn" + i, { scale: 0, opacity: 0, duration: 0.3, ease: "power2.in" }, S7(15) + (i % 7) * 0.03);
+      else { tl.fromTo("#pn" + i + " b", { scale: 0.4, opacity: 1 }, { scale: 1.8, opacity: 0, duration: 0.8, ease: "power2.out", immediateRender: false }, S7(16));
+        tl.fromTo("#mc" + i, { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2)", immediateRender: false }, S7(16) + 0.08 * good.findIndex((g) => g[2] === chip)); }
+    });
+    all.forEach((a, i) => tl.set("#pn" + i, { opacity: 0 }, 0)); good.forEach((g, j) => tl.set("#mc" + j, { opacity: 0 }, 0));
+    tl.set("#mpins", { opacity: 1 }, T0(6)); tl.set("#mpins", { opacity: 0 }, T0(7) - 0.02);
+    // scene 8: the drive to Naas — route draws from Lucan, the van rides it, the Naas chip pops
+    const rl = route.getTotalLength(), van = document.getElementById("van"), R = { u: 0 };
+    const vanAt = () => { const p = route.getPointAtLength(rl * R.u); van.style.left = p.x + "px"; van.style.top = p.y + "px"; route.setAttribute("stroke-dashoffset", rl * (1 - R.u)); };
+    route.setAttribute("stroke-dasharray", rl); tl.set(route, { attr: { opacity: 0 } }, 0); tl.set(route, { attr: { opacity: 1 } }, S8(14) - 0.12);
+    tl.set("#van", { opacity: 0 }, 0); tl.set("#van", { opacity: 1 }, S8(14) - 0.12); tl.set("#van", { opacity: 0 }, T0(8));
+    tl.fromTo(R, { u: 0 }, { u: 1, duration: S8(18) - S8(14) - 0.15, ease: "power1.inOut", onUpdate: vanAt, immediateRender: false }, S8(14) - 0.12);
+    tl.set("#mw", cam(1.15, 1720, 1540), S8(14) - 0.12);
+    tl.to("#mw", { ...cam(1.35, 1500, 1880), duration: S8(18) - S8(14) - 0.1, ease: "power1.inOut" }, S8(14) - 0.12);
+    const nc = document.createElement("div"); nc.className = "mchip"; nc.id = "naasChip"; nc.style.left = "1330px"; nc.style.top = "1720px"; nc.innerHTML = "<i></i>Naas · 38 km"; pins.parentNode.appendChild(nc);
+    tl.set("#naasChip", { opacity: 0 }, 0); tl.fromTo("#naasChip", { scale: 0.4, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.3, ease: "back.out(2)", immediateRender: false }, S8(17) - 0.05);
+    tl.set("#naasChip", { opacity: 0 }, T0(8));
+  })();
 
   // ---- scene 1: publish → click → Ad is live (bursts toward camera) ----
   pop("#pub", wt(0, 14) + 0.2, { from: { rotationY: -18 } });
@@ -373,7 +484,7 @@
   shake(wt(5, 9) + 0.15, 8);
 
   // ---- scene 7: Kildare label, ad card rises + types, price punch ----
-  tl.fromTo("#kil", { opacity: 0 }, { opacity: 1, duration: 0.4 }, T0(6) + 0.3); out("#kil", wt(6, 8) - 0.2);
+  tl.set("#kil", { opacity: 0 }, 0);
   tl.fromTo("#adc", { opacity: 0, y: 380, rotationX: 50, scale: 0.7 }, { opacity: 1, y: 0, rotationX: 8, scale: 1, duration: 0.6, ease: E.back }, wt(6, 8) - 0.25);
   typeOut("#ty1", "3-bed rewires · Kildare", wt(6, 8), wt(6, 10) + 0.4);
   typeOut("#ty2", "From €9,000 · certified", wt(6, 11), wt(6, 13) + 0.2);
