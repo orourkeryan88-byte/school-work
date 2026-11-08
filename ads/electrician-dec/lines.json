@@ -1,17 +1,62 @@
 [
- ["s01", "You're a spark. You put rewires dot co on the van, open the laptop, and post your first Facebook ads."],
- ["s02", "You hit refresh. And… nothing."],
- ["s03", "There are five problems between you and a full diary. And every fix brings the next one."],
- ["s04", "Problem one. Your ad says free quotes. So does every other spark in the county."],
- ["s05", "Fix: sell the result. Full rewire in five days, certified, and the mess cleaned up. Now the phone won't stop."],
- ["s06", "Problem two. Half of them want one socket moved. Junk leads."],
- ["s07", "Fix: say who it's for, and the price. Three-bed rewires, Kildare, from nine grand. Fewer leads. Better ones."],
- ["s08", "Problem three. The form's too easy. They tap submit for the crack. You drive to Nace… for nothing."],
- ["s09", "Fix: a short video before the form. Who you are. How it works. And what it costs. Whoever still books is serious."],
- ["s10", "Problem four. A lead lands at noon. You're up in an attic. By five, they've hired someone else."],
- ["s11", "Fix: speed is the system. Text in one minute. Call in five. Follow up every day."],
- ["s12", "Problem five. You get busy, so you switch the ads off. A month later… the diary's empty."],
- ["s13", "Fix: never switch them off. When you're busy, raise your price and pick the best jobs."],
- ["s14", "Offer. Message. Video. Speed. Always on. That's the whole system."],
- ["s15", "Want this built for your business? Book a call."]
+ [
+  "s01",
+  "You're a spark. You put rewires dot co on the van, open the laptop, and post your first Facebook ads."
+ ],
+ [
+  "s02",
+  "You hit refresh. And\u2026 nothing."
+ ],
+ [
+  "s03",
+  "There are five problems between you and a full diary. And every fix brings the next one."
+ ],
+ [
+  "s04",
+  "Problem one. Your ad says free quotes. So does every other spark in the county."
+ ],
+ [
+  "s05",
+  "Fix: sell the result. Full rewire in five days, certified, and the mess cleaned up. Now the phone won't stop."
+ ],
+ [
+  "s06",
+  "Problem two. Half of them want one socket moved. Junk leads."
+ ],
+ [
+  "s07",
+  "Fix: say who it's for, and the price. Three-bed rewires, Kildare, from nine grand. Fewer leads. Better ones."
+ ],
+ [
+  "s08",
+  "Problem three. The form's too easy. They tap submit just to get a price. You drive to Nace\u2026 for nothing."
+ ],
+ [
+  "s09",
+  "Fix: a short video before the form. Who you are. How it works. And what it costs. Whoever still books is serious."
+ ],
+ [
+  "s10",
+  "Problem four. A lead lands at noon. You're up in an attic. By five, they've hired someone else."
+ ],
+ [
+  "s11",
+  "Fix: speed is the system. Text in one minute. Call in five. Follow up every day."
+ ],
+ [
+  "s12",
+  "Problem five. You get busy, so you switch the ads off. A month later\u2026 the diary's empty."
+ ],
+ [
+  "s13",
+  "Fix: never switch them off. When you're busy, raise your price and pick the best jobs."
+ ],
+ [
+  "s14",
+  "Offer. Message. Video. Speed. Always on. That's the whole system."
+ ],
+ [
+  "s15",
+  "Want this built for your business? Book a call."
+ ]
 ]

@@ -1,6 +1,6 @@
 # Southline: "Dec's five problems" (Irish electricians, full rewires)
 
-Meta ad (Facebook + Instagram). 9:16, 1080×1920, 30 fps, **92.9 s**, sound on, burned-in captions.
+Meta ad (Facebook + Instagram). 9:16, 1080×1920, 30 fps, **93.3 s**, sound on, burned-in captions.
 CTA: **Book a call.**
 
 Output: `southline_electricians_dec_5_problems.mp4`. Character sheet: `character_sheet.png`.
@@ -36,7 +36,7 @@ Output: `southline_electricians_dec_5_problems.mp4`. Character sheet: `character
 | 5 | 21.0–28.7 | Fix: sell the result… | Offer panel "Full rewire in five days." with two ticks. Cut to the hallway mid-rewire: the phone buzzes on the ladder, enquiries stack in the air, Dec gives his "O". HUD 31 / 1. |
 | 6 | 28.7–33.2 | Problem two: junk leads. | Kitchen at night, top-down to eye level: chat bubbles float up, he scratches his head with the screwdriver, and a gold JUNK stamp slams down. |
 | 7 | 33.2–41.8 | Fix: who it's for + the price. | Tilt-shift miniature of Kildare. The ad card rises and types "3-bed rewires · Kildare / From €9,000 · certified". 24 lead tiles pop up, 19 sink and 5 glow. HUD 43 / 4. |
-| 8 | 41.8–48.6 | Problem three: the form's too easy. | Quote form with taps on Submit, then the van on the road with the NAAS 38 sign flipping, then the empty house: knock, leaves blowing, "No one home." |
+| 8 | 41.8–49.0 | Problem three: the form's too easy. They tap submit just to get a price. | Quote form with taps on Submit, then the van on the road with the NAAS 38 sign flipping, then the empty house: knock, leaves blowing, "No one home." |
 | 9 | 48.6–57.1 | Fix: a short video before the form. | Ad → Video → Form tiles joined by glowing cables (the camera rides down). Dec films a selfie by the new consumer unit; a checklist pops; thumbs up. HUD 52 / 9. |
 | 10 | 57.1–63.9 | Problem four: too slow. | Attic under a swinging work light. The camera cranes down through the hatch to the landing: "New enquiry" on the phone flips to "Missed call · 12:06", the clock spins to 17:00 in gold, and "Thanks, went with someone else." |
 | 11 | 63.9–70.1 | Fix: speed is the system. | Parked between jobs with the phone at his ear. The camera pushes through the windscreen along a gold timeline: 1 MIN, 5 MIN, DAILY. HUD 64 / 15. |
@@ -53,10 +53,10 @@ Output: `southline_electricians_dec_5_problems.mp4`. Character sheet: `character
     ```
     python3 timing.py; python3 mkaudio.py   # after replacing vo/sNN.wav + vo/sNN_words.json
     ```
-- "craic" and "Naas" are spelled phonetically for the voice ("crack", "Nace"). The captions show the real spelling.
+- "Naas" is spelled "Nace" for the voice; the captions show the real spelling.
 
 ## Changes from the brief
-- **92.9 s instead of 85–90 s.** The 15 lines read at about 3 words a second take 80 s on their own.
+- **93.3 s instead of 85–90 s.** The 15 lines read at about 3 words a second take 80 s on their own.
 - **Meta logo:** not drawn. There is a gold "ADS" logo slot in scene 1's card, the ad card in scene 7 and the end card (`#logoSlot`, `#logoSlot2`). Drop the official Meta logo file in there if you want it.
 - **Depth of field:** no true depth of field. Depth comes from fog, tilt-shift blur bands (scenes 7 and 8) and light cones.
 - **Attic clock:** the 3D clock is on the landing wall, so it's in frame when the camera arrives.

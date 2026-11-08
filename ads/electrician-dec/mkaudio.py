@@ -6,7 +6,7 @@ T = json.load(open("timing.json")); S = T["scenes"]
 st = lambda i: S[i]["start"]; wt = lambda i, k: S[i]["words"][k]["start"]
 ev = []
 E = lambda t, n, g: ev.append([round(t, 3), n, g])
-inner = [[0, 11, -0.05], [4, 15, -0.12], [7, 12, -0.12], [7, 16, -0.25], [8, 7, -0.15], [11, 5, -0.1], [11, 11, -0.1], [12, 14, -0.25]]
+inner = [[0, 11, -0.05], [4, 15, -0.12], [7, 14, -0.12], [7, 18, -0.25], [8, 7, -0.15], [11, 5, -0.1], [11, 11, -0.1], [12, 14, -0.25]]
 for i in range(1, 15): E(st(i) - 0.15, "whoosh", 0.55)
 for i, k, o in inner: E(wt(i, k) + o - 0.15, "whoosh", 0.5)
 for i in [3, 5, 7, 9, 11]: E(wt(i, 0), "kick", 1.0); E(wt(i, 0), "hit", 0.3)          # sub thump on each "Problem"
@@ -31,8 +31,8 @@ E(wt(5, 9) + 0.15, "hit", 1.0); E(wt(5, 9) + 0.15, "clunk", 0.5)
 # 7 ad card rises, tiles pop, the good five glow
 E(wt(6, 8) - 0.25, "swish", 0.45); E(wt(6, 12), "pop", 0.4); E(wt(6, 14), "pop", 0.4); E(wt(6, 15), "swish", 0.35); E(wt(6, 16), "shimmer", 0.6)
 # 8 taps on submit, sign flips, knocks at the door
-E(wt(7, 8), "click", 0.8); E(wt(7, 11), "click", 0.8); E(wt(7, 15) - 0.25, "swish", 0.5)
-for k in range(3): E(wt(7, 16) - 0.2 + k * 0.35, "knock", 0.8)
+E(wt(7, 8), "click", 0.8); E(wt(7, 13), "click", 0.8); E(wt(7, 17) - 0.25, "swish", 0.5)
+for k in range(3): E(wt(7, 18) - 0.2 + k * 0.35, "knock", 0.8)
 # 9 play pulse, checklist pops, thumbs up
 E(wt(8, 3), "pop", 0.4)
 for k in (7, 10, 14): E(wt(8, k), "pop", 0.5)

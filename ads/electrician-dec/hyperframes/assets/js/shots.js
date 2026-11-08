@@ -209,9 +209,9 @@
     look(v(lerp(1.4, 1.0, u), lerp(9.0, 7.0, u), lerp(11.0, 9.4, u)), v(0.6, lerp(0.4, 0.9, u), 0.6), 40);
   };
 
-  // 8 PROBLEM 3: quote form (DOM, over the kitchen) → van on the road to Naas (tilt-shift) → empty house, no one home.
+  // 8 PROBLEM 3: quote form ("they tap submit just to get a price") (DOM, over the kitchen) → van on the road to Naas (tilt-shift) → empty house, no one home.
   SH[7] = (lt, d, w) => {
-    const c1 = w[12] - 0.12, c2 = w[16] - 0.25;
+    const c1 = w[14] - 0.12, c2 = w[18] - 0.25;
     if (lt < c1) {
       show("H"); const H = sets.H.userData; H.stamp.visible = false; H.dust.forEach((p) => (p.visible = false));
       light({ key: [0x9fc2b4, 0.3, [3, 9, 4], [0, 1, 0]], hemi: [0x5f8c7c, 0x0c2a22, 0.4], p1: [0xffc27a, 2.6, [0, 3.8, 0], 9], bg: 0x112620 });
@@ -224,15 +224,15 @@
       F.van.position.copy(p); F.van.rotation.y = Math.atan2(-tg.z, tg.x);
       F.van.userData.wheels.forEach((wh) => (wh.rotation.z = -l2 * 9));
       const sp = F.curve.getPointAt(0.29); F.sign.position.set(sp.x + 1.7, 0, sp.z);
-      F.board.rotation.y = lt > w[15] - 0.25 ? -K.eo(seg(lt, w[15] - 0.25, w[15] + 0.3)) * Math.PI * 2 : 0;
+      F.board.rotation.y = lt > w[17] - 0.25 ? -K.eo(seg(lt, w[17] - 0.25, w[17] + 0.3)) * Math.PI * 2 : 0;
       look(v(p.x + 1.2, 5.0, p.z + 6.0), v(p.x, 0.3, p.z - 0.8), 34);
     } else {
       const l3 = lt - c2; show("G"); const G = sets.G.userData;
       light({ key: [0xdfe6e2, 0.85, [-8, 10, 9], [1, 0, 3]], hemi: [0xdfe9e4, 0x3f5c38, 0.55], bg: 0xa9b3ae, shadow: 12 });
       G.leaves.forEach((lf, i) => { const ph = (l3 * (0.9 + K.hash(i) * 0.6) + K.hash(i + 5) * 3) % 3;
         lf.position.set(-0.5 + ph * 2.2 + Math.sin(ph * 4 + i) * 0.3, 0.05 + Math.abs(Math.sin(ph * 5 + i)) * 0.35, 4.6 + K.hash(i + 9) * 1.8); lf.rotation.set(ph * 3, ph * 5, ph * 2); });
-      act(lt, [1.5, 0.18, 4.75], lerp(Math.PI, 0.6, eo(seg(lt, w[17] + 0.25, w[17] + 0.75))), [[0, "knock"], [w[17] + 0.2, "slump", 0.5]], [[0, "neutral"], [w[17] + 0.2, "defeated"]], { seed: 10 });
-      if (lt < w[17]) dec.J.elR.rotation.x += 0.35 * Math.max(0, Math.sin(lt * 18));
+      act(lt, [1.5, 0.18, 4.75], lerp(Math.PI, 0.6, eo(seg(lt, w[19] + 0.25, w[19] + 0.75))), [[0, "knock"], [w[19] + 0.2, "slump", 0.5]], [[0, "neutral"], [w[19] + 0.2, "defeated"]], { seed: 10 });
+      if (lt < w[19]) dec.J.elR.rotation.x += 0.35 * Math.max(0, Math.sin(lt * 18));
       const u = eio(seg(l3, 0, d - c2)); look(lerpV(v(3.4, 2.1, 10.6), v(2.7, 2.0, 8.6), u), v(1.6, 1.85, 4.5), 38);
     }
   };

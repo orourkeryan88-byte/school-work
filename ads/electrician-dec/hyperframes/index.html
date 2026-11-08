@@ -95,10 +95,10 @@
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="main" data-width="1080" data-height="1920" data-duration="92.88">
+<div id="root" data-composition-id="main" data-width="1080" data-height="1920" data-duration="93.31">
 
   <!-- the 3D world (one canvas for the whole film) -->
-  <section id="world" class="clip full" data-start="0" data-duration="92.88" data-track-index="1">
+  <section id="world" class="clip full" data-start="0" data-duration="93.31" data-track-index="1">
     <div id="stage" class="full">
       <canvas id="gl" width="1080" height="1920"></canvas>
       <div id="tsT" class="ts"></div><div id="tsB" class="ts"></div>
@@ -107,7 +107,7 @@
   </section>
 
   <!-- scene 1: publish card on the laptop -->
-  <section id="u1" class="clip ui" data-start="0" data-duration="6.63" data-track-index="2">
+  <section id="u1" class="clip ui" data-start="0.0" data-duration="6.63" data-track-index="2">
     <div id="pub" class="card" style="left:150px; top:930px; width:700px; height:330px;">
       <div id="pubA">
         <div style="display:flex; align-items:center; gap:26px;"><span id="logoSlot" class="slot"><b>ADS</b></span>
@@ -167,7 +167,7 @@
   </section>
 
   <!-- scene 8: the too-easy form; no one home -->
-  <section id="u8" class="clip ui" data-start="41.8" data-duration="6.79" data-track-index="2">
+  <section id="u8" class="clip ui" data-start="41.8" data-duration="7.22" data-track-index="2">
     <div id="form" class="card" style="left:190px; top:900px; width:700px; padding:40px 44px;">
       <div class="mono" style="font-size:24px; color:var(--graphite);">GET A FREE QUOTE</div>
       <div style="margin-top:20px; display:grid; gap:16px; font-size:36px; color:var(--graphite);">
@@ -180,7 +180,7 @@
   </section>
 
   <!-- scene 9: the checklist -->
-  <section id="u9" class="clip ui" data-start="48.59" data-duration="8.52" data-track-index="2">
+  <section id="u9" class="clip ui" data-start="49.02" data-duration="8.52" data-track-index="2">
     <div id="chk" style="position:absolute; left:470px; top:1000px;">
       <div class="card" id="k1" style="position:relative; margin-bottom:22px; font-size:44px; font-weight:700; padding:22px 32px;"><span class="tick">✓</span>Who you are</div>
       <div class="card" id="k2" style="position:relative; margin-bottom:22px; font-size:44px; font-weight:700; padding:22px 32px;"><span class="tick">✓</span>How it works</div>
@@ -189,7 +189,7 @@
   </section>
 
   <!-- scene 10: the enquiry on the landing phone -->
-  <section id="u10" class="clip ui" data-start="57.11" data-duration="6.77" data-track-index="2">
+  <section id="u10" class="clip ui" data-start="57.54" data-duration="6.77" data-track-index="2">
     <div id="lc" style="position:absolute; left:0; top:0;">
       <div class="notif card" id="l1" style="width:600px;"><span class="dot"></span><div>New enquiry<small>FULL REWIRE · SWORDS</small></div></div>
       <div class="notif card" id="l2" style="width:600px; background:#f4e2c4;"><span class="dot" style="background:var(--graphite);"></span><div>Missed call · 12:06<small>FULL REWIRE · SWORDS</small></div></div>
@@ -198,7 +198,7 @@
   </section>
 
   <!-- scene 13: pick the best jobs -->
-  <section id="u13" class="clip ui" data-start="76.75" data-duration="5.71" data-track-index="2">
+  <section id="u13" class="clip ui" data-start="77.18" data-duration="5.71" data-track-index="2">
     <div id="jobs" style="position:absolute; left:400px; top:930px;">
       <div class="notif card" id="j1" style="position:relative; width:600px; margin-bottom:20px;"><span class="dot" style="background:var(--fog);"></span><div>Socket move<small>LUCAN</small></div></div>
       <div class="notif card" id="j2" style="position:relative; width:600px; margin-bottom:20px; box-shadow:0 0 0 0 var(--goldd), 0 34px 70px rgba(5,15,12,.42);"><span class="dot"></span><div>Full rewire<small>MALAHIDE</small></div></div>
@@ -207,7 +207,7 @@
   </section>
 
   <!-- scene 15: end card -->
-  <section id="ec" class="clip ui" data-start="88.42" data-duration="4.46" data-track-index="2">
+  <section id="ec" class="clip ui" data-start="88.85" data-duration="4.46" data-track-index="2">
     <div id="ecLine"></div>
     <div class="word" id="ecW">Southline</div>
     <div class="sub" id="ecS">META ADS FOR ELECTRICIANS</div>
@@ -216,7 +216,7 @@
   </section>
 
   <!-- HUD (scene 3 → end card) -->
-  <section id="hudc" class="clip" data-start="9.95" data-duration="78.47" data-track-index="3" style="position:absolute; inset:0; z-index:60; pointer-events:none;">
+  <section id="hudc" class="clip" data-start="9.95" data-duration="78.9" data-track-index="3" style="position:absolute; inset:0; z-index:60; pointer-events:none;">
     <div id="hud"><span class="lab" style="left:40px; top:34px;">PROBLEM</span><div id="segs"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
       <span class="lab" style="right:238px; top:20px; width:190px; text-align:right;">ENQUIRIES</span><span class="lab" style="right:40px; top:20px; width:160px; text-align:right;">BOOKED</span>
       <span class="num" id="nE">0</span><span class="num" id="nB">0</span></div>
@@ -224,13 +224,13 @@
   </section>
 
   <!-- captions (built from the CAPS list below) -->
-  <section id="caps" class="clip" data-start="0" data-duration="92.88" data-track-index="4" style="position:absolute; inset:0; z-index:50; pointer-events:none;"></section>
+  <section id="caps" class="clip" data-start="0" data-duration="93.31" data-track-index="4" style="position:absolute; inset:0; z-index:50; pointer-events:none;"></section>
 
-  <audio id="score" src="assets/audio.wav" data-start="0" data-duration="92.88" data-track-index="10" data-volume="1"></audio>
+  <audio id="score" src="assets/audio.wav" data-start="0" data-duration="93.31" data-track-index="10" data-volume="1"></audio>
 </div>
 
 <script>
-  const DUR = 92.88, TS = TIMING.scenes;
+  const DUR = 93.31, TS = TIMING.scenes;
   const T0 = (i) => TS[i].start, wt = (i, k) => TS[i].words[k].start;          // scene start, absolute word time
   const tl = gsap.timeline({ paused: true });
   const E = { in: "expo.out", back: "back.out(1.8)" };
@@ -262,14 +262,14 @@
     tl.fromTo(sel, { scale: 1 }, { scale: 1.18, duration: 0.12, yoyo: true, repeat: 1, ease: "power1.out", immediateRender: false }, at); };
 
   // ---- whips at every cut (scene cuts + the cuts inside scenes) ----
-  const inner = [[0, 11, -0.05], [4, 15, -0.12], [7, 12, -0.12], [7, 16, -0.25], [8, 7, -0.15], [11, 5, -0.1], [11, 11, -0.1], [12, 14, -0.25]];
+  const inner = [[0, 11, -0.05], [4, 15, -0.12], [7, 14, -0.12], [7, 18, -0.25], [8, 7, -0.15], [11, 5, -0.1], [11, 11, -0.1], [12, 14, -0.25]];
   TS.forEach((s, i) => { if (i) whip(s.start); });
   inner.forEach(([i, k, o]) => whip(wt(i, k) + o));
   [3, 5, 7, 9, 11].forEach((i, n) => tl.to(`#segs i:nth-child(${n + 1}) b`, { scaleX: 1, duration: 0.35, ease: E.in }, wt(i, 0) + 0.05));
   [4, 6, 8, 10, 12].forEach((i) => punch(wt(i, 0) - 0.02));
   tl.set(".ts", { opacity: 0 }, 0);
   tl.to(".ts", { opacity: 1, duration: 0.3 }, T0(6)); tl.to(".ts", { opacity: 0, duration: 0.1 }, T0(7) - 0.1);
-  tl.to(".ts", { opacity: 1, duration: 0.1 }, wt(7, 12) - 0.12); tl.to(".ts", { opacity: 0, duration: 0.1 }, wt(7, 16) - 0.25);
+  tl.to(".ts", { opacity: 1, duration: 0.1 }, wt(7, 14) - 0.12); tl.to(".ts", { opacity: 0, duration: 0.1 }, wt(7, 18) - 0.25);
 
   // ---- scene 1: publish → click → Ad is live (bursts toward camera) ----
   pop("#pub", wt(0, 14) + 0.2, { from: { rotationY: -18 } });
@@ -316,11 +316,11 @@
 
   // ---- scene 8: form + taps; no one home ----
   pop("#form", T0(7) + 1.2, { from: { rotationY: -16 } });
-  [wt(7, 8), wt(7, 11)].forEach((at) => { tl.fromTo("#tap", { scale: 0.4, opacity: 1 }, { scale: 1.6, opacity: 0, duration: 0.45, ease: "power2.out", immediateRender: false }, at);
+  [wt(7, 8), wt(7, 13)].forEach((at) => { tl.fromTo("#tap", { scale: 0.4, opacity: 1 }, { scale: 1.6, opacity: 0, duration: 0.45, ease: "power2.out", immediateRender: false }, at);
     tl.to("#sub", { scale: 0.94, duration: 0.07, yoyo: true, repeat: 1 }, at); });
   tl.set("#tap", { opacity: 0 }, T0(7));
-  out("#form", wt(7, 12) - 0.14, 0.06);
-  tl.fromTo("#nobody", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: E.in }, wt(7, 17));
+  out("#form", wt(7, 14) - 0.14, 0.06);
+  tl.fromTo("#nobody", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: E.in }, wt(7, 19));
 
   // ---- scene 9: checklist ----
   [["#k1", 7], ["#k2", 10], ["#k3", 14]].forEach(([id, k]) => pop(id, wt(8, k), { d: 0.45, from: { x: 120, rotationY: 30 } }));
@@ -368,7 +368,7 @@
     [4, 0, "fix: | sell the *result.*", "L"], [4, 4, "full rewire in | *five days,*", "L"], [4, 9, "certified, and the | mess *cleaned up.*", "L"], [4, 15, "now the | phone *won't stop.*", "D"],
     [5, 0, "problem | *two.*", "D"], [5, 2, "half of them want | one *socket* moved.", "D"], [5, 9, "| *junk leads.*", "D"],
     [6, 0, "fix: say who it's for, | and the *price.*", "L"], [6, 8, "three-bed rewires, Kildare, | from *nine grand.*", "L"], [6, 14, "fewer leads. | *better ones.*", "L"],
-    [7, 0, "problem | *three.*", "D"], [7, 2, "the form's | *too easy.*", "D"], [7, 6, "they tap submit | for the *craic.*", "D"], [7, 12, "you drive to Naas… | for *nothing.*", "D"],
+    [7, 0, "problem | *three.*", "D"], [7, 2, "the form's | *too easy.*", "D"], [7, 6, "they tap submit just to | get a *price.*", "D"], [7, 14, "you drive to Naas… | for *nothing.*", "D"],
     [8, 0, "fix: a short video | before the *form.*", "L"], [8, 7, "who you are. how it works. and | what it *costs.*", "D"], [8, 17, "whoever still books | is *serious.*", "D"],
     [9, 0, "problem | *four.*", "D"], [9, 2, "a lead lands | at *noon.*", "D"], [9, 7, "you're up in | an *attic.*", "D"], [9, 12, "by five, they've | hired *someone else.*", "D"],
     [10, 0, "fix: speed is | the *system.*", "L"], [10, 5, "text in | *one minute.*", "L"], [10, 9, "call in five. follow up | *every day.*", "L"],

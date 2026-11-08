@@ -23,3 +23,16 @@ json.dump({"duration": round(t, 2), "scenes": scenes}, open("timing.json", "w"),
 open("hyperframes/assets/js/timing.js", "w").write("window.TIMING = " + json.dumps({"duration": round(t, 2), "scenes": scenes}) + ";\n")   # the 3D scenes and UI read this
 for s in scenes: print(s["id"], s["start"], s["dur"])
 print("total", round(t, 2))
+
+# keep index.html's clip windows in step with the scenes (overlay sections, HUD, captions, audio, total length)
+import re
+H = "hyperframes/index.html"; h = open(H).read(); D = round(t, 2); sc = {s["id"]: s for s in scenes}
+win = {"u1": "s01", "u2": "s02", "u5": "s05", "u6": "s06", "u7": "s07", "u8": "s08", "u9": "s09", "u10": "s10", "u13": "s13", "ec": "s15"}
+def setclip(h, cid, start, dur):
+    return re.sub(r'(id="%s"[^>]*?data-start=")[\d.]+(" data-duration=")[\d.]+' % cid, r"\g<1>%s\g<2>%s" % (round(start, 2), round(dur, 2)), h)
+for cid, sid in win.items(): h = setclip(h, cid, sc[sid]["start"], sc[sid]["dur"])
+h = setclip(h, "hudc", sc["s03"]["start"], sc["s15"]["start"] - sc["s03"]["start"])
+for cid in ("world", "caps", "score"): h = setclip(h, cid, 0, D)
+h = re.sub(r'(data-composition-id="main" data-width="1080" data-height="1920" data-duration=")[\d.]+', r"\g<1>%s" % D, h)
+h = re.sub(r"const DUR = [\d.]+", "const DUR = %s" % D, h)
+open(H, "w").write(h)
