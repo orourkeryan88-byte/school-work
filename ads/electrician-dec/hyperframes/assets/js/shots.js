@@ -145,7 +145,7 @@
     const ph = v(0.45, 1.98, -0.9);
     extras.cards.forEach((g, i) => {
       const me = i === 6, t0 = me ? w[5] - 0.1 : w[7] + i * 0.16;
-      const u = eo(seg(lt, t0, t0 + 0.7)); g.visible = lt > t0;
+      const u = eo(seg(lt, t0, t0 + 0.7)); g.visible = false;
       const ang = i * 0.9 + lt * 0.6, rad = 0.95 + (i % 3) * 0.14, hy = 2.6 + (i % 3) * 0.13;
       const orbit = v(c.x + Math.cos(ang) * rad, hy, c.z + Math.sin(ang) * rad * 0.7);
       const target = me && lt < w[7] ? v(c.x + 0.1, 2.75, -0.3) : orbit;
@@ -243,7 +243,7 @@
 
   // 9 FIX 3: Ad → Video → Form stacked with glowing cables (camera rides down the cable) → selfie video by the new board.
   SH[8] = (lt, d, w) => {
-    const cut = w[7] - 0.15;
+    const cut = w[17] - 0.15;
     if (lt < cut) {
       show("I", "Flow"); sets.I.userData.tone(true); dec.root.visible = false;
       light(FIXL({ shadow: 10 }));

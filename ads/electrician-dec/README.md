@@ -34,6 +34,9 @@ Ryan sent the original reference ad (screen recordings) and asked for it to look
 - **Captions:** centred about two-thirds down the frame. Each phrase shows dim and every word lights up as it's spoken; stressed words are gold.
 - **Stats bar:** AD SPEND / ENQUIRIES / BOOKED boxes with a PROBLEM n / FIX n tag under them. Ad spend climbs €500 → €3,600 alongside the enquiries; all of it is illustrative and tagged as such.
 - **End card:** "WANT THIS BUILT FOR YOUR BUSINESS?" then a big gold "BOOK A CALL", the Southline wordmark and the logo row.
+- **Full-screen paper cards and phone close-ups:** added after the full reference video arrived.
+  - Paper cards: the €500 spent / 0 enquiries stat card, the Ad → Video → Form card with the three-point checklist, and the speed-system card (1 MIN / 5 MIN / DAILY).
+  - Phone close-ups: the free-quote feed, the junk messages, the quote form, and the 12:04 lock screen with the missed call.
 - **Kept our own:** Dec, the Southline palette and our own wording. The reference brand's mascot, logo and lines are not copied.
 
 ## Scenes (times from the voiceover)

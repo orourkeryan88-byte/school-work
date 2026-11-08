@@ -6,7 +6,7 @@ T = json.load(open("timing.json")); S = T["scenes"]
 st = lambda i: S[i]["start"]; wt = lambda i, k: S[i]["words"][k]["start"]
 ev = []
 E = lambda t, n, g: ev.append([round(t, 3), n, g])
-inner = [[0, 11, -0.05], [4, 15, -0.12], [7, 14, -0.12], [7, 18, -0.25], [8, 7, -0.15], [11, 5, -0.1], [11, 11, -0.1], [12, 14, -0.25]]
+inner = [[0, 11, -0.05], [4, 15, -0.12], [7, 14, -0.12], [7, 18, -0.25], [8, 17, -0.15], [11, 5, -0.1], [11, 11, -0.1], [12, 14, -0.25]]
 for i in range(1, 15): E(st(i) - 0.15, "whoosh", 0.55)
 for i, k, o in inner: E(wt(i, k) + o - 0.15, "whoosh", 0.5)
 for i in [3, 5, 7, 9, 11]: E(wt(i, 0), "kick", 1.0); E(wt(i, 0), "hit", 0.3)          # sub thump on each "Problem"
@@ -36,6 +36,8 @@ for k in range(3): E(wt(7, 18) - 0.2 + k * 0.35, "knock", 0.8)
 # 9 play pulse, checklist pops, thumbs up
 E(wt(8, 3), "pop", 0.4)
 for k in (7, 10, 14): E(wt(8, k), "pop", 0.5)
+for t0 in (wt(1, 3) - 0.12, wt(8, 0) + 0.35, wt(10, 4) + 0.15): E(t0 - 0.1, "swish", 0.5)          # paper cards slide in
+for t0 in (wt(3, 2) - 0.15, wt(5, 2) - 0.2, st(7) + 1.1, wt(9, 2) - 0.15): E(t0, "swish", 0.35)      # phones rise
 # 10 phone buzzes on the landing, missed call, clock spins, he lands, the text
 E(wt(9, 4), "buzz", 0.7); E(wt(9, 4) + 0.45, "buzz", 0.6); E(wt(9, 11), "glitch", 0.4); E(wt(9, 12) - 0.1, "riser", 0.35)
 E(wt(9, 14) + 0.35, "hit", 0.5); E(wt(9, 14) + 0.45, "ping", 0.45)

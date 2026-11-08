@@ -27,7 +27,7 @@ print("total", round(t, 2))
 # keep index.html's clip windows in step with the scenes (overlay sections, HUD, captions, audio, total length)
 import re
 H = "hyperframes/index.html"; h = open(H).read(); D = round(t, 2); sc = {s["id"]: s for s in scenes}
-win = {"u1": "s01", "u2": "s02", "u5": "s05", "u6": "s06", "u7": "s07", "u8": "s08", "u9": "s09", "u10": "s10", "u13": "s13", "ec": "s15"}
+win = {"u1": "s01", "u2": "s02", "u4": "s04", "u11": "s11", "u5": "s05", "u6": "s06", "u7": "s07", "u8": "s08", "u9": "s09", "u10": "s10", "u13": "s13", "ec": "s15"}
 def setclip(h, cid, start, dur):
     return re.sub(r'(id="%s"[^>]*?data-start=")[\d.]+(" data-duration=")[\d.]+' % cid, r"\g<1>%s\g<2>%s" % (round(start, 2), round(dur, 2)), h)
 for cid, sid in win.items(): h = setclip(h, cid, sc[sid]["start"], sc[sid]["dur"])
