@@ -30,20 +30,20 @@ Output: `southline_electricians_dec_5_problems.mp4`. Character sheet: `character
 | # | Time | Line | On screen |
 |---|---|---|---|
 | 1 | 0.0–6.6 | You're a spark… post your first Facebook ads. | Low angle: the rewires.co van rolls in and bounces; Dec hops out and waves. The camera cranes up as night falls, back to the box-room window, in through the rain, over his shoulder, into the laptop. The "Publish ad" card gets clicked, then "Ad is live" bursts out. |
-| 2 | 6.6–10.0 | You hit refresh. And… nothing. | Morning, wall clock 8:02. A refresh icon spins, "0 ENQUIRIES" shakes, and a reverse shot shows Dec slumping. |
-| 3 | 10.0–15.4 | Five problems… every fix brings the next one. | Pine stage: five domino tiles (tile 1 in gold) topple in slow motion and the last stops at his boots. He shrugs. The HUD drops in. |
-| 4 | 15.4–21.0 | Problem one: free quotes. | Van cab, slow-mo orbit: identical "Free quotes · any job" cards fly out of his phone and circle him; his card fades into the pile. |
+| 2 | 6.6–9.9 | You hit refresh. And… nothing. | Morning, wall clock 8:02. A refresh icon spins, "0 ENQUIRIES" shakes, and a reverse shot shows Dec slumping. |
+| 3 | 9.9–15.3 | Five problems… every fix brings the next one. | Pine stage: five domino tiles (tile 1 in gold) topple in slow motion and the last stops at his boots. He shrugs. The HUD drops in. |
+| 4 | 15.3–21.0 | Problem one: free quotes. | Van cab, slow-mo orbit: identical "Free quotes · any job" cards fly out of his phone and circle him; his card fades into the pile. |
 | 5 | 21.0–28.7 | Fix: sell the result… | Offer panel "Full rewire in five days." with two ticks. Cut to the hallway mid-rewire: the phone buzzes on the ladder, enquiries stack in the air, Dec gives his "O". HUD 31 / 1. |
 | 6 | 28.7–33.2 | Problem two: junk leads. | Kitchen at night, top-down to eye level: chat bubbles float up, he scratches his head with the screwdriver, and a gold JUNK stamp slams down. |
 | 7 | 33.2–41.8 | Fix: who it's for + the price. | Tilt-shift miniature of Kildare. The ad card rises and types "3-bed rewires · Kildare / From €9,000 · certified". 24 lead tiles pop up, 19 sink and 5 glow. HUD 43 / 4. |
 | 8 | 41.8–49.0 | Problem three: the form's too easy. They tap submit just to get a price. | Quote form with taps on Submit, then the van on the road with the NAAS 38 sign flipping, then the empty house: knock, leaves blowing, "No one home." |
-| 9 | 48.6–57.1 | Fix: a short video before the form. | Ad → Video → Form tiles joined by glowing cables (the camera rides down). Dec films a selfie by the new consumer unit; a checklist pops; thumbs up. HUD 52 / 9. |
-| 10 | 57.1–63.9 | Problem four: too slow. | Attic under a swinging work light. The camera cranes down through the hatch to the landing: "New enquiry" on the phone flips to "Missed call · 12:06", the clock spins to 17:00 in gold, and "Thanks, went with someone else." |
-| 11 | 63.9–70.1 | Fix: speed is the system. | Parked between jobs with the phone at his ear. The camera pushes through the windscreen along a gold timeline: 1 MIN, 5 MIN, DAILY. HUD 64 / 15. |
-| 12 | 70.1–76.8 | Problem five: switching the ads off. | Busy montage on the beat. He leans on the giant ADS ON toggle to flick it OFF, clunk, and the lights dim. Calendar pages flip to an empty June. |
-| 13 | 76.8–82.5 | Fix: never switch them off. | The toggle snaps back ON and a padlock clicks shut. The job cards come in and "Full rewire · Malahide" gets the gold border. Crane up to three rewires.co vans. HUD 70 / 21. |
-| 14 | 82.5–88.4 | Offer. Message. Video. Speed. Always on. | Five blocks stack into a tower ("Always on" in gold). Dec jumps on top and the tower glows; the camera orbits. |
-| 15 | 88.4–92.9 | Want this built for your business? Book a call. | Pine end card: gold line wipe, extruded "Southline", "META ADS FOR ELECTRICIANS", the "Book a call." pill on the final hit, and the logo row. Dec waves; the house and van sit faintly behind at dusk. Holds 1.5 s. |
+| 9 | 49.0–57.5 | Fix: a short video before the form. | Ad → Video → Form tiles joined by glowing cables (the camera rides down). Dec films a selfie by the new consumer unit; a checklist pops; thumbs up. HUD 52 / 9. |
+| 10 | 57.5–64.3 | Problem four: too slow. | Attic under a swinging work light. The camera cranes down through the hatch to the landing: "New enquiry" on the phone flips to "Missed call · 12:06", the clock spins to 17:00 in gold, and "Thanks, went with someone else." |
+| 11 | 64.3–70.6 | Fix: speed is the system. | Parked between jobs with the phone at his ear. The camera pushes through the windscreen along a gold timeline: 1 MIN, 5 MIN, DAILY. HUD 64 / 15. |
+| 12 | 70.6–77.2 | Problem five: switching the ads off. | Busy montage on the beat. He leans on the giant ADS ON toggle to flick it OFF, clunk, and the lights dim. Calendar pages flip to an empty June. |
+| 13 | 77.2–82.9 | Fix: never switch them off. | The toggle snaps back ON and a padlock clicks shut. The job cards come in and "Full rewire · Malahide" gets the gold border. Crane up to three rewires.co vans. HUD 70 / 21. |
+| 14 | 82.9–88.8 | Offer. Message. Video. Speed. Always on. | Five blocks stack into a tower ("Always on" in gold). Dec jumps on top and the tower glows; the camera orbits. |
+| 15 | 88.8–93.3 | Want this built for your business? Book a call. | Pine end card: gold line wipe, extruded "Southline", "META ADS FOR ELECTRICIANS", the "Book a call." pill on the final hit, and the logo row. Dec waves; the house and van sit faintly behind at dusk. Holds 1.5 s. |
 
 ## Voice
 - **Not the Higgsfield "Cillian" voice:** the Higgsfield account has 0 credits, so it couldn't be generated. ElevenLabs is also out of credits for the month.
