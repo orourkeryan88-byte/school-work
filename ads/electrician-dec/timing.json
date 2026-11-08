@@ -1,1293 +1,1293 @@
 {
- "duration": 93.31,
+ "duration": 93.75,
  "scenes": [
   {
    "id": "s01",
    "start": 0.0,
-   "dur": 6.63,
+   "dur": 6.93,
    "vo_at": 0.45,
    "words": [
     {
      "text": "You're",
      "start": 0.6,
-     "end": 0.816
+     "end": 0.748
     },
     {
-     "text": "a",
-     "start": 0.816,
-     "end": 1.033
+     "text": "an",
+     "start": 0.748,
+     "end": 0.896
     },
     {
-     "text": "spark.",
-     "start": 1.033,
-     "end": 1.249
+     "text": "electrician.",
+     "start": 0.896,
+     "end": 1.489
     },
     {
      "text": "You",
-     "start": 1.589,
-     "end": 1.749
+     "start": 1.829,
+     "end": 1.992
     },
     {
      "text": "put",
-     "start": 1.749,
-     "end": 1.91
+     "start": 1.992,
+     "end": 2.155
     },
     {
      "text": "rewires",
-     "start": 1.91,
-     "end": 2.39
+     "start": 2.155,
+     "end": 2.644
     },
     {
      "text": "dot",
-     "start": 2.39,
-     "end": 2.551
+     "start": 2.644,
+     "end": 2.806
     },
     {
      "text": "co",
-     "start": 2.551,
-     "end": 2.711
+     "start": 2.806,
+     "end": 2.969
     },
     {
      "text": "on",
-     "start": 2.711,
-     "end": 2.871
+     "start": 2.969,
+     "end": 3.132
     },
     {
      "text": "the",
-     "start": 2.871,
-     "end": 3.031
+     "start": 3.132,
+     "end": 3.295
     },
     {
      "text": "van,",
-     "start": 3.031,
-     "end": 3.192
+     "start": 3.295,
+     "end": 3.458
     },
     {
      "text": "open",
-     "start": 3.352,
-     "end": 3.675
+     "start": 3.618,
+     "end": 3.925
     },
     {
      "text": "the",
-     "start": 3.675,
-     "end": 3.837
+     "start": 3.925,
+     "end": 4.079
     },
     {
      "text": "laptop,",
-     "start": 3.837,
-     "end": 4.16
+     "start": 4.079,
+     "end": 4.386
     },
     {
      "text": "and",
-     "start": 4.32,
-     "end": 4.546
+     "start": 4.546,
+     "end": 4.782
     },
     {
      "text": "post",
-     "start": 4.546,
-     "end": 4.773
+     "start": 4.782,
+     "end": 5.018
     },
     {
      "text": "your",
-     "start": 4.773,
-     "end": 5.0
+     "start": 5.018,
+     "end": 5.253
     },
     {
      "text": "first",
-     "start": 5.0,
-     "end": 5.226
+     "start": 5.253,
+     "end": 5.489
     },
     {
      "text": "Facebook",
-     "start": 5.226,
-     "end": 5.906
+     "start": 5.489,
+     "end": 6.196
     },
     {
      "text": "ads.",
-     "start": 5.906,
-     "end": 6.133
+     "start": 6.196,
+     "end": 6.432
     }
    ]
   },
   {
    "id": "s02",
-   "start": 6.63,
+   "start": 6.93,
    "dur": 3.32,
-   "vo_at": 6.88,
+   "vo_at": 7.18,
    "words": [
     {
      "text": "You",
-     "start": 7.03,
-     "end": 7.276
+     "start": 7.33,
+     "end": 7.576
     },
     {
      "text": "hit",
-     "start": 7.276,
-     "end": 7.522
+     "start": 7.576,
+     "end": 7.822
     },
     {
      "text": "refresh.",
-     "start": 7.522,
-     "end": 8.014
+     "start": 7.822,
+     "end": 8.314
     },
     {
      "text": "And\u2026",
-     "start": 8.354,
-     "end": 8.679
+     "start": 8.654,
+     "end": 8.979
     },
     {
      "text": "nothing.",
-     "start": 9.019,
-     "end": 9.451
+     "start": 9.319,
+     "end": 9.751
     }
    ]
   },
   {
    "id": "s03",
-   "start": 9.95,
+   "start": 10.25,
    "dur": 5.4,
-   "vo_at": 10.2,
+   "vo_at": 10.5,
    "words": [
     {
      "text": "There",
-     "start": 10.35,
-     "end": 10.515
+     "start": 10.65,
+     "end": 10.815
     },
     {
      "text": "are",
-     "start": 10.515,
-     "end": 10.845
+     "start": 10.815,
+     "end": 11.145
     },
     {
      "text": "five",
-     "start": 10.845,
-     "end": 11.01
+     "start": 11.145,
+     "end": 11.31
     },
     {
      "text": "problems",
-     "start": 11.01,
-     "end": 11.34
+     "start": 11.31,
+     "end": 11.64
     },
     {
      "text": "between",
-     "start": 11.34,
-     "end": 11.67
+     "start": 11.64,
+     "end": 11.97
     },
     {
      "text": "you",
-     "start": 11.67,
-     "end": 11.835
+     "start": 11.97,
+     "end": 12.135
     },
     {
      "text": "and",
-     "start": 11.835,
-     "end": 12.0
+     "start": 12.135,
+     "end": 12.3
     },
     {
      "text": "a",
-     "start": 12.0,
-     "end": 12.165
+     "start": 12.3,
+     "end": 12.465
     },
     {
      "text": "full",
-     "start": 12.165,
-     "end": 12.33
+     "start": 12.465,
+     "end": 12.63
     },
     {
      "text": "diary.",
-     "start": 12.33,
-     "end": 12.66
+     "start": 12.63,
+     "end": 12.96
     },
     {
      "text": "And",
-     "start": 13.0,
-     "end": 13.16
+     "start": 13.3,
+     "end": 13.46
     },
     {
      "text": "every",
-     "start": 13.16,
-     "end": 13.638
+     "start": 13.46,
+     "end": 13.938
     },
     {
      "text": "fix",
-     "start": 13.638,
-     "end": 13.798
+     "start": 13.938,
+     "end": 14.098
     },
     {
      "text": "brings",
-     "start": 13.798,
-     "end": 13.957
+     "start": 14.098,
+     "end": 14.257
     },
     {
      "text": "the",
-     "start": 13.957,
-     "end": 14.117
+     "start": 14.257,
+     "end": 14.417
     },
     {
      "text": "next",
-     "start": 14.117,
-     "end": 14.277
+     "start": 14.417,
+     "end": 14.577
     },
     {
      "text": "one.",
-     "start": 14.277,
-     "end": 14.596
+     "start": 14.577,
+     "end": 14.896
     }
    ]
   },
   {
    "id": "s04",
-   "start": 15.35,
-   "dur": 5.61,
-   "vo_at": 15.6,
+   "start": 15.65,
+   "dur": 5.75,
+   "vo_at": 15.9,
    "words": [
     {
      "text": "Problem",
-     "start": 15.75,
-     "end": 16.079
+     "start": 16.05,
+     "end": 16.376
     },
     {
      "text": "one.",
-     "start": 16.079,
-     "end": 16.408
+     "start": 16.376,
+     "end": 16.702
     },
     {
      "text": "Your",
-     "start": 16.748,
-     "end": 16.959
+     "start": 17.042,
+     "end": 17.256
     },
     {
      "text": "ad",
-     "start": 16.959,
-     "end": 17.17
+     "start": 17.256,
+     "end": 17.47
     },
     {
      "text": "says",
-     "start": 17.17,
-     "end": 17.381
+     "start": 17.47,
+     "end": 17.683
     },
     {
      "text": "free",
-     "start": 17.381,
-     "end": 17.592
+     "start": 17.683,
+     "end": 17.897
     },
     {
      "text": "quotes.",
-     "start": 17.592,
-     "end": 18.014
+     "start": 17.897,
+     "end": 18.325
     },
     {
      "text": "So",
-     "start": 18.354,
-     "end": 18.53
+     "start": 18.665,
+     "end": 18.814
     },
     {
      "text": "does",
-     "start": 18.53,
-     "end": 18.706
+     "start": 18.814,
+     "end": 18.964
     },
     {
      "text": "every",
-     "start": 18.706,
-     "end": 19.233
+     "start": 18.964,
+     "end": 19.411
     },
     {
      "text": "other",
-     "start": 19.233,
-     "end": 19.584
+     "start": 19.411,
+     "end": 19.709
     },
     {
-     "text": "spark",
-     "start": 19.584,
-     "end": 19.76
+     "text": "electrician",
+     "start": 19.709,
+     "end": 20.306
     },
     {
      "text": "in",
-     "start": 19.76,
-     "end": 19.936
+     "start": 20.306,
+     "end": 20.455
     },
     {
      "text": "the",
-     "start": 19.936,
-     "end": 20.112
+     "start": 20.455,
+     "end": 20.604
     },
     {
      "text": "county.",
-     "start": 20.112,
-     "end": 20.463
+     "start": 20.604,
+     "end": 20.903
     }
    ]
   },
   {
    "id": "s05",
-   "start": 20.96,
+   "start": 21.4,
    "dur": 7.77,
-   "vo_at": 21.21,
+   "vo_at": 21.65,
    "words": [
     {
      "text": "Fix:",
-     "start": 21.36,
-     "end": 22.024
+     "start": 21.8,
+     "end": 22.464
     },
     {
      "text": "sell",
-     "start": 22.184,
-     "end": 22.391
+     "start": 22.624,
+     "end": 22.831
     },
     {
      "text": "the",
-     "start": 22.391,
-     "end": 22.599
+     "start": 22.831,
+     "end": 23.039
     },
     {
      "text": "result.",
-     "start": 22.599,
-     "end": 23.013
+     "start": 23.039,
+     "end": 23.453
     },
     {
      "text": "Full",
-     "start": 23.353,
-     "end": 23.615
+     "start": 23.793,
+     "end": 24.055
     },
     {
      "text": "rewire",
-     "start": 23.615,
-     "end": 24.139
+     "start": 24.055,
+     "end": 24.579
     },
     {
      "text": "in",
-     "start": 24.139,
-     "end": 24.401
+     "start": 24.579,
+     "end": 24.841
     },
     {
      "text": "five",
-     "start": 24.401,
-     "end": 24.663
+     "start": 24.841,
+     "end": 25.103
     },
     {
      "text": "days,",
-     "start": 24.663,
-     "end": 24.925
+     "start": 25.103,
+     "end": 25.365
     },
     {
      "text": "certified,",
-     "start": 25.085,
-     "end": 25.788
+     "start": 25.525,
+     "end": 26.228
     },
     {
      "text": "and",
-     "start": 25.948,
-     "end": 26.097
+     "start": 26.388,
+     "end": 26.537
     },
     {
      "text": "the",
-     "start": 26.097,
-     "end": 26.245
+     "start": 26.537,
+     "end": 26.685
     },
     {
      "text": "mess",
-     "start": 26.245,
-     "end": 26.394
+     "start": 26.685,
+     "end": 26.834
     },
     {
      "text": "cleaned",
-     "start": 26.394,
-     "end": 26.692
+     "start": 26.834,
+     "end": 27.132
     },
     {
      "text": "up.",
-     "start": 26.692,
-     "end": 26.841
+     "start": 27.132,
+     "end": 27.281
     },
     {
      "text": "Now",
-     "start": 27.181,
-     "end": 27.391
+     "start": 27.621,
+     "end": 27.831
     },
     {
      "text": "the",
-     "start": 27.391,
-     "end": 27.602
+     "start": 27.831,
+     "end": 28.042
     },
     {
      "text": "phone",
-     "start": 27.602,
-     "end": 27.812
+     "start": 28.042,
+     "end": 28.252
     },
     {
      "text": "won't",
-     "start": 27.812,
-     "end": 28.023
+     "start": 28.252,
+     "end": 28.463
     },
     {
      "text": "stop.",
-     "start": 28.023,
-     "end": 28.233
+     "start": 28.463,
+     "end": 28.673
     }
    ]
   },
   {
    "id": "s06",
-   "start": 28.73,
+   "start": 29.17,
    "dur": 4.43,
-   "vo_at": 28.98,
+   "vo_at": 29.42,
    "words": [
     {
      "text": "Problem",
-     "start": 29.13,
-     "end": 29.586
+     "start": 29.57,
+     "end": 30.026
     },
     {
      "text": "two.",
-     "start": 29.586,
-     "end": 29.814
+     "start": 30.026,
+     "end": 30.254
     },
     {
      "text": "Half",
-     "start": 30.154,
-     "end": 30.302
+     "start": 30.594,
+     "end": 30.742
     },
     {
      "text": "of",
-     "start": 30.302,
-     "end": 30.45
+     "start": 30.742,
+     "end": 30.89
     },
     {
      "text": "them",
-     "start": 30.45,
-     "end": 30.598
+     "start": 30.89,
+     "end": 31.038
     },
     {
      "text": "want",
-     "start": 30.598,
-     "end": 30.746
+     "start": 31.038,
+     "end": 31.186
     },
     {
      "text": "one",
-     "start": 30.746,
-     "end": 31.042
+     "start": 31.186,
+     "end": 31.482
     },
     {
      "text": "socket",
-     "start": 31.042,
-     "end": 31.337
+     "start": 31.482,
+     "end": 31.777
     },
     {
      "text": "moved.",
-     "start": 31.337,
-     "end": 31.633
+     "start": 31.777,
+     "end": 32.073
     },
     {
      "text": "Junk",
-     "start": 31.973,
-     "end": 32.315
+     "start": 32.413,
+     "end": 32.755
     },
     {
      "text": "leads.",
-     "start": 32.315,
-     "end": 32.656
+     "start": 32.755,
+     "end": 33.096
     }
    ]
   },
   {
    "id": "s07",
-   "start": 33.16,
+   "start": 33.6,
    "dur": 8.64,
-   "vo_at": 33.41,
+   "vo_at": 33.85,
    "words": [
     {
      "text": "Fix:",
-     "start": 33.56,
-     "end": 34.142
+     "start": 34.0,
+     "end": 34.582
     },
     {
      "text": "say",
-     "start": 34.302,
-     "end": 34.54
+     "start": 34.742,
+     "end": 34.98
     },
     {
      "text": "who",
-     "start": 34.54,
-     "end": 34.777
+     "start": 34.98,
+     "end": 35.217
     },
     {
      "text": "it's",
-     "start": 34.777,
-     "end": 35.014
+     "start": 35.217,
+     "end": 35.454
     },
     {
      "text": "for,",
-     "start": 35.014,
-     "end": 35.252
+     "start": 35.454,
+     "end": 35.692
     },
     {
      "text": "and",
-     "start": 35.412,
-     "end": 35.637
+     "start": 35.852,
+     "end": 36.077
     },
     {
      "text": "the",
-     "start": 35.637,
-     "end": 35.863
+     "start": 36.077,
+     "end": 36.303
     },
     {
      "text": "price.",
-     "start": 35.863,
-     "end": 36.089
+     "start": 36.303,
+     "end": 36.529
     },
     {
      "text": "Three-bed",
-     "start": 36.429,
-     "end": 36.851
+     "start": 36.869,
+     "end": 37.291
     },
     {
      "text": "rewires,",
-     "start": 36.851,
-     "end": 37.485
+     "start": 37.291,
+     "end": 37.925
     },
     {
      "text": "Kildare,",
-     "start": 37.645,
-     "end": 38.109
+     "start": 38.085,
+     "end": 38.549
     },
     {
      "text": "from",
-     "start": 38.269,
-     "end": 38.584
+     "start": 38.709,
+     "end": 39.024
     },
     {
      "text": "nine",
-     "start": 38.584,
-     "end": 38.899
+     "start": 39.024,
+     "end": 39.339
     },
     {
      "text": "grand.",
-     "start": 38.899,
-     "end": 39.214
+     "start": 39.339,
+     "end": 39.654
     },
     {
      "text": "Fewer",
-     "start": 39.554,
-     "end": 40.035
+     "start": 39.994,
+     "end": 40.475
     },
     {
      "text": "leads.",
-     "start": 40.035,
-     "end": 40.276
+     "start": 40.475,
+     "end": 40.716
     },
     {
      "text": "Better",
-     "start": 40.616,
-     "end": 40.959
+     "start": 41.056,
+     "end": 41.399
     },
     {
      "text": "ones.",
-     "start": 40.959,
-     "end": 41.302
+     "start": 41.399,
+     "end": 41.742
     }
    ]
   },
   {
    "id": "s08",
-   "start": 41.8,
+   "start": 42.24,
    "dur": 7.22,
-   "vo_at": 42.05,
+   "vo_at": 42.49,
    "words": [
     {
      "text": "Problem",
-     "start": 42.2,
-     "end": 42.664
+     "start": 42.64,
+     "end": 43.104
     },
     {
      "text": "three.",
-     "start": 42.664,
-     "end": 42.896
+     "start": 43.104,
+     "end": 43.336
     },
     {
      "text": "The",
-     "start": 43.236,
-     "end": 43.448
+     "start": 43.676,
+     "end": 43.888
     },
     {
      "text": "form's",
-     "start": 43.448,
-     "end": 43.66
+     "start": 43.888,
+     "end": 44.1
     },
     {
      "text": "too",
-     "start": 43.66,
-     "end": 43.872
+     "start": 44.1,
+     "end": 44.312
     },
     {
      "text": "easy.",
-     "start": 43.872,
-     "end": 44.295
+     "start": 44.312,
+     "end": 44.735
     },
     {
      "text": "They",
-     "start": 44.635,
-     "end": 44.816
+     "start": 45.075,
+     "end": 45.256
     },
     {
      "text": "tap",
-     "start": 44.816,
-     "end": 44.996
+     "start": 45.256,
+     "end": 45.436
     },
     {
      "text": "submit",
-     "start": 44.996,
-     "end": 45.357
+     "start": 45.436,
+     "end": 45.797
     },
     {
      "text": "just",
-     "start": 45.357,
-     "end": 45.537
+     "start": 45.797,
+     "end": 45.977
     },
     {
      "text": "to",
-     "start": 45.537,
-     "end": 45.718
+     "start": 45.977,
+     "end": 46.158
     },
     {
      "text": "get",
-     "start": 45.718,
-     "end": 45.898
+     "start": 46.158,
+     "end": 46.338
     },
     {
      "text": "a",
-     "start": 45.898,
-     "end": 46.079
+     "start": 46.338,
+     "end": 46.519
     },
     {
      "text": "price.",
-     "start": 46.079,
-     "end": 46.259
+     "start": 46.519,
+     "end": 46.699
     },
     {
      "text": "You",
-     "start": 46.599,
-     "end": 46.841
+     "start": 47.039,
+     "end": 47.281
     },
     {
      "text": "drive",
-     "start": 46.841,
-     "end": 47.082
+     "start": 47.281,
+     "end": 47.522
     },
     {
      "text": "to",
-     "start": 47.082,
-     "end": 47.324
+     "start": 47.522,
+     "end": 47.764
     },
     {
      "text": "Nace\u2026",
-     "start": 47.324,
-     "end": 47.565
+     "start": 47.764,
+     "end": 48.005
     },
     {
      "text": "for",
-     "start": 47.905,
-     "end": 48.11
+     "start": 48.345,
+     "end": 48.55
     },
     {
      "text": "nothing.",
-     "start": 48.11,
-     "end": 48.521
+     "start": 48.55,
+     "end": 48.961
     }
    ]
   },
   {
    "id": "s09",
-   "start": 49.02,
+   "start": 49.46,
    "dur": 8.52,
-   "vo_at": 49.27,
+   "vo_at": 49.71,
    "words": [
     {
      "text": "Fix:",
-     "start": 49.42,
-     "end": 49.884
+     "start": 49.86,
+     "end": 50.324
     },
     {
      "text": "a",
-     "start": 50.044,
-     "end": 50.262
+     "start": 50.484,
+     "end": 50.702
     },
     {
      "text": "short",
-     "start": 50.262,
-     "end": 50.48
+     "start": 50.702,
+     "end": 50.92
     },
     {
      "text": "video",
-     "start": 50.48,
-     "end": 50.917
+     "start": 50.92,
+     "end": 51.357
     },
     {
      "text": "before",
-     "start": 50.917,
-     "end": 51.353
+     "start": 51.357,
+     "end": 51.793
     },
     {
      "text": "the",
-     "start": 51.353,
-     "end": 51.571
+     "start": 51.793,
+     "end": 52.011
     },
     {
      "text": "form.",
-     "start": 51.571,
-     "end": 51.789
+     "start": 52.011,
+     "end": 52.229
     },
     {
      "text": "Who",
-     "start": 52.129,
-     "end": 52.275
+     "start": 52.569,
+     "end": 52.715
     },
     {
      "text": "you",
-     "start": 52.275,
-     "end": 52.421
+     "start": 52.715,
+     "end": 52.861
     },
     {
      "text": "are.",
-     "start": 52.421,
-     "end": 52.713
+     "start": 52.861,
+     "end": 53.153
     },
     {
      "text": "How",
-     "start": 53.053,
-     "end": 53.306
+     "start": 53.493,
+     "end": 53.746
     },
     {
      "text": "it",
-     "start": 53.306,
-     "end": 53.56
+     "start": 53.746,
+     "end": 54.0
     },
     {
      "text": "works.",
-     "start": 53.56,
-     "end": 53.813
+     "start": 54.0,
+     "end": 54.253
     },
     {
      "text": "And",
-     "start": 54.153,
-     "end": 54.394
+     "start": 54.593,
+     "end": 54.834
     },
     {
      "text": "what",
-     "start": 54.394,
-     "end": 54.635
+     "start": 54.834,
+     "end": 55.075
     },
     {
      "text": "it",
-     "start": 54.635,
-     "end": 54.876
+     "start": 55.075,
+     "end": 55.316
     },
     {
      "text": "costs.",
-     "start": 54.876,
-     "end": 55.118
+     "start": 55.316,
+     "end": 55.558
     },
     {
      "text": "Whoever",
-     "start": 55.458,
-     "end": 55.91
+     "start": 55.898,
+     "end": 56.35
     },
     {
      "text": "still",
-     "start": 55.91,
-     "end": 56.136
+     "start": 56.35,
+     "end": 56.576
     },
     {
      "text": "books",
-     "start": 56.136,
-     "end": 56.362
+     "start": 56.576,
+     "end": 56.802
     },
     {
      "text": "is",
-     "start": 56.362,
-     "end": 56.589
+     "start": 56.802,
+     "end": 57.029
     },
     {
      "text": "serious.",
-     "start": 56.589,
-     "end": 57.041
+     "start": 57.029,
+     "end": 57.481
     }
    ]
   },
   {
    "id": "s10",
-   "start": 57.54,
+   "start": 57.98,
    "dur": 6.77,
-   "vo_at": 57.79,
+   "vo_at": 58.23,
    "words": [
     {
      "text": "Problem",
-     "start": 57.94,
-     "end": 58.419
+     "start": 58.38,
+     "end": 58.859
     },
     {
      "text": "four.",
-     "start": 58.419,
-     "end": 58.659
+     "start": 58.859,
+     "end": 59.099
     },
     {
      "text": "A",
-     "start": 58.999,
-     "end": 59.222
+     "start": 59.439,
+     "end": 59.662
     },
     {
      "text": "lead",
-     "start": 59.222,
-     "end": 59.444
+     "start": 59.662,
+     "end": 59.884
     },
     {
      "text": "lands",
-     "start": 59.444,
-     "end": 59.667
+     "start": 59.884,
+     "end": 60.107
     },
     {
      "text": "at",
-     "start": 59.667,
-     "end": 59.889
+     "start": 60.107,
+     "end": 60.329
     },
     {
      "text": "noon.",
-     "start": 59.889,
-     "end": 60.111
+     "start": 60.329,
+     "end": 60.551
     },
     {
      "text": "You're",
-     "start": 60.451,
-     "end": 60.61
+     "start": 60.891,
+     "end": 61.05
     },
     {
      "text": "up",
-     "start": 60.61,
-     "end": 60.768
+     "start": 61.05,
+     "end": 61.208
     },
     {
      "text": "in",
-     "start": 60.768,
-     "end": 60.927
+     "start": 61.208,
+     "end": 61.367
     },
     {
      "text": "an",
-     "start": 60.927,
-     "end": 61.085
+     "start": 61.367,
+     "end": 61.525
     },
     {
      "text": "attic.",
-     "start": 61.085,
-     "end": 61.402
+     "start": 61.525,
+     "end": 61.842
     },
     {
      "text": "By",
-     "start": 61.742,
-     "end": 62.083
+     "start": 62.182,
+     "end": 62.523
     },
     {
      "text": "five,",
-     "start": 62.083,
-     "end": 62.423
+     "start": 62.523,
+     "end": 62.863
     },
     {
      "text": "they've",
-     "start": 62.583,
-     "end": 62.787
+     "start": 63.023,
+     "end": 63.227
     },
     {
      "text": "hired",
-     "start": 62.787,
-     "end": 63.196
+     "start": 63.227,
+     "end": 63.636
     },
     {
      "text": "someone",
-     "start": 63.196,
-     "end": 63.604
+     "start": 63.636,
+     "end": 64.044
     },
     {
      "text": "else.",
-     "start": 63.604,
-     "end": 63.809
+     "start": 64.044,
+     "end": 64.249
     }
    ]
   },
   {
    "id": "s11",
-   "start": 64.31,
+   "start": 64.75,
    "dur": 6.26,
-   "vo_at": 64.56,
+   "vo_at": 65.0,
    "words": [
     {
      "text": "Fix:",
-     "start": 64.71,
-     "end": 65.196
+     "start": 65.15,
+     "end": 65.636
     },
     {
      "text": "speed",
-     "start": 65.356,
-     "end": 65.546
+     "start": 65.796,
+     "end": 65.986
     },
     {
      "text": "is",
-     "start": 65.546,
-     "end": 65.737
+     "start": 65.986,
+     "end": 66.177
     },
     {
      "text": "the",
-     "start": 65.737,
-     "end": 65.927
+     "start": 66.177,
+     "end": 66.367
     },
     {
      "text": "system.",
-     "start": 65.927,
-     "end": 66.307
+     "start": 66.367,
+     "end": 66.747
     },
     {
      "text": "Text",
-     "start": 66.647,
-     "end": 66.805
+     "start": 67.087,
+     "end": 67.245
     },
     {
      "text": "in",
-     "start": 66.805,
-     "end": 66.963
+     "start": 67.245,
+     "end": 67.403
     },
     {
      "text": "one",
-     "start": 66.963,
-     "end": 67.279
+     "start": 67.403,
+     "end": 67.719
     },
     {
      "text": "minute.",
-     "start": 67.279,
-     "end": 67.595
+     "start": 67.719,
+     "end": 68.035
     },
     {
      "text": "Call",
-     "start": 67.935,
-     "end": 68.203
+     "start": 68.375,
+     "end": 68.643
     },
     {
      "text": "in",
-     "start": 68.203,
-     "end": 68.471
+     "start": 68.643,
+     "end": 68.911
     },
     {
      "text": "five.",
-     "start": 68.471,
-     "end": 68.74
+     "start": 68.911,
+     "end": 69.18
     },
     {
      "text": "Follow",
-     "start": 69.08,
-     "end": 69.363
+     "start": 69.52,
+     "end": 69.803
     },
     {
      "text": "up",
-     "start": 69.363,
-     "end": 69.505
+     "start": 69.803,
+     "end": 69.945
     },
     {
      "text": "every",
-     "start": 69.505,
-     "end": 69.93
+     "start": 69.945,
+     "end": 70.37
     },
     {
      "text": "day.",
-     "start": 69.93,
-     "end": 70.072
+     "start": 70.37,
+     "end": 70.512
     }
    ]
   },
   {
    "id": "s12",
-   "start": 70.57,
+   "start": 71.01,
    "dur": 6.61,
-   "vo_at": 70.82,
+   "vo_at": 71.26,
    "words": [
     {
      "text": "Problem",
-     "start": 70.97,
-     "end": 71.529
+     "start": 71.41,
+     "end": 71.969
     },
     {
      "text": "five.",
-     "start": 71.529,
-     "end": 71.808
+     "start": 71.969,
+     "end": 72.248
     },
     {
      "text": "You",
-     "start": 72.148,
-     "end": 72.329
+     "start": 72.588,
+     "end": 72.769
     },
     {
      "text": "get",
-     "start": 72.329,
-     "end": 72.511
+     "start": 72.769,
+     "end": 72.951
     },
     {
      "text": "busy,",
-     "start": 72.511,
-     "end": 72.873
+     "start": 72.951,
+     "end": 73.313
     },
     {
      "text": "so",
-     "start": 73.033,
-     "end": 73.25
+     "start": 73.473,
+     "end": 73.69
     },
     {
      "text": "you",
-     "start": 73.25,
-     "end": 73.467
+     "start": 73.69,
+     "end": 73.907
     },
     {
      "text": "switch",
-     "start": 73.467,
-     "end": 73.684
+     "start": 73.907,
+     "end": 74.124
     },
     {
      "text": "the",
-     "start": 73.684,
-     "end": 73.901
+     "start": 74.124,
+     "end": 74.341
     },
     {
      "text": "ads",
-     "start": 73.901,
-     "end": 74.118
+     "start": 74.341,
+     "end": 74.558
     },
     {
      "text": "off.",
-     "start": 74.118,
-     "end": 74.335
+     "start": 74.558,
+     "end": 74.775
     },
     {
      "text": "A",
-     "start": 74.675,
-     "end": 74.858
+     "start": 75.115,
+     "end": 75.298
     },
     {
      "text": "month",
-     "start": 74.858,
-     "end": 75.041
+     "start": 75.298,
+     "end": 75.481
     },
     {
      "text": "later\u2026",
-     "start": 75.041,
-     "end": 75.407
+     "start": 75.481,
+     "end": 75.847
     },
     {
      "text": "the",
-     "start": 75.747,
-     "end": 75.934
+     "start": 76.187,
+     "end": 76.374
     },
     {
      "text": "diary's",
-     "start": 75.934,
-     "end": 76.308
+     "start": 76.374,
+     "end": 76.748
     },
     {
      "text": "empty.",
-     "start": 76.308,
-     "end": 76.683
+     "start": 76.748,
+     "end": 77.123
     }
    ]
   },
   {
    "id": "s13",
-   "start": 77.18,
+   "start": 77.62,
    "dur": 5.71,
-   "vo_at": 77.43,
+   "vo_at": 77.87,
    "words": [
     {
      "text": "Fix:",
-     "start": 77.58,
-     "end": 78.156
+     "start": 78.02,
+     "end": 78.596
     },
     {
      "text": "never",
-     "start": 78.316,
-     "end": 78.742
+     "start": 78.756,
+     "end": 79.182
     },
     {
      "text": "switch",
-     "start": 78.742,
-     "end": 78.955
+     "start": 79.182,
+     "end": 79.395
     },
     {
      "text": "them",
-     "start": 78.955,
-     "end": 79.168
+     "start": 79.395,
+     "end": 79.608
     },
     {
      "text": "off.",
-     "start": 79.168,
-     "end": 79.38
+     "start": 79.608,
+     "end": 79.82
     },
     {
      "text": "When",
-     "start": 79.72,
-     "end": 79.876
+     "start": 80.16,
+     "end": 80.316
     },
     {
      "text": "you're",
-     "start": 79.876,
-     "end": 80.031
+     "start": 80.316,
+     "end": 80.471
     },
     {
      "text": "busy,",
-     "start": 80.031,
-     "end": 80.341
+     "start": 80.471,
+     "end": 80.781
     },
     {
      "text": "raise",
-     "start": 80.501,
-     "end": 80.737
+     "start": 80.941,
+     "end": 81.177
     },
     {
      "text": "your",
-     "start": 80.737,
-     "end": 80.972
+     "start": 81.177,
+     "end": 81.412
     },
     {
      "text": "price",
-     "start": 80.972,
-     "end": 81.208
+     "start": 81.412,
+     "end": 81.648
     },
     {
      "text": "and",
-     "start": 81.208,
-     "end": 81.443
+     "start": 81.648,
+     "end": 81.883
     },
     {
      "text": "pick",
-     "start": 81.443,
-     "end": 81.678
+     "start": 81.883,
+     "end": 82.118
     },
     {
      "text": "the",
-     "start": 81.678,
-     "end": 81.914
+     "start": 82.118,
+     "end": 82.354
     },
     {
      "text": "best",
-     "start": 81.914,
-     "end": 82.149
+     "start": 82.354,
+     "end": 82.589
     },
     {
      "text": "jobs.",
-     "start": 82.149,
-     "end": 82.385
+     "start": 82.589,
+     "end": 82.825
     }
    ]
   },
   {
    "id": "s14",
-   "start": 82.89,
+   "start": 83.33,
    "dur": 5.96,
-   "vo_at": 83.14,
+   "vo_at": 83.58,
    "words": [
     {
      "text": "Offer.",
-     "start": 83.29,
-     "end": 83.662
+     "start": 83.73,
+     "end": 84.102
     },
     {
      "text": "Message.",
-     "start": 84.002,
-     "end": 84.476
+     "start": 84.442,
+     "end": 84.916
     },
     {
      "text": "Video.",
-     "start": 84.816,
-     "end": 85.277
+     "start": 85.256,
+     "end": 85.717
     },
     {
      "text": "Speed.",
-     "start": 85.617,
-     "end": 86.047
+     "start": 86.057,
+     "end": 86.487
     },
     {
      "text": "Always",
-     "start": 86.387,
-     "end": 86.788
+     "start": 86.827,
+     "end": 87.228
     },
     {
      "text": "on.",
-     "start": 86.788,
-     "end": 86.988
+     "start": 87.228,
+     "end": 87.428
     },
     {
      "text": "That's",
-     "start": 87.328,
-     "end": 87.498
+     "start": 87.768,
+     "end": 87.938
     },
     {
      "text": "the",
-     "start": 87.498,
-     "end": 87.669
+     "start": 87.938,
+     "end": 88.109
     },
     {
      "text": "whole",
-     "start": 87.669,
-     "end": 88.009
+     "start": 88.109,
+     "end": 88.449
     },
     {
      "text": "system.",
-     "start": 88.009,
-     "end": 88.349
+     "start": 88.449,
+     "end": 88.789
     }
    ]
   },
   {
    "id": "s15",
-   "start": 88.85,
+   "start": 89.29,
    "dur": 4.46,
-   "vo_at": 89.1,
+   "vo_at": 89.54,
    "words": [
     {
      "text": "Want",
-     "start": 89.25,
-     "end": 89.438
+     "start": 89.69,
+     "end": 89.878
     },
     {
      "text": "this",
-     "start": 89.438,
-     "end": 89.626
+     "start": 89.878,
+     "end": 90.066
     },
     {
      "text": "built",
-     "start": 89.626,
-     "end": 89.814
+     "start": 90.066,
+     "end": 90.254
     },
     {
      "text": "for",
-     "start": 89.814,
-     "end": 90.002
+     "start": 90.254,
+     "end": 90.442
     },
     {
      "text": "your",
-     "start": 90.002,
-     "end": 90.19
+     "start": 90.442,
+     "end": 90.63
     },
     {
      "text": "business?",
-     "start": 90.19,
-     "end": 90.754
+     "start": 90.63,
+     "end": 91.194
     },
     {
      "text": "Book",
-     "start": 91.094,
-     "end": 91.297
+     "start": 91.534,
+     "end": 91.737
     },
     {
      "text": "a",
-     "start": 91.297,
-     "end": 91.501
+     "start": 91.737,
+     "end": 91.941
     },
     {
      "text": "call.",
-     "start": 91.501,
-     "end": 91.705
+     "start": 91.941,
+     "end": 92.145
     }
    ]
   }

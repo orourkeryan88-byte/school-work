@@ -4,77 +4,77 @@
 {
 "text": "Problem",
 "start": 0.15,
-"end": 0.479
+"end": 0.476
 },
 {
 "text": "one.",
-"start": 0.479,
-"end": 0.808
+"start": 0.476,
+"end": 0.802
 },
 {
 "text": "Your",
-"start": 1.148,
-"end": 1.359
+"start": 1.142,
+"end": 1.356
 },
 {
 "text": "ad",
-"start": 1.359,
+"start": 1.356,
 "end": 1.57
 },
 {
 "text": "says",
 "start": 1.57,
-"end": 1.781
+"end": 1.783
 },
 {
 "text": "free",
-"start": 1.781,
-"end": 1.992
+"start": 1.783,
+"end": 1.997
 },
 {
 "text": "quotes.",
-"start": 1.992,
-"end": 2.414
+"start": 1.997,
+"end": 2.425
 },
 {
 "text": "So",
-"start": 2.754,
-"end": 2.93
+"start": 2.765,
+"end": 2.914
 },
 {
 "text": "does",
-"start": 2.93,
-"end": 3.106
+"start": 2.914,
+"end": 3.064
 },
 {
 "text": "every",
-"start": 3.106,
-"end": 3.633
+"start": 3.064,
+"end": 3.511
 },
 {
 "text": "other",
-"start": 3.633,
-"end": 3.984
+"start": 3.511,
+"end": 3.809
 },
 {
-"text": "spark",
-"start": 3.984,
-"end": 4.16
+"text": "electrician",
+"start": 3.809,
+"end": 4.406
 },
 {
 "text": "in",
-"start": 4.16,
-"end": 4.336
+"start": 4.406,
+"end": 4.555
 },
 {
 "text": "the",
-"start": 4.336,
-"end": 4.512
+"start": 4.555,
+"end": 4.704
 },
 {
 "text": "county.",
-"start": 4.512,
-"end": 4.863
+"start": 4.704,
+"end": 5.003
 }
 ]
 }

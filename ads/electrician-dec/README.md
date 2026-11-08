@@ -42,7 +42,7 @@ Ryan sent the original reference ad (screen recordings) and asked for it to look
 ## Scenes (times from the voiceover)
 | # | Time | Line | On screen |
 |---|---|---|---|
-| 1 | 0.0–6.6 | You're a spark… post your first Facebook ads. | Low angle: the rewires.co van rolls in and bounces; Dec hops out and waves. The camera cranes up as night falls, back to the box-room window, in through the rain, over his shoulder, into the laptop. The "Publish ad" card gets clicked, then "Ad is live" bursts out. |
+| 1 | 0.0–6.6 | You're an electrician… post your first Facebook ads. | Low angle: the rewires.co van rolls in and bounces; Dec hops out and waves. The camera cranes up as night falls, back to the box-room window, in through the rain, over his shoulder, into the laptop. The "Publish ad" card gets clicked, then "Ad is live" bursts out. |
 | 2 | 6.6–9.9 | You hit refresh. And… nothing. | Morning, wall clock 8:02. A refresh icon spins, "0 ENQUIRIES" shakes, and a reverse shot shows Dec slumping. |
 | 3 | 9.9–15.3 | Five problems… every fix brings the next one. | Pine stage: five domino tiles (tile 1 in gold) topple in slow motion and the last stops at his boots. He shrugs. The HUD drops in. |
 | 4 | 15.3–21.0 | Problem one: free quotes. | Van cab, slow-mo orbit: identical "Free quotes · any job" cards fly out of his phone and circle him; his card fades into the pile. |

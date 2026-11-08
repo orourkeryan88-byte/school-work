@@ -4,102 +4,102 @@
 {
 "text": "You're",
 "start": 0.15,
-"end": 0.366
+"end": 0.298
 },
 {
-"text": "a",
-"start": 0.366,
-"end": 0.583
+"text": "an",
+"start": 0.298,
+"end": 0.446
 },
 {
-"text": "spark.",
-"start": 0.583,
-"end": 0.799
+"text": "electrician.",
+"start": 0.446,
+"end": 1.039
 },
 {
 "text": "You",
-"start": 1.139,
-"end": 1.299
+"start": 1.379,
+"end": 1.542
 },
 {
 "text": "put",
-"start": 1.299,
-"end": 1.46
+"start": 1.542,
+"end": 1.705
 },
 {
 "text": "rewires",
-"start": 1.46,
-"end": 1.94
+"start": 1.705,
+"end": 2.194
 },
 {
 "text": "dot",
-"start": 1.94,
-"end": 2.101
+"start": 2.194,
+"end": 2.356
 },
 {
 "text": "co",
-"start": 2.101,
-"end": 2.261
+"start": 2.356,
+"end": 2.519
 },
 {
 "text": "on",
-"start": 2.261,
-"end": 2.421
+"start": 2.519,
+"end": 2.682
 },
 {
 "text": "the",
-"start": 2.421,
-"end": 2.581
+"start": 2.682,
+"end": 2.845
 },
 {
 "text": "van,",
-"start": 2.581,
-"end": 2.742
+"start": 2.845,
+"end": 3.008
 },
 {
 "text": "open",
-"start": 2.902,
-"end": 3.225
+"start": 3.168,
+"end": 3.475
 },
 {
 "text": "the",
-"start": 3.225,
-"end": 3.387
+"start": 3.475,
+"end": 3.629
 },
 {
 "text": "laptop,",
-"start": 3.387,
-"end": 3.71
+"start": 3.629,
+"end": 3.936
 },
 {
 "text": "and",
-"start": 3.87,
-"end": 4.096
+"start": 4.096,
+"end": 4.332
 },
 {
 "text": "post",
-"start": 4.096,
-"end": 4.323
+"start": 4.332,
+"end": 4.568
 },
 {
 "text": "your",
-"start": 4.323,
-"end": 4.55
+"start": 4.568,
+"end": 4.803
 },
 {
 "text": "first",
-"start": 4.55,
-"end": 4.776
+"start": 4.803,
+"end": 5.039
 },
 {
 "text": "Facebook",
-"start": 4.776,
-"end": 5.456
+"start": 5.039,
+"end": 5.746
 },
 {
 "text": "ads.",
-"start": 5.456,
-"end": 5.683
+"start": 5.746,
+"end": 5.982
 }
 ]
 }

@@ -1,4 +1,4 @@
-/* Dec, the rewires.co sparky. Original design, built from toon-shaded primitives with the ink outline.
+/* Dec, the rewires.co electrician. Original design, built from toon-shaded primitives with the ink outline.
    Stocky, short-legged, ~3.2 heads tall. Gold hi-vis vest with two grey reflective bands over a pine long-sleeve,
    charcoal work trousers with knee-pad pockets, tan boots, tool belt (screwdriver + voltage tester), pencil behind
    the right ear, pine cap with a cloud-white lightning-bolt patch. The brows do most of the acting.

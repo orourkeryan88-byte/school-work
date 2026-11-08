@@ -16,7 +16,7 @@
     ["A", "B", "C", "D", "E", "F", "G", "H", "I", "Map", "Flow", "Tower"].forEach((n) => { sets[n] = SETS.get(n); scene.add(sets[n]); });
     dec = DEC.make(); scene.add(dec.root);
     // floating extras: the cards of problem 1, the attic clock, toggle, padlock, dominoes
-    extras.cards = ["Brennan Electrical", "JK Sparks", "Lynch Electric", "Doyle & Son", "Kelly Electrical", "Byrne & Co", "rewires.co"].map((n, i) => {
+    extras.cards = ["Brennan Electrical", "JK Electrical", "Lynch Electric", "Doyle & Son", "Kelly Electrical", "Byrne & Co", "rewires.co"].map((n, i) => {
       const g = new THREE.Group(), me = i === 6;
       g.add(K.rbox(1.5, 0.62, 0.05, 0.08, me ? C.gold : C.cloud));
       const t = SETS.cardTex(720, 300, me ? K.hex(C.gold) : K.hex(C.cloud), [{ t: n, f: `700 78px ${SETS.FONT}`, c: K.hex(C.ink), y: 110, x: 40 },
