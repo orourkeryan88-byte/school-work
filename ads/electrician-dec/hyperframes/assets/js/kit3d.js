@@ -10,7 +10,7 @@
           char: 0x2e3431, wood: 0x8c6c4e, woodL: 0xb89572, field: 0x5f7a4c, field2: 0x7d9460, hedge: 0x3f5c38 };
 
   // 2-tone ramp: shadow side ~55% of the colour, lit side full. Nearest filter = hard cel edge.
-  const ramp = new THREE.DataTexture(new Uint8Array([140, 140, 140, 255, 255, 255, 255, 255]), 2, 1);
+  const ramp = new THREE.DataTexture(new Uint8Array([205, 205, 205, 255, 255, 255, 255, 255]), 2, 1);
   ramp.minFilter = ramp.magFilter = THREE.NearestFilter; ramp.needsUpdate = true;
   const mats = {};
   K.toon = (color, o = {}) => {
@@ -31,7 +31,7 @@
       void main(){ vec4 mv = modelViewMatrix * vec4(position,1.0);
         vec3 n = normalize(normalMatrix * snormal);
         float wob = 1.0 + 0.28*sin(position.x*9.0 + position.y*7.0 + uTime*5.0) + 0.18*sin(position.z*11.0 - uTime*3.0);
-        mv.xyz += n * uW * wob * max(0.6, -mv.z) * 0.0042;
+        mv.xyz += n * uW * wob * max(0.6, -mv.z) * 0.0056;
         gl_Position = projectionMatrix * mv; }`,
     fragmentShader: `uniform vec3 uInk; void main(){ gl_FragColor = vec4(uInk,1.0); }` });
   const hulls = {};

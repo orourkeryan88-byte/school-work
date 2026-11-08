@@ -19,6 +19,7 @@
   @font-face { font-family: "Instrument Sans"; src: url(assets/fonts/is-700.woff2) format("woff2"); font-weight: 700; }
   @font-face { font-family: "Instrument Serif"; src: url(assets/fonts/iserif-italic.woff2) format("woff2"); font-style: italic; font-weight: 400; }
   @font-face { font-family: "IBM Plex Mono"; src: url(assets/fonts/plex-500.woff2) format("woff2"); font-weight: 500; }
+  @font-face { font-family: "Anton"; src: url(assets/fonts/anton-400.woff2) format("woff2"); font-weight: 400; }   /* condensed headline face (SIL OFL) */
   :root { --pine: #0c2a22; --cloud: #eceeed; --ink: #0e1412; --graphite: #56605b; --fog: #c6ccc8; --gold: #f0b455; --goldd: #c9821f; }
   html, body { margin: 0; background: var(--pine); }
   body { font-family: "Instrument Sans", sans-serif; -webkit-font-smoothing: antialiased; color: var(--ink); }
@@ -31,11 +32,14 @@
   #tsT { top: 0; -webkit-mask-image: linear-gradient(#000 30%, transparent); mask-image: linear-gradient(#000 30%, transparent); }
   #tsB { bottom: 0; -webkit-mask-image: linear-gradient(transparent, #000 70%); mask-image: linear-gradient(transparent, #000 70%); }
   /* paper grain + risograph dots on every frame */
-  #grain { z-index: 80; opacity: .09; mix-blend-mode: overlay; inset: -100px; pointer-events: none;
+  #grain { z-index: 80; opacity: .2; mix-blend-mode: overlay; inset: -100px; pointer-events: none;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>"); }
-  #riso { z-index: 81; opacity: .05; mix-blend-mode: multiply; pointer-events: none;
+  #riso { z-index: 81; opacity: .04; mix-blend-mode: multiply; pointer-events: none;
     background-image: radial-gradient(circle at 1.5px 1.5px, #0e1412 1.1px, transparent 1.4px); background-size: 6px 6px; }
-  #vig { z-index: 79; pointer-events: none; background: radial-gradient(120% 80% at 50% 50%, transparent 60%, rgba(5,15,12,.35)); }
+  #vig { z-index: 79; pointer-events: none; background: radial-gradient(110% 75% at 50% 52%, transparent 55%, rgba(5,15,12,.55)); }
+  #paper { z-index: 78; opacity: .22; mix-blend-mode: multiply; pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='600' height='600'><filter id='f'><feTurbulence type='fractalNoise' baseFrequency='.012 .09' numOctaves='3' seed='4'/><feColorMatrix values='0 0 0 0 .55 0 0 0 0 .5 0 0 0 0 .42 0 0 0 .9 0'/></filter><rect width='600' height='600' filter='url(%23f)'/></svg>"); }
+  #shade { z-index: 40; pointer-events: none; opacity: 0; background: linear-gradient(rgba(5,15,12,.78), rgba(5,15,12,.5) 34%, transparent 52%); }
 
   /* UI cards in 3D space */
   .ui { position: absolute; inset: 0; perspective: 1700px; z-index: 30; pointer-events: none; }
@@ -56,42 +60,37 @@
   .notif small { display: block; font: 500 24px "IBM Plex Mono", monospace; letter-spacing: .05em; color: var(--graphite); }
   .bub { position: absolute; left: 0; top: 0; padding: 22px 32px; border-radius: 34px 34px 34px 8px; font-size: 44px; font-weight: 500; white-space: nowrap; }
 
-  /* captions: serif-italic lead over a bold key line, word by word; gold underline under the stressed word */
-  .cap { position: absolute; left: 72px; width: 936px; top: 610px; z-index: 50; opacity: 0; isolation: isolate; }
-  .cap::before { content: ""; position: absolute; left: -110px; right: -60px; top: -60px; bottom: -70px; z-index: -1; border-radius: 50%; }
-  .cap.D::before { background: radial-gradient(closest-side, rgba(4,14,11,.5), rgba(4,14,11,.22) 60%, transparent); }
-  .cap.L::before { background: radial-gradient(closest-side, rgba(236,238,237,.7), rgba(236,238,237,.3) 60%, transparent); }
-  .cap .ld { font-family: "Instrument Serif", serif; font-style: italic; font-size: 70px; line-height: 1.06; margin-bottom: 4px; }
-  .cap .ky { font-weight: 700; line-height: .98; letter-spacing: -.02em; }
-  .cap .w { display: inline-block; position: relative; margin-right: .22em; will-change: transform, opacity, filter; }
-  .cap .ul { position: absolute; left: -2px; right: -2px; bottom: -.04em; height: .11em; border-radius: 99px; background: var(--gold); transform: scaleX(0); transform-origin: 0 50%; }
-  .cap.D { color: var(--cloud); text-shadow: 0 4px 26px rgba(4,14,11,.65), 0 1px 3px rgba(4,14,11,.6); }
-  .cap.L { color: var(--ink); text-shadow: 0 2px 22px rgba(236,238,237,.85); }
-  .cap.L .ul { background: var(--goldd); }
+  /* captions: centred, phrase shown dim, each word lights up as it is spoken; stressed words in gold */
+  .cap2 { position: absolute; left: 70px; right: 70px; top: 1262px; z-index: 50; text-align: center; opacity: 0; font-weight: 700; font-size: 66px; line-height: 1.08;
+    letter-spacing: -.01em; color: var(--cloud); text-shadow: 0 4px 0 rgba(4,14,11,.45), 0 0 26px rgba(4,14,11,.75); }
+  .cap2 .w { display: inline-block; margin: 0 .12em; opacity: .4; }
+  .cap2 .g { color: var(--gold); }
 
-  /* persistent HUD */
-  #hud { position: absolute; top: 92px; left: 44px; right: 44px; height: 156px; z-index: 60; border-radius: 42px;
-    background: linear-gradient(180deg, rgba(22,61,49,.86), rgba(12,42,34,.9)); backdrop-filter: blur(16px); -webkit-backdrop-filter: blur(16px);
-    box-shadow: 0 24px 50px rgba(3,10,8,.45), inset 0 1px 0 rgba(255,255,255,.12); color: var(--cloud); }
-  #hud .lab { position: absolute; font: 500 24px "IBM Plex Mono", monospace; letter-spacing: .12em; color: #a9b8b1; }
-  #segs { position: absolute; left: 40px; top: 84px; display: flex; gap: 12px; }
-  #segs i { width: 58px; height: 30px; border-radius: 10px; background: rgba(236,238,237,.14); box-shadow: inset 0 0 0 2px rgba(236,238,237,.18); }
-  #segs i b { display: block; width: 100%; height: 100%; border-radius: 10px; background: var(--gold); transform: scaleX(0); transform-origin: 0 50%;
-    box-shadow: 0 0 18px rgba(240,180,85,.6); }
-  .num { position: absolute; top: 46px; font-weight: 700; font-size: 82px; line-height: 1; color: var(--gold); letter-spacing: -.02em;
-    text-shadow: 1px 1px 0 #d39a3f, 2px 2px 0 #c58c33, 3px 3px 0 #b47d2a, 4px 4px 0 #a26f24, 5px 5px 0 #8f601e, 6px 6px 0 #7b5219, 8px 10px 16px rgba(0,0,0,.45); }
-  #nE { right: 238px; } #nB { right: 40px; }
-  #hudTag { position: absolute; right: 50px; top: 256px; z-index: 60; font: 500 20px "IBM Plex Mono", monospace; letter-spacing: .18em; color: rgba(236,238,237,.75);
+  /* big condensed title cards */
+  .ttl { position: absolute; left: 50px; right: 50px; top: 330px; z-index: 45; text-align: center; font-family: "Anton", sans-serif; text-transform: uppercase;
+    color: var(--cloud); line-height: .98; text-shadow: 0 6px 0 rgba(4,14,11,.35), 0 0 40px rgba(4,14,11,.5); opacity: 0; }
+  .ttl div { opacity: 0; } .ttl .g { color: var(--gold); }
+
+  /* HUD: three stat boxes + PROBLEM / FIX tag */
+  #hud { position: absolute; top: 96px; left: 40px; z-index: 60; display: flex; gap: 12px; }
+  #hud .box { width: 228px; height: 96px; border-radius: 14px; background: rgba(14,20,18,.84); box-shadow: 0 10px 24px rgba(0,0,0,.35); position: relative; }
+  #hud .box span { position: absolute; left: 18px; top: 12px; font: 500 19px "IBM Plex Mono", monospace; letter-spacing: .1em; color: #a9b8b1; }
+  #hud .box b { position: absolute; left: 18px; top: 34px; font: 400 52px "Anton", sans-serif; font-weight: 400; color: var(--cloud); letter-spacing: .01em; }
+  .tag { position: absolute; left: 40px; top: 206px; z-index: 60; padding: 6px 16px; border-radius: 8px; font: 400 32px "Anton", sans-serif; letter-spacing: .06em; opacity: 0; }
+  .tag.p { background: var(--cloud); color: var(--ink); } .tag.f { background: var(--gold); color: var(--ink); }
+  #hudTag { position: absolute; left: 768px; top: 214px; z-index: 60; font: 500 18px "IBM Plex Mono", monospace; letter-spacing: .18em; color: rgba(236,238,237,.75);
     text-shadow: 0 1px 6px rgba(0,0,0,.5); }
 
   /* end card */
-  #ec .word { position: absolute; left: 72px; top: 300px; font-weight: 700; font-size: 176px; letter-spacing: -.035em; color: var(--cloud); line-height: 1;
-    text-shadow: 1px 1px 0 #c9cfcc, 2px 2px 0 #b7beba, 3px 3px 0 #a4aca8, 4px 4px 0 #919a96, 5px 5px 0 #7e8884, 6px 6px 0 #6b7671, 7px 7px 0 #59645f, 8px 8px 0 #47524d, 12px 16px 26px rgba(0,0,0,.5); }
-  #ec .sub { position: absolute; left: 80px; top: 500px; font: 500 34px "IBM Plex Mono", monospace; letter-spacing: .16em; color: var(--gold); }
-  #ecLine { position: absolute; left: 0; top: 270px; width: 1080px; height: 10px; background: var(--gold); transform-origin: 0 50%; box-shadow: 0 0 24px rgba(240,180,85,.6); }
-  #pill { position: absolute; left: 72px; top: 860px; background: var(--gold); color: var(--ink); border-radius: 999px; padding: 34px 64px; font-weight: 700; font-size: 92px; letter-spacing: -.02em;
-    box-shadow: 0 30px 60px rgba(0,0,0,.45), inset 0 -8px 0 rgba(0,0,0,.14); }
-  #lrow { position: absolute; left: 76px; top: 1060px; display: flex; align-items: center; gap: 26px; color: var(--cloud); }
+  #ec .word { position: absolute; left: 72px; top: 1000px; font-weight: 700; font-size: 120px; letter-spacing: -.035em; color: var(--cloud); line-height: 1;
+    text-shadow: 1px 1px 0 #b7beba, 2px 2px 0 #a4aca8, 3px 3px 0 #919a96, 4px 4px 0 #7e8884, 5px 5px 0 #6b7671, 8px 12px 20px rgba(0,0,0,.5); }
+  #ec .sub { position: absolute; left: 78px; top: 1140px; font: 500 28px "IBM Plex Mono", monospace; letter-spacing: .16em; color: var(--gold); }
+  #ecLine { position: absolute; left: 0; top: 290px; width: 1080px; height: 10px; background: var(--gold); transform-origin: 0 50%; box-shadow: 0 0 24px rgba(240,180,85,.6); }
+  #ecT { position: absolute; left: 50px; right: 50px; top: 340px; text-align: center; font: 400 104px "Anton", sans-serif; text-transform: uppercase; color: var(--cloud); line-height: 1;
+    text-shadow: 0 6px 0 rgba(4,14,11,.35); }
+  #pill { position: absolute; left: 50%; top: 610px; margin-left: -330px; width: 660px; text-align: center; background: var(--gold); color: var(--ink); border-radius: 999px; padding: 18px 0 22px; white-space: nowrap;
+    font: 400 132px "Anton", sans-serif; text-transform: uppercase; letter-spacing: .01em; box-shadow: 0 30px 60px rgba(0,0,0,.45), inset 0 -8px 0 rgba(0,0,0,.14); }
+  #lrow { position: absolute; left: 76px; top: 1200px; display: flex; align-items: center; gap: 22px; color: var(--cloud); }
 </style>
 </head>
 <body>
@@ -103,12 +102,12 @@
       <canvas id="gl" width="1080" height="1920"></canvas>
       <div id="tsT" class="ts"></div><div id="tsB" class="ts"></div>
     </div>
-    <div id="vig" class="full"></div><div id="grain" class="full"></div><div id="riso" class="full"></div>
+    <div id="paper" class="full"></div><div id="vig" class="full"></div><div id="shade" class="full"></div><div id="grain" class="full"></div><div id="riso" class="full"></div>
   </section>
 
   <!-- scene 1: publish card on the laptop -->
   <section id="u1" class="clip ui" data-start="0.0" data-duration="6.63" data-track-index="2">
-    <div id="pub" class="card" style="left:150px; top:930px; width:700px; height:330px;">
+    <div id="pub" class="card" style="left:150px; top:860px; width:700px; height:330px;">
       <div id="pubA">
         <div style="display:flex; align-items:center; gap:26px;"><span id="logoSlot" class="slot"><b>ADS</b></span>
           <div><div style="font-size:50px; font-weight:700;">rewires.co</div><div class="mono" style="font-size:24px; color:var(--graphite);">NEW CAMPAIGN · READY</div></div></div>
@@ -124,9 +123,9 @@
 
   <!-- scene 2: refresh + 0 enquiries on the screen -->
   <section id="u2" class="clip ui" data-start="6.63" data-duration="3.32" data-track-index="2">
-    <div id="scr2" style="position:absolute; left:140px; top:880px; width:800px; height:520px;">
+    <div id="scr2" style="position:absolute; left:140px; top:640px; width:800px; height:520px;">
       <svg id="refresh" width="150" height="150" viewBox="0 0 100 100" style="position:absolute; left:325px; top:20px;"><path d="M78 50 A28 28 0 1 1 64 26" fill="none" stroke="#0e1412" stroke-width="10" stroke-linecap="round"/><path d="M58 12 L74 26 L56 36 Z" fill="#0e1412"/></svg>
-      <div id="zero" class="card" style="left:80px; top:200px; width:560px; text-align:center; padding:26px 30px;"><div style="font-size:150px; font-weight:700; line-height:1;">0</div><div class="mono" style="font-size:34px; color:var(--graphite);">ENQUIRIES</div></div>
+      <div id="zero" class="card" style="left:110px; top:200px; width:500px; text-align:center; padding:26px 30px;"><div class="mono" style="font-size:26px; color:var(--graphite);">FIRST AD · AD SPEND €500</div><div style="font:400 230px Anton, sans-serif; line-height:1.05; color:var(--goldd);">0</div><div style="font:400 54px Anton, sans-serif; letter-spacing:.04em;">ENQUIRIES</div></div>
     </div>
   </section>
 
@@ -138,7 +137,7 @@
       <div id="t1" style="font-size:38px; font-weight:500; margin-bottom:16px;"><span class="tick">✓</span>Certified on completion</div>
       <div id="t2" style="font-size:38px; font-weight:500;"><span class="tick">✓</span>Cleaned up after</div>
     </div>
-    <div id="nst" style="position:absolute; left:110px; top:1330px;">
+    <div id="nst" style="position:absolute; left:110px; top:1110px;">
       <div class="notif card" id="n1"><span class="dot"></span><div>New enquiry · Naas<small>FULL REWIRE · 3-BED</small></div></div>
       <div class="notif card" id="n2"><span class="dot"></span><div>New enquiry · Lucan<small>FULL REWIRE · 4-BED</small></div></div>
       <div class="notif card" id="n3"><span class="dot"></span><div>New enquiry · Navan<small>REWIRE + NEW BOARD</small></div></div>
@@ -148,7 +147,7 @@
 
   <!-- scene 6: chat bubbles from the phone -->
   <section id="u6" class="clip ui" data-start="28.73" data-duration="4.43" data-track-index="2">
-    <div id="bst" style="position:absolute; left:80px; top:1260px;">
+    <div id="bst" style="position:absolute; left:80px; top:1050px;">
       <div class="bub card" id="b1">can u move 1 socket?</div>
       <div class="bub card" id="b2">how much 4 a plug</div>
       <div class="bub card" id="b3">just curious on price lol</div>
@@ -168,7 +167,7 @@
 
   <!-- scene 8: the too-easy form; no one home -->
   <section id="u8" class="clip ui" data-start="41.8" data-duration="7.22" data-track-index="2">
-    <div id="form" class="card" style="left:190px; top:900px; width:700px; padding:40px 44px;">
+    <div id="form" class="card" style="left:190px; top:690px; width:700px; padding:40px 44px;">
       <div class="mono" style="font-size:24px; color:var(--graphite);">GET A FREE QUOTE</div>
       <div style="margin-top:20px; display:grid; gap:16px; font-size:36px; color:var(--graphite);">
         <div style="background:#fff; border-radius:16px; padding:18px 22px;">Name</div><div style="background:#fff; border-radius:16px; padding:18px 22px;">Phone</div>
@@ -176,12 +175,11 @@
       <div style="margin-top:26px;"><span id="sub" class="btn" style="width:100%; box-sizing:border-box; text-align:center;">Submit</span></div>
       <div id="tap" style="position:absolute; left:330px; top:560px; width:90px; height:90px; border-radius:50%; background:rgba(201,130,31,.45); border:6px solid var(--goldd);"></div>
     </div>
-    <div id="nobody" class="serif" style="position:absolute; left:72px; top:1240px; font-size:96px; color:var(--cloud); text-shadow:0 4px 24px rgba(0,0,0,.6);">No one home.</div>
   </section>
 
   <!-- scene 9: the checklist -->
   <section id="u9" class="clip ui" data-start="49.02" data-duration="8.52" data-track-index="2">
-    <div id="chk" style="position:absolute; left:470px; top:1000px;">
+    <div id="chk" style="position:absolute; left:450px; top:760px;">
       <div class="card" id="k1" style="position:relative; margin-bottom:22px; font-size:44px; font-weight:700; padding:22px 32px;"><span class="tick">✓</span>Who you are</div>
       <div class="card" id="k2" style="position:relative; margin-bottom:22px; font-size:44px; font-weight:700; padding:22px 32px;"><span class="tick">✓</span>How it works</div>
       <div class="card" id="k3" style="position:relative; font-size:44px; font-weight:700; padding:22px 32px;"><span class="tick">✓</span>What it costs</div>
@@ -199,7 +197,7 @@
 
   <!-- scene 13: pick the best jobs -->
   <section id="u13" class="clip ui" data-start="77.18" data-duration="5.71" data-track-index="2">
-    <div id="jobs" style="position:absolute; left:400px; top:930px;">
+    <div id="jobs" style="position:absolute; left:400px; top:740px;">
       <div class="notif card" id="j1" style="position:relative; width:600px; margin-bottom:20px;"><span class="dot" style="background:var(--fog);"></span><div>Socket move<small>LUCAN</small></div></div>
       <div class="notif card" id="j2" style="position:relative; width:600px; margin-bottom:20px; box-shadow:0 0 0 0 var(--goldd), 0 34px 70px rgba(5,15,12,.42);"><span class="dot"></span><div>Full rewire<small>MALAHIDE</small></div></div>
       <div class="notif card" id="j3" style="position:relative; width:600px;"><span class="dot" style="background:var(--fog);"></span><div>Fuse swap<small>SWORDS</small></div></div>
@@ -209,22 +207,25 @@
   <!-- scene 15: end card -->
   <section id="ec" class="clip ui" data-start="88.85" data-duration="4.46" data-track-index="2">
     <div id="ecLine"></div>
+    <div id="ecT"><div id="ecT1">Want this built</div><div id="ecT2">for your business?</div></div>
     <div class="word" id="ecW">Southline</div>
     <div class="sub" id="ecS">META ADS FOR ELECTRICIANS</div>
-    <div id="pill">Book a call.</div>
+    <div id="pill">Book a call</div>
     <div id="lrow"><span id="logoSlot2" class="slot"><b>ADS</b></span><span class="mono" style="font-size:30px; letter-spacing:.14em;">FACEBOOK &amp; INSTAGRAM ADS</span></div>
   </section>
 
   <!-- HUD (scene 3 → end card) -->
   <section id="hudc" class="clip" data-start="9.95" data-duration="78.9" data-track-index="3" style="position:absolute; inset:0; z-index:60; pointer-events:none;">
-    <div id="hud"><span class="lab" style="left:40px; top:34px;">PROBLEM</span><div id="segs"><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i><i><b></b></i></div>
-      <span class="lab" style="right:238px; top:20px; width:190px; text-align:right;">ENQUIRIES</span><span class="lab" style="right:40px; top:20px; width:160px; text-align:right;">BOOKED</span>
-      <span class="num" id="nE">0</span><span class="num" id="nB">0</span></div>
+    <div id="hud"><div class="box"><span>AD SPEND</span><b id="nS">€500</b></div><div class="box"><span>ENQUIRIES</span><b id="nE">0</b></div><div class="box"><span>BOOKED</span><b id="nB">0</b></div></div>
+    <div class="tag p" id="tp1">PROBLEM 1</div><div class="tag f" id="tf1">FIX 1</div><div class="tag p" id="tp2">PROBLEM 2</div><div class="tag f" id="tf2">FIX 2</div>
+    <div class="tag p" id="tp3">PROBLEM 3</div><div class="tag f" id="tf3">FIX 3</div><div class="tag p" id="tp4">PROBLEM 4</div><div class="tag f" id="tf4">FIX 4</div>
+    <div class="tag p" id="tp5">PROBLEM 5</div><div class="tag f" id="tf5">FIX 5</div>
     <div id="hudTag">ILLUSTRATIVE</div>
   </section>
 
   <!-- captions (built from the CAPS list below) -->
   <section id="caps" class="clip" data-start="0" data-duration="93.31" data-track-index="4" style="position:absolute; inset:0; z-index:50; pointer-events:none;"></section>
+  <section id="titles" class="clip" data-start="0" data-duration="93.31" data-track-index="5" style="position:absolute; inset:0; z-index:45; pointer-events:none;"></section>
 
   <audio id="score" src="assets/audio.wav" data-start="0" data-duration="93.31" data-track-index="10" data-volume="1"></audio>
 </div>
@@ -258,14 +259,18 @@
   const punch = (at) => { tl.fromTo("#stage", { scale: 1 }, { scale: 1.12, duration: 0.16, ease: E.in, immediateRender: false }, at); tl.to("#stage", { scale: 1, duration: 0.9, ease: "power2.inOut" }, at + 0.35); };
   const whip = (at) => tl.fromTo("#stage", { filter: "blur(0px)" }, { keyframes: { filter: ["blur(14px)", "blur(0px)"] }, duration: 0.26, ease: "none", immediateRender: false }, at - 0.12);
   const typeOut = (sel, txt, t0, t1) => { const o = { n: 0 }; tl.to(o, { n: txt.length, duration: t1 - t0, ease: "none", onUpdate: () => { document.querySelector(sel).textContent = txt.slice(0, Math.round(o.n)); } }, t0); };
-  const roll = (sel, from, to, at) => { const o = { n: from }; tl.to(o, { n: to, duration: 0.7, ease: "power2.out", onUpdate: () => { document.querySelector(sel).textContent = Math.round(o.n); } }, at);
+  const roll = (sel, from, to, at, pre = "") => { const o = { n: from }; tl.to(o, { n: to, duration: 0.7, ease: "power2.out", onUpdate: () => { document.querySelector(sel).textContent = pre + Math.round(o.n).toLocaleString("en-IE"); } }, at);
     tl.fromTo(sel, { scale: 1 }, { scale: 1.18, duration: 0.12, yoyo: true, repeat: 1, ease: "power1.out", immediateRender: false }, at); };
 
   // ---- whips at every cut (scene cuts + the cuts inside scenes) ----
   const inner = [[0, 11, -0.05], [4, 15, -0.12], [7, 14, -0.12], [7, 18, -0.25], [8, 7, -0.15], [11, 5, -0.1], [11, 11, -0.1], [12, 14, -0.25]];
   TS.forEach((s, i) => { if (i) whip(s.start); });
   inner.forEach(([i, k, o]) => whip(wt(i, k) + o));
-  [3, 5, 7, 9, 11].forEach((i, n) => tl.to(`#segs i:nth-child(${n + 1}) b`, { scaleX: 1, duration: 0.35, ease: E.in }, wt(i, 0) + 0.05));
+  // PROBLEM n / FIX n tags under the stats; ad spend climbs with each fix (illustrative)
+  [3, 4, 5, 6, 7, 8, 9, 10, 11, 12].forEach((i, n) => { const id = (n % 2 ? "#tf" : "#tp") + (Math.floor(n / 2) + 1);
+    tl.fromTo(id, { opacity: 0, x: -30 }, { opacity: 1, x: 0, duration: 0.25, ease: E.in, immediateRender: false }, wt(i, 0) - 0.05);
+    tl.to(id, { opacity: 0, duration: 0.1 }, i < 12 ? wt(i + 1, 0) - 0.1 : T0(13)); });
+  [[4, 19, 500, 900], [6, 16, 900, 1450], [8, 21, 1450, 2100], [10, 15, 2100, 2850], [12, 15, 2850, 3600]].forEach(([i, k, a, b]) => roll("#nS", a, b, wt(i, k), "€"));
   [4, 6, 8, 10, 12].forEach((i) => punch(wt(i, 0) - 0.02));
   tl.set(".ts", { opacity: 0 }, 0);
   tl.to(".ts", { opacity: 1, duration: 0.3 }, T0(6)); tl.to(".ts", { opacity: 0, duration: 0.1 }, T0(7) - 0.1);
@@ -286,14 +291,12 @@
   out("#scr2", wt(1, 4) + 0.28, 0.06);
 
   // ---- scene 3: HUD drops in ----
-  tl.fromTo("#hud", { y: -280, rotationX: 40 }, { y: 0, rotationX: 0, duration: 0.7, ease: E.back }, wt(2, 10));
+  tl.fromTo("#hud", { y: -280 }, { y: 0, duration: 0.6, ease: E.back }, wt(2, 10));
   tl.fromTo("#hudTag", { opacity: 0 }, { opacity: 1, duration: 0.3 }, wt(2, 10) + 0.4);
   shake(T0(2) + 0.5 + 4 * 0.62 + 0.75, 6);
 
   // ---- scene 5: offer panel + ticks; enquiries stack ----
-  pop("#offer", wt(4, 4) - 0.15, { from: { rotationY: 20 } }); tl.set("#offer", { rotationY: -10, rotationX: 4 }, wt(4, 4) + 0.4);
-  pop("#t1", wt(4, 9), { d: 0.35, from: { y: 20, rotationY: 0 } }); pop("#t2", wt(4, 13), { d: 0.35, from: { y: 20, rotationY: 0 } });
-  out("#offer", wt(4, 15) - 0.15, 0.08);
+  tl.set("#offer", { opacity: 0 }, 0);
   const stack = (ids, ats, gap) => ids.forEach((id, k) => { tl.set(id, { y: 0, x: 0 }, 0); pop(id, ats[k], { d: 0.35, from: { y: 140 } });
     ats.forEach((at, j) => { if (j > k) tl.to(id, { y: -(j - k) * gap, duration: 0.25, ease: E.in }, at); }); });
   stack(["#n1", "#n2", "#n3", "#n4"], [wt(4, 16), wt(4, 17), wt(4, 18), wt(4, 19)], 132);
@@ -320,7 +323,6 @@
     tl.to("#sub", { scale: 0.94, duration: 0.07, yoyo: true, repeat: 1 }, at); });
   tl.set("#tap", { opacity: 0 }, T0(7));
   out("#form", wt(7, 14) - 0.14, 0.06);
-  tl.fromTo("#nobody", { opacity: 0, y: 30 }, { opacity: 1, y: 0, duration: 0.5, ease: E.in }, wt(7, 19));
 
   // ---- scene 9: checklist ----
   [["#k1", 7], ["#k2", 10], ["#k3", 14]].forEach(([id, k]) => pop(id, wt(8, k), { d: 0.45, from: { x: 120, rotationY: 30 } }));
@@ -350,11 +352,13 @@
   // ---- scene 15: end card ----
   tl.to("#hudc", { opacity: 0, duration: 0.2 }, T0(14) - 0.2);
   tl.fromTo("#ecLine", { scaleX: 0 }, { scaleX: 1, duration: 0.45, ease: E.in }, T0(14) + 0.05);
-  tl.fromTo("#ecW", { opacity: 0, y: 40, rotationX: 50 }, { opacity: 1, y: 0, rotationX: 0, duration: 0.6, ease: E.back }, T0(14) + 0.2);
-  tl.fromTo("#ecS", { opacity: 0 }, { opacity: 1, duration: 0.4 }, T0(14) + 0.55);
-  tl.fromTo("#lrow", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4 }, T0(14) + 0.8);
+  tl.fromTo("#ecT1", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.35, ease: E.back }, wt(14, 0) - 0.05);
+  tl.fromTo("#ecT2", { opacity: 0, scale: 0.7 }, { opacity: 1, scale: 1, duration: 0.35, ease: E.back }, wt(14, 3) - 0.05);
   tl.fromTo("#pill", { opacity: 0, scale: 0.4 }, { opacity: 1, scale: 1, duration: 0.45, ease: "back.out(2.4)" }, wt(14, 6) - 0.05);
   tl.to("#pill", { scale: 1.08, duration: 0.12, yoyo: true, repeat: 1 }, wt(14, 8) + 0.1);
+  tl.fromTo("#ecW", { opacity: 0, y: 40 }, { opacity: 1, y: 0, duration: 0.5, ease: E.back }, T0(14) + 0.3);
+  tl.fromTo("#ecS", { opacity: 0 }, { opacity: 1, duration: 0.4 }, T0(14) + 0.6);
+  tl.fromTo("#lrow", { opacity: 0, y: 20 }, { opacity: 1, y: 0, duration: 0.4 }, T0(14) + 0.8);
   tl.fromTo("#logoSlot2", { rotation: -25, scale: 0.3 }, { rotation: 0, scale: 1, duration: 0.5, ease: "back.out(2.2)" }, T0(14) + 0.85);
   tl.set(["#pub", "#cursor"], { opacity: 0 }, 0);
 
@@ -375,28 +379,44 @@
     [11, 0, "problem | *five.*", "D"], [11, 2, "you get busy, so you switch | the ads *off.*", "D"], [11, 11, "a month later… | the diary's *empty.*", "D"],
     [12, 0, "fix: never | switch them *off.*", "L"], [12, 5, "when you're busy, | raise your *price*", "L"], [12, 11, "and pick | the *best jobs.*", "L"],
     [13, 6, "that's the | whole *system.*", "D"],
-    [14, 0, "want this built for | your *business?*", "D"],
   ];
-  const capRoot = document.getElementById("caps");
-  CAPS.forEach(([si, k0, txt, tone], n) => {
-    const [ld, ky] = txt.split("|").map((x) => x.trim());
-    const el = document.createElement("div"); el.className = "cap " + tone; el.id = "cap" + n;
-    let k = k0; const times = [];
-    const build = (line, cls) => { const d = document.createElement("div"); d.className = cls; if (!line) return d;
-      line.split(/\s+/).forEach((tok) => { const n = (tok.match(/\{(\d)\}/) || [])[1]; const gold = tok.includes("*"); const m = [0, 0, tok.replace(/\{\d\}/, "").replace(/\*/g, ""), 0, 0, n];
-        const w = document.createElement("span"); w.className = "w"; w.textContent = m[2]; if (gold) { const u = document.createElement("i"); u.className = "ul"; w.appendChild(u); }
-        d.appendChild(w); times.push([w, wt(si, Math.min(k, TS[si].words.length - 1)), gold]); k += m[5] ? +m[5] : 1; });
-      return d; };
-    el.appendChild(build(ld, "ld")); const kd = build(ky, "ky"); el.appendChild(kd);
-    const len = (ky || "").replace(/[*{}\d]/g, "").length; kd.style.fontSize = Math.round(Math.min(128, 936 * 1.78 / Math.max(6, len))) + "px";
-    capRoot.appendChild(el);
-    const start = times[0][1] - 0.08, next = CAPS[n + 1], end = next && next[0] === si ? wt(next[0], next[1]) - 0.1 : T0(si) + TS[si].dur - 0.12;
-    tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.05 }, start); tl.to(el, { opacity: 0, duration: 0.1 }, end);
-    times.forEach(([w, t, gold]) => { tl.fromTo(w, { y: 24, opacity: 0, filter: "blur(8px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.18, ease: E.in }, t);
-      if (gold) tl.to(w.querySelector(".ul"), { scaleX: 1, duration: 0.3, ease: E.in }, t + 0.12); });
+  const capRoot = document.getElementById("caps"), chunks = [];
+  CAPS.forEach(([si, k0, txt]) => {
+    let k = k0, cur = []; const words = txt.replace("|", " ").split(/\s+/).filter(Boolean);
+    words.forEach((tok, j) => { const nn = (tok.match(/\{(\d)\}/) || [])[1];
+      cur.push({ t: tok.replace(/\{\d\}/, "").replace(/\*/g, ""), gold: tok.includes("*"), at: wt(si, Math.min(k, TS[si].words.length - 1)) }); k += nn ? +nn : 1;
+      if (cur.length >= 4 || (/[.,?…:!]$/.test(cur[cur.length - 1].t) && cur.length >= 2) || j === words.length - 1) { chunks.push({ si, w: cur }); cur = []; } });
   });
-  // scene 14's caption sits above the tower; scene 15's above the pill
-  tl.set("#cap" + (CAPS.length - 1), { top: 640 }, 0);
+  chunks.forEach((c, n) => {
+    const el = document.createElement("div"); el.className = "cap2"; capRoot.appendChild(el);
+    c.w.forEach((x) => { const sp = document.createElement("span"); sp.className = "w" + (x.gold ? " g" : ""); sp.textContent = x.t; el.appendChild(sp); x.el = sp; });
+    const nx = chunks[n + 1], end = nx && nx.si === c.si ? nx.w[0].at - 0.06 : T0(c.si) + TS[c.si].dur - 0.1;
+    tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.05 }, c.w[0].at - 0.08); tl.to(el, { opacity: 0, duration: 0.06 }, end);
+    c.w.forEach((x) => tl.fromTo(x.el, { opacity: 0.4, scale: 1 }, { keyframes: { opacity: [1, 1], scale: [1.1, 1] }, duration: 0.2, ease: "power2.out", immediateRender: false }, x.at));
+  });
+
+  // ---- big condensed titles: [scene, [[text, px, gold, word index], ...], out time] ----
+  const TT = [
+    [2, [["5 problems", 160, 0, 2], ["between you and", 74, 0, 4], ["a full diary", 132, 1, 8]], wt(2, 10) - 0.1],
+    [2, [["every fix", 150, 0, 11], ["brings the", 84, 0, 13], ["next one", 160, 1, 15]], T0(3) - 0.1],
+    [4, [["sell the", 120, 0, 1], ["result", 176, 1, 3]], wt(4, 4) - 0.06],
+    [4, [["full rewire", 132, 0, 4], ["in 5 days", 160, 1, 7], ["certified", 70, 0, 9], ["cleaned up after", 70, 0, 13]], wt(4, 15) - 0.14],
+    [6, [["say who", 140, 0, 1], ["it's for", 140, 0, 3], ["+ the price", 140, 1, 6]], wt(6, 8) - 0.3],
+    [7, [["no one", 160, 0, 18], ["home.", 170, 1, 19]], T0(8) - 0.1],
+    [8, [["a short video", 116, 0, 2], ["before", 116, 0, 4], ["the form", 150, 1, 5]], wt(8, 7) - 0.2],
+    [10, [["speed is", 150, 0, 1], ["the system", 160, 1, 3]], wt(10, 4) + 0.1],
+    [12, [["never", 160, 0, 1], ["switch them", 120, 0, 2], ["off", 190, 1, 4]], wt(12, 5) - 0.1],
+    [13, [["the whole", 124, 0, 7], ["system", 180, 1, 9]], T0(14) - 0.1],
+  ];
+  const tRoot = document.getElementById("titles");
+  TT.forEach(([si, lines, tOut]) => {
+    const el = document.createElement("div"); el.className = "ttl"; tRoot.appendChild(el);
+    const tIn = wt(si, lines[0][3]) - 0.08;
+    tl.fromTo(el, { opacity: 0 }, { opacity: 1, duration: 0.05 }, tIn); tl.to(el, { opacity: 0, duration: 0.12 }, tOut);
+    tl.to("#shade", { opacity: 1, duration: 0.2 }, tIn); tl.to("#shade", { opacity: 0, duration: 0.2 }, tOut);
+    lines.forEach(([txt, px, g, k]) => { const d = document.createElement("div"); d.textContent = txt; d.style.fontSize = px + "px"; if (g) d.className = "g"; el.appendChild(d);
+      tl.fromTo(d, { opacity: 0, scale: 0.6, y: 30 }, { opacity: 1, scale: 1, y: 0, duration: 0.32, ease: "back.out(2)", immediateRender: false }, wt(si, k) - 0.06); });
+  });
 
   window.__timelines = window.__timelines || {};
   window.__timelines["main"] = tl;

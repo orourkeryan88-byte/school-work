@@ -35,7 +35,10 @@
   const hideAll = () => { for (const k in sets) sets[k].visible = false; for (const k in extras) { const e = extras[k]; (Array.isArray(e) ? e : [e]).forEach((o) => (o.visible = false)); }
     dec.root.visible = true; scene.fog = null; };
   const show = (...n) => n.forEach((k) => (sets[k].visible = true));
-  const look = (p, t, fov = 40) => { cam.position.copy(p); cam.up.set(0, 1, 0); cam.lookAt(t); if (cam.fov !== fov) { cam.fov = fov; cam.updateProjectionMatrix(); } };
+  const look = (p, t, fov = 40) => {
+    if (["I", "Map", "Flow", "Tower", "F"].some((k) => sets[k].visible) && !sets.B.visible) {         // open sets: longer lens = flatter, more 2D
+      const f2 = fov * 0.62, k = Math.tan(fov * Math.PI / 360) / Math.tan(f2 * Math.PI / 360); p = t.clone().add(p.clone().sub(t).multiplyScalar(k)); fov = f2; }
+    cam.position.copy(p); cam.up.set(0, 1, 0); cam.lookAt(t); if (cam.fov !== fov) { cam.fov = fov; cam.updateProjectionMatrix(); } };
   const lerpV = (a, b, u) => v(lerp(a.x, b.x, u), lerp(a.y, b.y, u), lerp(a.z, b.z, u));
   const pathV = (t, keys, ease = eio) => { const x = K.kfv(t, keys, ease); return v(x[0], x[1], x[2]); };
   /* lights: key [colour, intensity, position, target], hemi [sky, ground, intensity], p1/p2 point lights, bg colour */
@@ -50,6 +53,7 @@
     if (o.fog) scene.fog = new THREE.Fog(o.fog[0], o.fog[1], o.fog[2]);
   };
   const DARK = { hemi: [0x6f9c8a, 0x0c2a22, 0.45] }, BRIGHT = { hemi: [0xffffff, 0x9fb3aa, 0.85] };
+  const FIXL = (o = {}) => Object.assign({ key: [0xffe6c0, 1.3, [-4, 10, 7], [0, 1, 0]], hemi: [0xa9cfc0, 0x0c2a22, 0.7], bg: C.pine }, o);
   /* Dec placement + acting. pose track keys and face keys are in scene-local seconds */
   const act = (lt, pos, ry, poses, faces, o = {}) => {
     dec.root.position.set(...pos); dec.root.rotation.set(0, ry, 0); dec.root.scale.setScalar(o.scale || 1);
@@ -112,7 +116,7 @@
     const rev = w[4] + 0.3;
     act(lt, [0.15, 0, -0.35], Math.PI, [[0, sitP("type")], [0.5, sitP("leanIn")], [rev + 0.15, Object.assign(sitP("slump"), { headX: 0.12, lean: 0.2 }), 0.5]], [[0, "happy"], [w[3], "knit"], [rev + 0.1, "defeated"]], { seed: 3 });
     if (lt < rev) look(lerpV(v(1.0, 2.1, 0.7), v(0.6, 1.68, -0.75), eio(lt / rev)), v(0.45, 1.42, -1.75), lerp(38, 30, eio(lt / rev)));
-    else { const u = eio(seg(lt, rev, d)); look(lerpV(v(0.45, 1.8, -1.6), v(0.38, 1.76, -1.5), u), v(0.15, 1.52, -0.3), 40); }
+    else { const u = eio(seg(lt, rev, d)); look(lerpV(v(2.1, 2.05, -2.0), v(1.95, 2.0, -1.85), u), v(0.2, 1.3, -0.45), 44); }
   };
 
   // 3 THE ROAD TO BOOKED OUT: five domino tiles topple in slow motion; the last stops at Dec's boots. He shrugs.
@@ -159,8 +163,8 @@
   SH[4] = (lt, d, w) => {
     const cut = w[15] - 0.12;
     if (lt < cut) {
-      show("I"); sets.I.userData.tone(false);
-      light(Object.assign({ key: [0xfff1d8, 1.2, [-5, 10, 7], [0, 0, 0]], bg: C.cloud }, BRIGHT));
+      show("I"); sets.I.userData.tone(true);
+      light(FIXL());
       act(lt, [-0.7, 0, 0.5], 0.5, [[0, "idle"], [w[1] - 0.1, "point"], [w[9], "idle"], [w[12], "thumbs"]], [[0, "determined"], [w[1], "happy"], [w[12], "grin"]],
         { hold: lt > w[1] - 0.1 && lt < w[9] ? "driver" : null, seed: 6 });
       const u = eio(lt / cut); look(v(lerp(0.15, 0.3, u), 1.95, lerp(6.4, 5.7, u)), v(0.05, 1.85, 0), 40);
@@ -197,8 +201,8 @@
 
   // 7 FIX 2: tilt-shift Kildare miniature; the ad card (DOM) rises out of it; 24 lead tiles → 19 sink, 5 glow.
   SH[6] = (lt, d, w) => {
-    show("I", "Map"); sets.I.userData.tone(false);
-    light(Object.assign({ key: [0xfff1d8, 1.25, [-6, 11, 6], [0, 0, 0]], bg: C.cloud }, BRIGHT));
+    show("I", "Map"); sets.I.userData.tone(true);
+    light(FIXL({ shadow: 9 }));
     const M = sets.Map.userData;
     M.tiles.forEach((t, i) => { const up = K.back(seg(lt, w[14] + i * 0.012, w[14] + i * 0.012 + 0.3)), down = t.userData.good ? 0 : eio(seg(lt, w[15], w[15] + 0.5));
       t.visible = up > 0.01; t.position.y = 0.6 + up * 0.14 - down * 0.32; t.scale.setScalar(Math.max(0.01, up));
@@ -241,8 +245,8 @@
   SH[8] = (lt, d, w) => {
     const cut = w[7] - 0.15;
     if (lt < cut) {
-      show("I", "Flow"); sets.I.userData.tone(false); dec.root.visible = false;
-      light(Object.assign({ key: [0xfff1d8, 1.2, [-5, 10, 7], [0, 3, 0]], bg: C.cloud, shadow: 10 }, BRIGHT));
+      show("I", "Flow"); sets.I.userData.tone(true); dec.root.visible = false;
+      light(FIXL({ shadow: 10 }));
       const F = sets.Flow.userData; F.play.scale.setScalar(1 + (lt > w[3] ? 0.14 * Math.max(0, Math.sin((lt - w[3]) * 9)) : 0));
       F.sparks.forEach((s, i) => { const u = ((lt * 0.9 + i * 0.5) % 1); s.position.copy(F.cables[i].userData.curve.getPointAt(u)); });
       const u = eio(seg(lt, 0.15, cut)), y = lerp(6.4, 1.6, u);
@@ -325,8 +329,8 @@
   SH[12] = (lt, d, w) => {
     const cut = w[14] - 0.25;
     if (lt < cut) {
-      show("I"); sets.I.userData.tone(false); extras.toggle.visible = true; extras.lock.visible = true;
-      light(Object.assign({ key: [0xfff1d8, 1.2, [-5, 10, 7], [0, 1, 0]], bg: C.cloud }, BRIGHT));
+      show("I"); sets.I.userData.tone(true); extras.toggle.visible = true; extras.lock.visible = true;
+      light(FIXL());
       extras.toggle.position.set(0.55, 0, -0.6); extras.toggle.userData.set(1 - eio(seg(lt, w[0] - 0.05, w[0] + 0.12)));
       const ld = seg(lt, w[3], w[4]); extras.lock.position.set(0.55, lerp(6.5, 1.1, ld * ld), 0.5); extras.lock.userData.sh.position.y = lt > w[4] ? 0.37 : 0.55;
       extras.lock.rotation.y = 0.15;

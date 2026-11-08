@@ -26,6 +26,16 @@ Output: `southline_electricians_dec_5_problems.mp4`. Character sheet: `character
   - `shots.js`: the 15 scenes, written as pure functions of time.
   - `hyperframes/index.html`: UI, HUD, captions and timeline.
 
+## Style pass 2: closer to the reference ad
+Ryan sent the original reference ad (screen recordings) and asked for it to look more like that. Changes:
+- **Flatter, more 2D cartoon look:** lighter cel shadow, heavier ink line, paper-fibre texture, a stronger vignette, and a longer lens on the open sets so they look flatter.
+- **Fix scenes are dark:** they now sit on the dark pine stage with big titles, instead of the white stage.
+- **Big condensed titles:** set in Anton (SIL OFL), e.g. "5 PROBLEMS / BETWEEN YOU AND / A FULL DIARY", "FULL REWIRE / IN 5 DAYS", "SPEED IS / THE SYSTEM", "NEVER / SWITCH THEM / OFF", "THE WHOLE / SYSTEM", "NO ONE HOME.". A shade drops in behind each one.
+- **Captions:** centred about two-thirds down the frame. Each phrase shows dim and every word lights up as it's spoken; stressed words are gold.
+- **Stats bar:** AD SPEND / ENQUIRIES / BOOKED boxes with a PROBLEM n / FIX n tag under them. Ad spend climbs €500 → €3,600 alongside the enquiries; all of it is illustrative and tagged as such.
+- **End card:** "WANT THIS BUILT FOR YOUR BUSINESS?" then a big gold "BOOK A CALL", the Southline wordmark and the logo row.
+- **Kept our own:** Dec, the Southline palette and our own wording. The reference brand's mascot, logo and lines are not copied.
+
 ## Scenes (times from the voiceover)
 | # | Time | Line | On screen |
 |---|---|---|---|
