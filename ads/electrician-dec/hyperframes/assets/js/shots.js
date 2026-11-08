@@ -72,7 +72,7 @@
   // 1 THE LAUNCH: low angle, the van rolls in nose-first and bounces; Dec hops out and waves → crane up over the
   //   street and back to the box-room window as night falls → in through the window, over his shoulder, into the screen
   SH[0] = (lt, d, w) => {
-    const c1 = 2.55, cut = w[11] - 0.05, night = seg(lt, c1, cut);
+    const c1 = 2.55, cut = 0, night = seg(lt, c1, cut);   // the van/driveway opening is cut: scene 1 is all office
     if (lt < cut) {
       show("B"); const B = sets.B.userData; B.night(night); B.vans.forEach((x) => (x.visible = false));
       const bg = new THREE.Color(0xc6ccc8).lerp(new THREE.Color(0x0c2a22), night);
@@ -97,10 +97,10 @@
       rain(A, lt);
       act(lt, [0.15, 0, -0.35], Math.PI, [[0, Object.assign(sitP("type"), { headX: -0.18 })]], [[0, "determined"], [w[19] + 0.1, "grin"]], { seed: 2 });
       typing(lt);
-      const swing = eio(seg(lt, w[14] - 0.1, w[16]));
-      const p = swing <= 0 ? lerpV(v(0.3, 2.3, -3.7), v(0.35, 1.95, -2.25), eo(seg(lt2, 0, 1.2))) :
-        pathV(swing, [[0, [0.35, 1.95, -2.25]], [0.5, [1.5, 2.2, -0.5]], [1, [0.75, 2.0, 0.35]]], (u) => u);
-      const tg = swing <= 0 ? v(0.15, 1.6, -0.35) : lerpV(v(0.15, 1.6, -0.35), v(0.45, 1.42, -1.7), swing);
+      // wide on the dark box room (lamp + laptop glow), push in over his shoulder, then into the screen
+      const inA = eio(seg(lt, 0, w[14] - 0.1)), swing = eio(seg(lt, w[14] - 0.1, w[16]));
+      const p = swing <= 0 ? lerpV(v(2.3, 2.75, 3.1), v(1.05, 2.1, 0.85), inA) : lerpV(v(1.05, 2.1, 0.85), v(0.75, 2.0, 0.35), swing);
+      const tg = swing <= 0 ? lerpV(v(0.15, 1.35, -1.1), v(0.3, 1.45, -1.4), inA) : lerpV(v(0.3, 1.45, -1.4), v(0.45, 1.42, -1.7), swing);
       const push = eio(seg(lt, w[17], d));
       look(lerpV(p, v(0.5, 1.55, -1.15), push * 0.85), tg, lerp(40, 30, push));
     }

@@ -348,7 +348,7 @@
   }
 
   // ---- whips at every cut (scene cuts + the cuts inside scenes) ----
-  const inner = [[0, 11, -0.05], [4, 15, -0.12], [7, 14, -0.12], [7, 18, -0.25], [8, 17, -0.15], [11, 5, -0.1], [11, 11, -0.1], [12, 14, -0.25]];
+  const inner = [[4, 15, -0.12], [7, 14, -0.12], [7, 18, -0.25], [8, 17, -0.15], [11, 5, -0.1], [11, 11, -0.1], [12, 14, -0.25]];
   TS.forEach((s, i) => { if (i) whip(s.start); });
   inner.forEach(([i, k, o]) => whip(wt(i, k) + o));
   // PROBLEM n / FIX n tags under the stats; ad spend climbs with each fix (illustrative)
