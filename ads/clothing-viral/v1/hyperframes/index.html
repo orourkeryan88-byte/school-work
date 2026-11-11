@@ -192,7 +192,7 @@
       // fit to one line, 990 px wide, at most 300 px tall type
       let fs = 300; c.style.fontSize = fs + "px"; const wpx = c.scrollWidth; if (wpx > 990) { fs = Math.floor(fs * 990 / wpx); c.style.fontSize = fs + "px"; }
       const h = fs * 0.86, ht = vid ? headTop(p.s, p.w[0].start, end) : null;
-      c.style.top = (ht !== null ? Math.max(150, ht - h * 0.6) : vid ? 700 : 1190) + "px";
+      c.style.top = (ht !== null ? Math.max(150, ht - h * 0.68) : vid ? 700 : 1190) + "px";
       tl.set(c, { opacity: 0 }, 0); tl.set(c, { opacity: 1 }, p.w[0].start - 0.02); tl.set(c, { opacity: 0 }, end);
       p.w.forEach((w, j) => {
         tl.fromTo(spans[j], { opacity: 0, y: 40, scale: 0.7 }, { opacity: 1, y: 0, scale: 1, duration: 0.18, ease: E.ui, immediateRender: false }, w.start);
