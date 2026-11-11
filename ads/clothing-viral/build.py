@@ -202,7 +202,7 @@ def build(name):
                     f'data-media-start="{m0}"{r} data-track-index="1" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>')
         s["head"] = None
         hd = [head_top(clip, m0 + k * 0.1 * rate) for k in range(int(s["vdur"] * 10) + 1)] if clip in CUTOUTS else []
-        if any(y is not None for y in hd):        # the same shot, person only, layered over the captions (only when a head is in shot)
+        if hd and sum(y is not None for y in hd) >= 0.6 * len(hd):   # a head for most of the shot (not just passing hands)        # the same shot, person only, layered over the captions (only when a head is in shot)
             cuts.append(f'      <video id="c{i}" class="clip" src="assets/cutouts/{clip}.webm" muted playsinline data-start="{s["start"]}" data-duration="{s["vdur"]}" '
                         f'data-media-start="{m0}"{r} data-track-index="2" data-layout-allow-occlusion style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>')
             s["head"] = hd
