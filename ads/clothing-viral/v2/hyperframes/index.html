@@ -33,7 +33,7 @@
   /* hook: the claim, behind the head from frame 1 */
   #hook { position: absolute; left: 0; right: 0; top: 230px; text-align: center; }
   #hook .k { display: inline-block; font-size: 28px; color: var(--black); background: var(--red); padding: 10px 18px 8px; margin-bottom: 10px; }
-  #hook .h { font-size: 236px; line-height: .86; color: var(--bone); }
+  #hook .h { font-size: 200px; line-height: .86; color: var(--bone); }
   #hook .h b { color: var(--red); font-weight: 400; }
 
   /* captions: one line, 1-3 words, sized to fit; the word being said is red */
@@ -153,10 +153,10 @@
   const hookOut = (at) => {
     const h0 = [].concat(...T.segments.filter((s) => s.start < at && s.head).map((s) => s.head.filter((v) => v !== null)));
     const hh = document.querySelector("#hook .h"); hh.style.whiteSpace = "nowrap";
-    if (hh.scrollWidth > 1000) hh.style.fontSize = Math.floor(236 * 1000 / hh.scrollWidth) + "px";
-    const hk = document.getElementById("hook"), lineH = parseFloat(hh.style.fontSize || 236) * 0.86;
+    if (hh.scrollWidth > 1000) hh.style.fontSize = Math.floor(200 * 1000 / hh.scrollWidth) + "px";
+    const hk = document.getElementById("hook"), lineH = parseFloat(hh.style.fontSize || 200) * 0.86;
     // the head covers about the lower third of the last line, never the first
-    if (h0 && h0.length) hk.style.top = Math.max(110, Math.min(...h0) - hk.offsetHeight + lineH * 0.35) + "px";
+    if (h0 && h0.length) hk.style.top = Math.max(60, Math.min(...h0) - hk.offsetHeight + lineH * 0.2) + "px";
     tl.fromTo("#hook", { scale: 1.08 }, { scale: 1, duration: 0.6, ease: E.in }, 0);
     tl.fromTo("#hook .h b", { color: BONE }, { color: RED, duration: 0.1 }, 0.35);
     tl.to("#hook", { opacity: 0, y: -40, duration: 0.2, ease: "power2.in" }, at);
