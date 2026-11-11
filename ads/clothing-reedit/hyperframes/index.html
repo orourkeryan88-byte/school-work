@@ -1,0 +1,276 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Southline: only one of them sells (clothing brands, re-edit)</title>
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/js/timing.js"></script>
+<style>
+  /* Re-edit of five supplied clips into one reel. Southline Edit Style: Pine/Cloud bases, one gold accent per frame,
+     Instrument Sans / Serif / Plex Mono, serif-italic lead over a bold key line, measure-mark graphics. */
+  @font-face { font-family: "Instrument Sans"; src: url(assets/fonts/is-500.woff2) format("woff2"); font-weight: 500; }
+  @font-face { font-family: "Instrument Sans"; src: url(assets/fonts/is-700.woff2) format("woff2"); font-weight: 700; }
+  @font-face { font-family: "Instrument Serif"; src: url(assets/fonts/iserif-italic.woff2) format("woff2"); font-style: italic; font-weight: 400; }
+  @font-face { font-family: "IBM Plex Mono"; src: url(assets/fonts/plex-500.woff2) format("woff2"); font-weight: 500; }
+  :root { --pine: #0c2a22; --cloud: #eceeed; --ink: #0e1412; --graphite: #56605b; --fog: #c6ccc8; --gold: #f0b455; --goldd: #c9821f; }
+  html, body { margin: 0; background: var(--pine); }
+  body { font-family: "Instrument Sans", sans-serif; -webkit-font-smoothing: antialiased; }
+  #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--pine); }
+  .full { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+  .mono { font-family: "IBM Plex Mono", monospace; font-weight: 500; letter-spacing: .12em; text-transform: uppercase; }
+
+  #bg { background: radial-gradient(70% 45% at 70% 30%, rgba(240,180,85,.10), transparent 70%), var(--pine); }
+  #cloudbg { background: var(--cloud); opacity: 0; }
+  #grain { opacity: .08; mix-blend-mode: overlay; pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>"); }
+
+  /* full-bleed b-roll: graded toward Pine, drifting */
+  #fullwin { overflow: hidden; opacity: 0; }
+  #fullcam { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 50% 45%; filter: saturate(.82) contrast(1.1) brightness(.96); }
+  #fulltint { background: linear-gradient(rgba(12,42,34,.72), rgba(12,42,34,.25) 36%, rgba(12,42,34,.05) 55%, rgba(12,42,34,.35)); mix-blend-mode: multiply; }
+  /* presenter window: the talking head cropped tight to the face (the old captions sit outside the crop) */
+  #cardwin { position: absolute; left: 60px; top: 700px; width: 960px; height: 810px; border-radius: 32px; overflow: hidden; opacity: 0;
+    box-shadow: 0 30px 70px rgba(0,0,0,.45); }
+  #cardcam { position: absolute; left: 0; top: 0; width: 960px; height: 810px; transform-origin: 50% 40%; filter: saturate(.9) contrast(1.06); }
+  .corner { position: absolute; width: 28px; height: 28px; border-color: var(--fog); border-style: solid; border-width: 0; opacity: 0; }
+  #wlab { position: absolute; left: 64px; top: 648px; font-size: 24px; color: var(--fog); opacity: 0; }
+
+  /* captions: serif lead + bold key, word by word, gold underline on the stressed word */
+  .cap { position: absolute; left: 72px; width: 936px; top: 360px; opacity: 0; }
+  .cap .ld { font-family: "Instrument Serif", serif; font-style: italic; font-size: 72px; line-height: 1.05; opacity: .82; margin-bottom: 6px; }
+  .cap .ky { font-weight: 700; line-height: .95; letter-spacing: -.04em; }
+  .cap .w { display: inline-block; position: relative; margin-right: .2em; }
+  .cap .ul { position: absolute; left: 0; right: 0; bottom: -.05em; height: .09em; background: var(--gold); transform: scaleX(0); transform-origin: 0 50%; border-radius: 4px; }
+  .cap.dark { color: var(--cloud); } .cap.light { color: var(--ink); } .cap.light .ul { background: var(--goldd); }
+
+  /* graphics */
+  .tile { position: absolute; width: 180px; height: 240px; border-radius: 14px; overflow: hidden; background: #1a3a31; box-shadow: 0 14px 30px rgba(0,0,0,.35); }
+  .tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tile .lb { position: absolute; left: 10px; top: 8px; font-size: 16px; color: var(--cloud); background: rgba(12,42,34,.75); padding: 3px 8px; border-radius: 6px; }
+  .tile .x { position: absolute; left: -10%; top: 50%; width: 120%; height: 6px; background: var(--fog); transform: rotate(-38deg) scaleX(0); }
+  .tile .gb { position: absolute; inset: 0; border: 7px solid var(--gold); border-radius: 14px; opacity: 0; }
+  .big3 { position: absolute; top: 760px; width: 300px; height: 400px; border-radius: 22px; overflow: hidden; box-shadow: 0 20px 44px rgba(0,0,0,.4); }
+  .big3 img { width: 100%; height: 100%; object-fit: cover; }
+  .big3 .lb { position: absolute; left: 14px; top: 12px; font-size: 22px; color: var(--cloud); background: rgba(12,42,34,.8); padding: 4px 10px; border-radius: 8px; }
+  .big3 .st { position: absolute; left: 0; right: 0; bottom: 0; padding: 14px; font-size: 24px; text-align: center; color: var(--cloud); background: rgba(12,42,34,.85); }
+  .big3 .gb { position: absolute; inset: 0; border: 8px solid var(--gold); border-radius: 22px; opacity: 0; }
+  #count { position: absolute; left: 72px; top: 1560px; font-weight: 700; font-size: 0; color: var(--cloud); }
+  #meter { position: absolute; left: 72px; top: 676px; font-size: 26px; color: var(--fog); opacity: 0; }
+  .row { position: absolute; left: 72px; width: 936px; height: 150px; border-radius: 32px; background: var(--pine); color: var(--cloud); opacity: 0; }
+  .row .n { position: absolute; left: 36px; top: 54px; font-size: 26px; color: var(--fog); }
+  .row .t { position: absolute; left: 130px; top: 38px; font-size: 56px; font-weight: 700; letter-spacing: -.03em; }
+  .row .bar { position: absolute; left: 0; bottom: 0; height: 10px; width: 100%; background: var(--gold); border-radius: 0 0 32px 32px; transform: scaleX(0); transform-origin: 0 50%; }
+  #ghost { position: absolute; left: -40px; top: 980px; font-weight: 700; font-size: 640px; letter-spacing: -.06em; color: transparent; -webkit-text-stroke: 2px rgba(198,204,200,.14); opacity: 0; white-space: nowrap; }
+  #big { position: absolute; left: 72px; top: 520px; width: 936px; color: var(--cloud); opacity: 0; }
+  #big .ld { font-family: "Instrument Serif", serif; font-style: italic; font-size: 92px; line-height: 1.05; opacity: .85; }
+  #big .ky { font-weight: 700; font-size: 170px; line-height: .95; letter-spacing: -.045em; }
+  #big .ul { display: block; height: 14px; width: 620px; background: var(--gold); border-radius: 6px; margin-top: 18px; transform: scaleX(0); transform-origin: 0 50%; }
+  #end { opacity: 0; }
+  #end .badge { position: absolute; left: 72px; top: 330px; width: 150px; height: 150px; border-radius: 50%; }
+  #end .ld { position: absolute; left: 72px; top: 560px; font-family: "Instrument Serif", serif; font-style: italic; font-size: 104px; color: var(--cloud); opacity: .85; }
+  #end .ky { position: absolute; left: 66px; top: 680px; font-weight: 700; font-size: 250px; line-height: .9; letter-spacing: -.05em; color: var(--gold); }
+  #end .sub { position: absolute; left: 76px; top: 960px; font-size: 30px; color: var(--fog); }
+  #end .bar { position: absolute; left: 76px; top: 1030px; width: 540px; height: 2px; background: var(--fog); transform-origin: 0 50%; }
+  #end .tag { position: absolute; left: 76px; top: 1066px; font-size: 26px; color: var(--fog); }
+  #wipe { position: absolute; left: 0; top: 0; width: 6px; height: 1920px; background: var(--gold); opacity: 0; }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-width="1080" data-height="1920" data-duration="46.81">
+  <div id="bg" class="full" data-layout-ignore></div>
+  <div id="cloudbg" class="full" data-layout-ignore></div>
+
+  <div id="fullwin" class="full" data-layout-ignore>
+    <div id="fullcam">
+      <!-- EDL:full -->
+      <video id="v6" class="clip" src="assets/footage/c3.mp4" muted playsinline data-start="9.538" data-duration="2.271" data-media-start="0.0" data-track-index="2" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <video id="v7" class="clip" src="assets/footage/c3.mp4" muted playsinline data-start="11.809" data-duration="1.235" data-media-start="4.78" data-track-index="2" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <video id="v8" class="clip" src="assets/footage/c3.mp4" muted playsinline data-start="13.044" data-duration="1.878" data-media-start="6.72" data-playback-rate="0.65" data-track-index="2" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <video id="v11" class="clip" src="assets/footage/c2.mp4" muted playsinline data-start="17.115" data-duration="0.896" data-media-start="0.05" data-track-index="2" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <video id="v12" class="clip" src="assets/footage/c2.mp4" muted playsinline data-start="18.011" data-duration="0.735" data-media-start="1.66" data-track-index="2" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <video id="v13" class="clip" src="assets/footage/c2.mp4" muted playsinline data-start="18.746" data-duration="0.999" data-media-start="3.12" data-track-index="2" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <video id="v14" class="clip" src="assets/footage/c2.mp4" muted playsinline data-start="19.745" data-duration="2.408" data-media-start="4.66" data-track-index="2" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <!-- /EDL:full -->
+    </div>
+    <div id="fulltint" class="full" data-layout-ignore></div>
+  </div>
+
+  <div id="cardwin" data-layout-ignore>
+    <div id="cardcam">
+      <!-- EDL:card -->
+      <video id="v0" class="clip" src="assets/footage/c5.mp4" muted playsinline data-start="0.0" data-duration="1.383" data-media-start="0.113" data-track-index="1" style="position:absolute; left:0.0px; top:-462.2px; width:960.0px; height:1706.7px;"></video>
+      <video id="v1" class="clip" src="assets/footage/c4.mp4" muted playsinline data-start="1.383" data-duration="1.445" data-media-start="0.08" data-track-index="1" style="position:absolute; left:-120.0px; top:-388.9px; width:1200.0px; height:2133.3px;"></video>
+      <video id="v2" class="clip" src="assets/footage/c4.mp4" muted playsinline data-start="2.828" data-duration="1.346" data-media-start="1.955" data-track-index="1" style="position:absolute; left:-120.0px; top:-388.9px; width:1200.0px; height:2133.3px;"></video>
+      <video id="v3" class="clip" src="assets/footage/c4.mp4" muted playsinline data-start="4.174" data-duration="1.204" data-media-start="3.52" data-track-index="1" style="position:absolute; left:-120.0px; top:-388.9px; width:1200.0px; height:2133.3px;"></video>
+      <video id="v5" class="clip" src="assets/footage/c4.mp4" muted playsinline data-start="7.023" data-duration="2.515" data-media-start="6.595" data-track-index="1" style="position:absolute; left:-120.0px; top:-388.9px; width:1200.0px; height:2133.3px;"></video>
+      <video id="v17" class="clip" src="assets/footage/c5.mp4" muted playsinline data-start="30.193" data-duration="3.569" data-media-start="6.124" data-track-index="1" style="position:absolute; left:-120.0px; top:-435.6px; width:1200.0px; height:2133.3px;"></video>
+      <!-- /EDL:card -->
+    </div>
+  </div>
+  <div id="c1" class="corner" style="left:44px; top:684px; border-top-width:2px; border-left-width:2px;" data-layout-ignore></div>
+  <div id="c2" class="corner" style="left:1008px; top:684px; border-top-width:2px; border-right-width:2px;" data-layout-ignore></div>
+  <div id="c3" class="corner" style="left:44px; top:1498px; border-bottom-width:2px; border-left-width:2px;" data-layout-ignore></div>
+  <div id="c4" class="corner" style="left:1008px; top:1498px; border-bottom-width:2px; border-right-width:2px;" data-layout-ignore></div>
+  <div id="wlab" class="mono">For clothing brands</div>
+
+  <!-- "only one of them sells" -->
+  <div id="g3" class="full" data-layout-ignore style="opacity:0;">
+    <div class="big3" id="b1" style="left:60px;"><img src="assets/img/ad06.jpg" alt=""><span class="lb mono">Ad 01</span><span class="st mono" id="b1s">no sales</span><span class="gb"></span></div>
+    <div class="big3" id="b2" style="left:390px;"><img src="assets/img/ad07.jpg" alt=""><span class="lb mono">Ad 02</span><span class="st mono" id="b2s">sells</span><span class="gb" id="b2g"></span></div>
+    <div class="big3" id="b3" style="left:720px;"><img src="assets/img/ad08.jpg" alt=""><span class="lb mono">Ad 03</span><span class="st mono" id="b3s">no sales</span><span class="gb"></span></div>
+  </div>
+
+  <!-- the test grid: 10-15 ads, kill the losers, scale the winners, new versions -->
+  <div id="grid" class="full" data-layout-ignore style="opacity:0;"></div>
+  <div id="meter" class="mono">Meta · day 1</div>
+
+  <!-- the offer list (on Cloud) -->
+  <div id="r1" class="row" style="top:760px;"><span class="n mono">01</span><span class="t">We make the creatives</span></div>
+  <div id="r2" class="row" style="top:940px;"><span class="n mono">02</span><span class="t">We run your Meta ads</span></div>
+  <div id="r3" class="row" style="top:1120px;"><span class="n mono">03</span><span class="t">Our fee: tied to your sales</span><span class="bar"></span></div>
+
+  <!-- not paying us to experiment -->
+  <div id="ghost" data-layout-ignore>test</div>
+  <div id="big"><div class="ld" id="bl">you're not paying us</div><div class="ky" id="bk">to experiment.</div><span class="ul" id="bu"></span></div>
+
+  <!-- end card -->
+  <div id="end" class="full" data-layout-ignore>
+    <img class="badge" src="assets/img/southline_logo_badge.png" alt="Southline">
+    <div class="ld">comment</div>
+    <div class="ky">audit.</div>
+    <div class="sub mono">Free review of your current ads</div>
+    <div class="bar"></div>
+    <div class="tag mono">Southline · Meta ads for clothing brands</div>
+  </div>
+
+  <div id="caps" class="full" data-layout-ignore></div>
+  <div id="wipe" data-layout-ignore></div>
+  <div id="grain" class="full" data-layout-ignore></div>
+
+  <audio id="score" src="assets/audio.wav" data-start="0" data-duration="46.81" data-track-index="10" data-volume="1"></audio>
+</div>
+
+<script>
+  const T = window.TIMING, SEGS = {}, tl = gsap.timeline({ paused: true });
+  T.segments.forEach((s) => (SEGS[s.id] = s));
+  const st = (id) => SEGS[id].start, en = (id) => SEGS[id].start + SEGS[id].vdur;
+  const wd = (id) => T.words.filter((w) => w.seg === id);
+  const W = (id, k) => wd(id)[Math.min(k, wd(id).length - 1)].start;
+  const E = { in: "expo.out", ui: "back.out(1.4)", cam: "sine.inOut" };
+
+  // ---- which layer is up when: card (talking head), full (b-roll), graphics; Cloud only for the offer ----
+  const card = T.segments.filter((s) => s.vis[0] === "card"), full = T.segments.filter((s) => s.vis[0] === "full");
+  tl.set(["#cardwin", "#fullwin", "#wlab", ".corner"], { opacity: 0 }, 0);
+  card.forEach((s) => {
+    tl.set(["#cardwin", ".corner", "#wlab"], { opacity: 1 }, s.start); tl.set(["#cardwin", ".corner", "#wlab"], { opacity: 0 }, s.start + s.vdur);
+    tl.fromTo("#cardcam", { scale: 1.0 }, { scale: 1.05, duration: s.vdur, ease: E.cam, immediateRender: false }, s.start);
+  });
+  [["callout", "For clothing brands"], ["ad1", "Ad 01"], ["ad2", "Ad 02"], ["ad3", "Ad 03"], ["how", "Under a week"], ["retainer", "Most agencies"]].forEach(([id, txt]) =>
+    tl.set("#wlab", { textContent: txt }, st(id)));
+  tl.fromTo(".corner", { scale: 0.4 }, { scale: 1, duration: 0.3, ease: E.in, immediateRender: false }, st("callout"));
+  full.forEach((s) => {
+    tl.set("#fullwin", { opacity: 1 }, s.start); tl.set("#fullwin", { opacity: 0 }, s.start + s.vdur);
+    tl.fromTo("#fullcam", { scale: 1.02 }, { scale: 1.08, duration: s.vdur, ease: E.cam, immediateRender: false }, s.start);
+  });
+  tl.set("#cloudbg", { opacity: 0 }, 0); tl.set("#cloudbg", { opacity: 1 }, st("offer")); tl.set("#cloudbg", { opacity: 0 }, en("offer"));
+
+  // ---- captions: chunks of up to 4 words (break on punctuation), lead + key, one gold underline ----
+  const GOLD = { callout: "owners.", ad1: "one.", ad2: "two.", ad3: "three.", only: "sells.", how: "week.", sellers: "sellers,", angles: "angles", angles2: "care", make: "15.", make_ads: "ads.", faces: "faces,", hooks: "hooks,", settings: "settings.", test: "test.", meta: "sell.",
+    kill: "winners,", retainer: "retainer.", offer: "creatives," };
+  const NOCAP = new Set(["experiment", "cta"]);
+  const FIX = { meta: "Meta", "15.": "15", "Meta": "Meta" };
+  const capRoot = document.getElementById("caps"), chunks = [];
+  T.segments.forEach((s) => {
+    if (NOCAP.has(s.id)) return;
+    let cur = []; const ws = wd(s.id);
+    ws.forEach((w, j) => { cur.push(w); if (cur.length >= 5 || (/[.,?:!]$/.test(w.text) && cur.length >= 2) || j === ws.length - 1) { chunks.push({ seg: s, w: cur }); cur = []; } });
+  });
+  // "Then we make 10 to 15 … ads." reads as one line across the splice
+  chunks.forEach((c, n) => {
+    const el = document.createElement("div"); el.className = "cap " + (c.seg.id === "offer" ? "light" : "dark"); capRoot.appendChild(el);
+    const k = c.w.length <= 2 ? 0 : c.w.length - 2, ld = document.createElement("div"), ky = document.createElement("div");
+    ld.className = "ld"; ky.className = "ky"; el.appendChild(ld); el.appendChild(ky);
+    const keyTxt = c.w.slice(k).map((w) => w.text).join(" ");
+    ky.style.fontSize = Math.round(Math.min(150, 936 * 1.75 / Math.max(5, keyTxt.length))) + "px";
+    let gold = false;
+    c.w.forEach((w, j) => {
+      const sp = document.createElement("span"); sp.className = "w"; sp.textContent = FIX[w.text] || w.text; (j < k ? ld : ky).appendChild(sp);
+      tl.fromTo(sp, { y: 24, opacity: 0, filter: "blur(8px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.18, ease: E.in }, w.start);
+      if (!gold && j >= k && GOLD[c.seg.id] === w.text) { gold = true; const u = document.createElement("i"); u.className = "ul"; sp.appendChild(u);
+        tl.to(u, { scaleX: 1, duration: 0.22, ease: "power2.out" }, w.start + 0.1); }
+    });
+    const nx = chunks[n + 1], end = nx ? Math.min(nx.w[0].start - 0.04, c.seg.start + c.seg.vdur + (nx.seg === c.seg ? 0 : 0.6)) : c.seg.start + c.seg.vdur;
+    tl.set(el, { opacity: 1 }, c.w[0].start - 0.02); tl.to(el, { opacity: 0, y: -12, duration: 0.12, ease: "power1.in" }, end - 0.12);
+  });
+
+  // ---- "only one of them sells": three ads, two grey out, one goes gold ----
+  tl.set("#g3", { opacity: 1 }, st("only")); tl.set("#g3", { opacity: 0 }, en("only"));
+  ["#b1", "#b2", "#b3"].forEach((id, i) => tl.fromTo(id, { y: 160, opacity: 0, rotationZ: (i - 1) * 6 }, { y: 0, opacity: 1, rotationZ: (i - 1) * 2, duration: 0.4, ease: E.ui, immediateRender: false }, st("only") + i * 0.08));
+  tl.to(["#b1", "#b3"], { opacity: 0.35, scale: 0.94, filter: "grayscale(1)", duration: 0.3 }, W("only", 4));
+  tl.to("#b2", { scale: 1.1, y: -20, duration: 0.3, ease: E.ui }, W("only", 4));
+  tl.to("#b2g", { opacity: 1, duration: 0.2 }, W("only", 4));
+
+  // ---- the grid: 15 tiles count in on "10 to 15 ads", Meta reads them, losers die, winners scale and spawn versions ----
+  const grid = document.getElementById("grid"), tiles = [], WIN = [2, 7, 11];
+  for (let i = 0; i < 15; i++) {
+    const t = document.createElement("div"); t.className = "tile"; const c = i % 5, r = Math.floor(i / 5);
+    t.style.left = 60 + c * 198 + "px"; t.style.top = 740 + r * 262 + "px";
+    t.innerHTML = '<img src="assets/img/ad' + String(i + 1).padStart(2, "0") + '.jpg" alt=""><span class="lb mono">Ad ' + String(i + 1).padStart(2, "0") + '</span><span class="x"></span><span class="gb"></span>';
+    grid.appendChild(t); tiles.push(t);
+  }
+  const g0 = st("make"), g1 = en("kill");
+  tl.set("#grid", { opacity: 1 }, g0); tl.set("#grid", { opacity: 0 }, g1);
+  tl.set("#grid", { opacity: 0 }, st("faces")); tl.set("#grid", { opacity: 1 }, st("meta"));   // the b-roll owns the frame in between
+  tiles.forEach((t, i) => { const at = i < 10 ? g0 + 0.05 + i * 0.07 : st("make_ads") - 0.05 + (i - 10) * 0.06;
+    tl.fromTo(t, { scale: 0.3, opacity: 0, y: 40 }, { scale: 1, opacity: 1, y: 0, duration: 0.3, ease: E.ui, immediateRender: false }, at); });
+  tl.set(tiles, { opacity: 0 }, 0);
+  // Meta reads them: a day counter
+  tl.set("#meter", { opacity: 1 }, st("meta")); tl.set("#meter", { opacity: 0 }, g1);
+  [1, 2, 3].forEach((d, i) => tl.set("#meter", { textContent: "Meta · day " + d }, st("meta") + i * 0.7));
+  tl.set("#meter", { textContent: "Week 01" }, W("kill", 0));
+  tl.set("#meter", { textContent: "Week 02 · new versions" }, W("kill", 13));
+  tiles.forEach((t, i) => { if (WIN.includes(i)) return;
+    tl.to(t, { opacity: 0.28, filter: "grayscale(1)", duration: 0.25 }, W("kill", 1) + (i % 5) * 0.03);
+    tl.to(t.querySelector(".x"), { scaleX: 1, duration: 0.2 }, W("kill", 1) + (i % 5) * 0.03); });
+  WIN.forEach((i, n) => { const t = tiles[i];
+    tl.to(t.querySelector(".gb"), { opacity: 1, duration: 0.2 }, W("kill", 4));
+    tl.to(t, { scale: 1.18, zIndex: 5, duration: 0.3, ease: E.ui }, W("kill", 4) + n * 0.06); });
+  // new versions of the winners slide into the dead slots
+  const dead = [0, 4, 5, 9, 10, 14];
+  dead.forEach((slot, n) => { const t = tiles[slot], src = WIN[n % 3];
+    tl.set(t.querySelector("img"), { attr: { src: "assets/img/ad" + String(src + 1).padStart(2, "0") + ".jpg" } }, W("kill", 8) + n * 0.08);
+    tl.set(t.querySelector(".lb"), { textContent: "Ad " + String(src + 1).padStart(2, "0") + " · v" + (2 + Math.floor(n / 3)) }, W("kill", 8) + n * 0.08);
+    tl.set(t.querySelector(".x"), { scaleX: 0 }, W("kill", 8) + n * 0.08);
+    tl.fromTo(t, { opacity: 0, scale: 0.5, filter: "grayscale(0)" }, { opacity: 1, scale: 1, duration: 0.3, ease: E.ui, immediateRender: false }, W("kill", 8) + n * 0.08); });
+
+  // ---- the offer list on Cloud ----
+  [["#r1", 3], ["#r2", 6], ["#r3", 10]].forEach(([id, k]) => tl.fromTo(id, { opacity: 0, x: 80, rotationY: 8 }, { opacity: 1, x: 0, rotationY: 0, duration: 0.45, ease: E.ui, immediateRender: false }, W("offer", k) - 0.08));
+  tl.set(["#r1", "#r2", "#r3"], { opacity: 0 }, 0); tl.set(["#r1", "#r2", "#r3"], { opacity: 0 }, en("offer"));
+  tl.to("#r3 .bar", { scaleX: 1, duration: 0.4, ease: "power2.out" }, W("offer", 13));
+
+  // ---- not paying us to experiment ----
+  tl.set(["#big", "#ghost"], { opacity: 0 }, 0);
+  tl.set("#big", { opacity: 1 }, st("experiment")); tl.set("#ghost", { opacity: 1 }, st("experiment"));
+  tl.fromTo("#bl", { y: 30, opacity: 0 }, { y: 0, opacity: 1, duration: 0.3, ease: E.in, immediateRender: false }, W("experiment", 0));
+  tl.fromTo("#bk", { y: 40, opacity: 0, filter: "blur(10px)" }, { y: 0, opacity: 1, filter: "blur(0px)", duration: 0.3, ease: E.in, immediateRender: false }, W("experiment", 5));
+  tl.to("#bu", { scaleX: 1, duration: 0.3, ease: "power2.out" }, W("experiment", 6));
+  tl.fromTo("#ghost", { x: 60 }, { x: -60, duration: SEGS.experiment.vdur, ease: "none", immediateRender: false }, st("experiment"));
+  tl.set(["#big", "#ghost"], { opacity: 0 }, en("experiment"));
+
+  // ---- end card ----
+  tl.set("#wipe", { opacity: 1, x: -10 }, st("cta") - 0.2); tl.to("#wipe", { x: 1090, duration: 0.4, ease: "power2.inOut" }, st("cta") - 0.2); tl.set("#wipe", { opacity: 0 }, st("cta") + 0.25);
+  tl.set("#end", { opacity: 1 }, st("cta"));
+  tl.fromTo("#end .badge", { scale: 0.5, opacity: 0 }, { scale: 1, opacity: 1, duration: 0.45, ease: E.ui, immediateRender: false }, st("cta") + 0.05);
+  tl.fromTo("#end .ld", { y: 24, opacity: 0 }, { y: 0, opacity: 0.85, duration: 0.25, ease: E.in, immediateRender: false }, W("cta", 0));
+  tl.fromTo("#end .ky", { y: 40, opacity: 0, scale: 0.92 }, { y: 0, opacity: 1, scale: 1, duration: 0.35, ease: E.ui, immediateRender: false }, W("cta", 1));
+  tl.fromTo("#end .sub", { opacity: 0 }, { opacity: 1, duration: 0.3, immediateRender: false }, W("cta", 4));
+  tl.fromTo("#end .bar", { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "power2.out", immediateRender: false }, W("cta", 4));
+  tl.fromTo("#end .tag", { opacity: 0 }, { opacity: 1, duration: 0.3, immediateRender: false }, W("cta", 9));
+  tl.set(["#end .badge", "#end .ld", "#end .ky", "#end .sub", "#end .tag"], { opacity: 0 }, 0);
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = tl;
+</script>
+</body>
+</html>
