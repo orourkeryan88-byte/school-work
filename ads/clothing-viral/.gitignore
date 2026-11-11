@@ -10,3 +10,5 @@ v*/render.log
 voice/lev/
 work-*/
 .*.hf-transaction-*/
+v*/hyperframes/assets/cutouts/
+cutouts/.tmp-*

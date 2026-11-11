@@ -7,89 +7,86 @@
 <script src="assets/vendor/gsap.min.js"></script>
 <script src="assets/js/timing.js"></script>
 <style>
-  /* "Southline Clean Cut": one style for the three clothing-brand reels.
-     Full-bleed footage graded toward Pine, a claim on screen in frame 1, big word-by-word captions (active word gold),
-     a cut or visual change every ~2 s with zoom-blur entries and punch-ins, Pine glass cards for the graphics,
-     a gold progress bar, and an end card that loops. Palette: Pine #0C2A22, Cloud #ECEEED, Ink #0E1412, Gold #F0B455. */
-  @font-face { font-family: "Instrument Sans"; src: url(assets/fonts/is-500.woff2) format("woff2"); font-weight: 500; }
-  @font-face { font-family: "Instrument Sans"; src: url(assets/fonts/is-700.woff2) format("woff2"); font-weight: 700; }
-  @font-face { font-family: "Instrument Serif"; src: url(assets/fonts/iserif-italic.woff2) format("woff2"); font-style: italic; font-weight: 400; }
-  @font-face { font-family: "IBM Plex Mono"; src: url(assets/fonts/plex-500.woff2) format("woff2"); font-weight: 500; }
-  :root { --pine: #0c2a22; --pine2: #123a2f; --cloud: #eceeed; --ink: #0e1412; --fog: #c6ccc8; --gold: #f0b455; --goldd: #c9821f; }
-  html, body { margin: 0; background: var(--pine); }
-  body { font-family: "Instrument Sans", sans-serif; -webkit-font-smoothing: antialiased; color: var(--cloud); }
-  #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--pine); }
+  /* "Southline Black Cut": one style for the three clothing-brand reels.
+     Footage graded toward black. Big condensed captions (League Gothic) sit BEHIND the person: footage, then the words,
+     then a cut-out of the person on top, so the head covers part of each word. Square corners everywhere.
+     Palette: Black #0B0B0B, Bone #F3EFE6, Signal red #FF3D2E, Smoke #8C8A85. */
+  :root { --black: #0b0b0b; --char: #161616; --bone: #f3efe6; --red: #ff3d2e; --smoke: #8c8a85; }
+  html, body { margin: 0; background: var(--black); }
+  body { font-family: "Inter", sans-serif; -webkit-font-smoothing: antialiased; color: var(--bone); }
+  #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--black); }
   .full { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
-  .mono { font-family: "IBM Plex Mono", monospace; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; }
-  .serif { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; }
+  .mono { font-family: "Space Mono", monospace; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+  .lg { font-family: "League Gothic", sans-serif; font-weight: 400; text-transform: uppercase; letter-spacing: .005em; }
 
-  #bg { background: radial-gradient(80% 55% at 50% 35%, #1a4537, var(--pine) 70%); }
-  #vw { overflow: hidden; transform-origin: 50% 42%; opacity: 0; }
-  #vcam { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 50% 42%; filter: saturate(.9) contrast(1.08); }
-  #tint { background: linear-gradient(rgba(12,42,34,.55), rgba(12,42,34,0) 28%, rgba(12,42,34,0) 52%, rgba(12,42,34,.72) 82%, rgba(12,42,34,.85)); }
-  #grain { opacity: .07; mix-blend-mode: overlay; pointer-events: none;
+  #bg { background: var(--black); }
+  #vw { overflow: hidden; transform-origin: 50% 40%; opacity: 0; }
+  .cam { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 50% 40%; filter: saturate(.82) contrast(1.12) brightness(.92); }
+  #tint { background: linear-gradient(rgba(11,11,11,.5), rgba(11,11,11,0) 22%, rgba(11,11,11,0) 60%, rgba(11,11,11,.75) 86%, rgba(11,11,11,.9)); }
+  #grain { opacity: .08; mix-blend-mode: overlay; pointer-events: none;
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>"); }
-  #vig { pointer-events: none; background: radial-gradient(120% 85% at 50% 45%, transparent 62%, rgba(4,14,11,.5)); }
-  #flash { background: var(--cloud); opacity: 0; }
-  #bar { position: absolute; left: 0; top: 0; height: 9px; width: 1080px; background: var(--gold); transform-origin: 0 50%; transform: scaleX(0); }
-  #barbg { position: absolute; left: 0; top: 0; height: 9px; width: 1080px; background: rgba(236,238,237,.18); }
+  #vig { pointer-events: none; background: radial-gradient(120% 85% at 50% 45%, transparent 60%, rgba(0,0,0,.55)); }
+  #flash { background: var(--bone); opacity: 0; }
+  #bar { position: absolute; left: 0; top: 0; height: 10px; width: 1080px; background: var(--red); transform-origin: 0 50%; transform: scaleX(0); }
+  #barbg { position: absolute; left: 0; top: 0; height: 10px; width: 1080px; background: rgba(243,239,230,.16); }
 
-  /* hook: the claim, readable in frame 1 */
-  #hook { position: absolute; left: 60px; right: 60px; top: 300px; text-align: left; }
-  #hook .k { display: inline-block; font-size: 26px; color: var(--ink); background: var(--gold); padding: 8px 16px 6px; border-radius: 8px; margin-bottom: 22px; }
-  #hook .h { font-weight: 700; font-size: 118px; line-height: .94; letter-spacing: -.045em; text-shadow: 0 6px 30px rgba(4,14,11,.55); }
-  #hook .h b { color: var(--gold); font-weight: 700; }
+  /* hook: the claim, behind the head from frame 1 */
+  #hook { position: absolute; left: 0; right: 0; top: 230px; text-align: center; }
+  #hook .k { display: inline-block; font-size: 28px; color: var(--black); background: var(--red); padding: 10px 18px 8px; margin-bottom: 10px; }
+  #hook .h { font-size: 236px; line-height: .86; color: var(--bone); }
+  #hook .h b { color: var(--red); font-weight: 400; }
 
-  /* captions: big, centred, 1-3 words a page, the word being said turns gold */
-  .cap { position: absolute; left: 50px; right: 50px; top: 1180px; text-align: center; font-weight: 700; font-size: 92px; line-height: 1.02; letter-spacing: -.035em; opacity: 0;
-    text-shadow: 0 5px 0 rgba(4,14,11,.55), 0 0 34px rgba(4,14,11,.8); }
-  .cap .w { display: inline-block; margin: 0 .13em; transform-origin: 50% 80%; }
+  /* captions: one line, 1-3 words, sized to fit; the word being said is red */
+  .cap { position: absolute; left: 0; right: 0; text-align: center; white-space: nowrap; line-height: .86; opacity: 0; color: var(--bone); }
+  .cap .w { display: inline-block; margin: 0 .07em; transform-origin: 50% 90%; }
+  .cap.top { text-shadow: 0 6px 0 rgba(0,0,0,.5); }
 
-  /* Pine glass cards (all graphics) */
-  .card { position: absolute; background: rgba(12,42,34,.88); border: 2px solid rgba(198,204,200,.18); border-radius: 32px; box-shadow: 0 30px 70px rgba(0,0,0,.45);
-    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); color: var(--cloud); }
-  .tile { position: absolute; width: 180px; height: 240px; border-radius: 16px; overflow: hidden; background: #1a3a31; box-shadow: 0 14px 30px rgba(0,0,0,.4); }
+  /* cards: black, square, thin bone rule */
+  .card { position: absolute; background: rgba(11,11,11,.92); border: 2px solid rgba(243,239,230,.22); box-shadow: 0 30px 70px rgba(0,0,0,.5); color: var(--bone); }
+  .tile { position: absolute; width: 180px; height: 240px; overflow: hidden; background: var(--char); box-shadow: 0 14px 30px rgba(0,0,0,.45); }
   .tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
-  .tile .lb { position: absolute; left: 9px; top: 8px; font-size: 15px; color: var(--cloud); background: rgba(12,42,34,.8); padding: 3px 8px; border-radius: 6px; }
-  .tile .x { position: absolute; left: -10%; top: 50%; width: 120%; height: 7px; background: var(--cloud); transform: rotate(-38deg) scaleX(0); }
-  .tile .gb { position: absolute; inset: 0; border: 7px solid var(--gold); border-radius: 16px; opacity: 0; }
-  .big3 { position: absolute; top: 600px; width: 300px; height: 400px; border-radius: 24px; overflow: hidden; box-shadow: 0 24px 50px rgba(0,0,0,.45); }
+  .tile .lb { position: absolute; left: 0; top: 0; font-size: 15px; color: var(--bone); background: var(--black); padding: 4px 8px; }
+  .tile .x { position: absolute; left: -10%; top: 50%; width: 120%; height: 8px; background: var(--red); transform: rotate(-38deg) scaleX(0); }
+  .tile .gb { position: absolute; inset: 0; border: 8px solid var(--red); opacity: 0; }
+  .big3 { position: absolute; top: 560px; width: 300px; height: 400px; overflow: hidden; box-shadow: 0 24px 50px rgba(0,0,0,.5); }
   .big3 img { width: 100%; height: 100%; object-fit: cover; }
-  .big3 .lb { position: absolute; left: 14px; top: 12px; font-size: 22px; background: rgba(12,42,34,.85); padding: 4px 10px; border-radius: 8px; }
-  .big3 .st { position: absolute; left: 0; right: 0; bottom: 0; padding: 14px; font-size: 24px; text-align: center; background: rgba(12,42,34,.88); }
-  .big3 .gb { position: absolute; inset: 0; border: 9px solid var(--gold); border-radius: 24px; opacity: 0; }
-  .chip { position: absolute; padding: 12px 22px 10px; border-radius: 12px; font-size: 26px; background: rgba(12,42,34,.9); border: 2px solid rgba(240,180,85,.6); color: var(--gold); }
-  .row { position: absolute; left: 70px; width: 940px; height: 140px; border-radius: 30px; }
-  .row .ck { position: absolute; left: 34px; top: 38px; width: 64px; height: 64px; border-radius: 18px; background: var(--gold); color: var(--ink); font-size: 40px; font-weight: 700; text-align: center; line-height: 64px; }
-  .row .t { position: absolute; left: 128px; top: 40px; font-size: 52px; font-weight: 700; letter-spacing: -.03em; }
-  .big { position: absolute; left: 60px; right: 60px; top: 560px; }
-  .big .l { font-family: "Instrument Serif", serif; font-style: italic; font-size: 96px; line-height: 1.02; opacity: .9; }
-  .big .k { font-weight: 700; font-size: 150px; line-height: .92; letter-spacing: -.05em; }
-  .big .k b { color: var(--gold); font-weight: 700; }
-  .big .u { display: block; width: 560px; height: 14px; border-radius: 6px; background: var(--gold); margin-top: 22px; transform: scaleX(0); transform-origin: 0 50%; }
-
-  .stamp { position: absolute; left: 430px; top: 1410px; padding: 14px 26px 10px; font-size: 40px; color: var(--gold); border: 6px solid var(--gold); border-radius: 14px; transform: rotate(-8deg); background: rgba(12,42,34,.6); }
+  .big3 .lb { position: absolute; left: 0; top: 0; font-size: 22px; background: var(--black); padding: 6px 12px; }
+  .big3 .st { position: absolute; left: 0; right: 0; bottom: 0; padding: 14px; font-size: 24px; text-align: center; background: var(--black); }
+  .big3 .gb { position: absolute; inset: 0; border: 10px solid var(--red); opacity: 0; }
+  .big3.win .st { background: var(--red); color: var(--black); }
+  .chip { position: absolute; padding: 12px 20px 10px; font-size: 26px; background: var(--red); color: var(--black); }
+  .big { position: absolute; left: 60px; right: 60px; top: 520px; }
+  .big .l { font-size: 120px; line-height: .9; color: var(--smoke); }
+  .big .k { font-size: 300px; line-height: .84; }
+  .big .k b { color: var(--red); font-weight: 400; }
+  .big .u { display: block; width: 640px; height: 16px; background: var(--red); margin-top: 20px; transform: scaleX(0); transform-origin: 0 50%; }
+  .stamp { position: absolute; left: 430px; top: 1410px; padding: 14px 26px 10px; font-size: 40px; color: var(--red); border: 6px solid var(--red); transform: rotate(-8deg); background: rgba(11,11,11,.7); }
   .rr { display: flex; justify-content: space-between; align-items: center; }
-  .pd { font-family: "IBM Plex Mono", monospace; font-weight: 500; font-size: 26px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); background: var(--fog); padding: 8px 14px 6px; border-radius: 8px; }
-  .toast { left: 90px; top: 300px; width: 900px; height: 150px; box-sizing: border-box; border-radius: 34px; background: rgba(236,238,237,.96); color: var(--ink); }
-  .toast .ic { position: absolute; left: 30px; top: 35px; width: 80px; height: 80px; border-radius: 22px; background: var(--pine); color: var(--gold); font-size: 46px; font-weight: 700; text-align: center; line-height: 80px; }
-  .toast .tt { position: absolute; left: 136px; top: 30px; font-size: 50px; font-weight: 700; letter-spacing: -.03em; }
-  .toast .ts { position: absolute; left: 138px; top: 94px; font-size: 22px; color: #55605b; }
-  /* end card */
-  #end { opacity: 0; background: radial-gradient(80% 55% at 50% 35%, #1a4537, var(--pine) 70%); }
-  #end .badge { position: absolute; left: 70px; top: 330px; width: 140px; height: 140px; border-radius: 50%; }
-  #end .ld { position: absolute; left: 70px; top: 560px; font-size: 110px; }
-  #end .ky { position: absolute; left: 62px; top: 680px; font-weight: 700; font-size: 270px; line-height: .9; letter-spacing: -.055em; color: var(--gold); }
-  #end .sub { position: absolute; left: 74px; top: 980px; font-size: 30px; color: var(--fog); }
-  #end .ln { position: absolute; left: 74px; top: 1046px; width: 560px; height: 3px; background: var(--fog); transform-origin: 0 50%; }
-  #end .tg { position: absolute; left: 74px; top: 1084px; font-size: 26px; color: var(--fog); }
+  .pd { font-family: "Space Mono", monospace; font-weight: 700; font-size: 24px; letter-spacing: .12em; text-transform: uppercase; color: var(--black); background: var(--bone); padding: 8px 14px 6px; }
+  .toast { left: 90px; top: 1250px; width: 900px; height: 150px; box-sizing: border-box; background: var(--bone); color: var(--black); }
+  .toast .ic { position: absolute; left: 30px; top: 35px; width: 80px; height: 80px; background: var(--red); color: var(--black); font-size: 46px; font-weight: 900; text-align: center; line-height: 80px; }
+  .toast .tt { position: absolute; left: 136px; top: 26px; font-size: 64px; }
+  .toast .ts { position: absolute; left: 138px; top: 98px; font-size: 20px; color: #55524c; }
+
+  /* end card: Black Friday */
+  #end { opacity: 0; background: var(--black); overflow: hidden; }
+  #end .badge { position: absolute; left: 70px; top: 250px; width: 120px; height: 120px; }
+  #end .brand { position: absolute; left: 214px; top: 296px; font-size: 26px; color: var(--smoke); }
+  #end .bf { position: absolute; left: 62px; top: 420px; font-size: 200px; line-height: .86; }
+  #end .pct { position: absolute; left: 50px; top: 580px; font-size: 520px; line-height: .84; color: var(--red); }
+  #end .band { position: absolute; left: -200px; top: 1060px; width: 1480px; height: 110px; background: var(--red); transform: rotate(-4deg); overflow: hidden; }
+  #end .band .tk { position: absolute; left: 0; top: 4px; white-space: nowrap; font-size: 100px; line-height: 1; color: var(--black); }
+  #end .cm { position: absolute; left: 70px; top: 1250px; font-size: 30px; color: var(--smoke); }
+  #end .ky { position: absolute; left: 62px; top: 1290px; font-size: 260px; line-height: .86; }
+  #end .ln { position: absolute; left: 70px; top: 1526px; width: 560px; height: 12px; background: var(--red); transform-origin: 0 50%; }
+  #end .tg { position: absolute; left: 70px; top: 1558px; font-size: 30px; color: var(--bone); }
 </style>
 </head>
 <body>
-<div id="root" data-composition-id="main" data-width="1080" data-height="1920" data-duration="28.64">
+<div id="root" data-composition-id="main" data-width="1080" data-height="1920" data-duration="26.74">
   <div id="bg" class="full" data-layout-ignore></div>
   <div id="vw" class="full" data-layout-ignore>
-    <div id="vcam">
+    <div id="camA" class="cam">
       <video id="v0" class="clip" src="assets/media/hook.mp4" muted playsinline data-start="0.0" data-duration="1.817" data-media-start="0.0" data-track-index="1" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
       <video id="v1" class="clip" src="assets/media/hook.mp4" muted playsinline data-start="1.817" data-duration="1.626" data-media-start="1.941" data-track-index="1" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
       <video id="v2" class="clip" src="assets/media/hook.mp4" muted playsinline data-start="3.443" data-duration="1.46" data-media-start="3.629" data-track-index="1" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
@@ -103,21 +100,35 @@
       <video id="v12" class="clip" src="assets/media/creatives.mp4" muted playsinline data-start="18.66" data-duration="2.216" data-media-start="4.66" data-track-index="1" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
       <video id="v13" class="clip" src="assets/media/sales.mp4" muted playsinline data-start="20.876" data-duration="2.284" data-media-start="0.0" data-track-index="1" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
     </div>
+    <div id="hook" class="lg" data-layout-ignore data-layout-allow-occlusion><div class="k mono">For clothing brands</div><div class="h">Only one of these<br><b>sells.</b></div></div>
+    <div id="capsB" class="full" data-layout-ignore data-layout-allow-occlusion></div>
+    <div id="camB" class="cam" data-layout-allow-occlusion>
+      <video id="c0" class="clip" src="assets/cutouts/hook.webm" muted playsinline data-start="0.0" data-duration="1.817" data-media-start="0.0" data-track-index="2" data-layout-allow-occlusion style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <video id="c1" class="clip" src="assets/cutouts/hook.webm" muted playsinline data-start="1.817" data-duration="1.626" data-media-start="1.941" data-track-index="2" data-layout-allow-occlusion style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <video id="c2" class="clip" src="assets/cutouts/hook.webm" muted playsinline data-start="3.443" data-duration="1.46" data-media-start="3.629" data-track-index="2" data-layout-allow-occlusion style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <video id="c4" class="clip" src="assets/cutouts/hook.webm" muted playsinline data-start="6.414" data-duration="2.435" data-media-start="6.68" data-track-index="2" data-layout-allow-occlusion style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <video id="c9" class="clip" src="assets/cutouts/creatives.webm" muted playsinline data-start="16.11" data-duration="0.89" data-media-start="0.05" data-track-index="2" data-layout-allow-occlusion style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <video id="c10" class="clip" src="assets/cutouts/creatives.webm" muted playsinline data-start="17.0" data-duration="0.76" data-media-start="1.66" data-track-index="2" data-layout-allow-occlusion style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <video id="c11" class="clip" src="assets/cutouts/creatives.webm" muted playsinline data-start="17.76" data-duration="0.9" data-media-start="3.12" data-track-index="2" data-layout-allow-occlusion style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <video id="c12" class="clip" src="assets/cutouts/creatives.webm" muted playsinline data-start="18.66" data-duration="2.216" data-media-start="4.66" data-track-index="2" data-layout-allow-occlusion style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+    </div>
     <div id="tint" class="full" data-layout-ignore></div>
   </div>
   <div id="gfx" class="full" data-layout-ignore></div>
-  <div id="hook" data-layout-ignore><div class="k mono">For clothing brands</div><div class="h">Only one of these <b>sells.</b></div></div>
-  <div id="caps" class="full" data-layout-ignore></div>
+  <div id="capsT" class="full" data-layout-ignore></div>
   <div id="end" class="full" data-layout-ignore>
-    <img class="badge" src="assets/img/southline_logo_badge.png" alt="Southline">
-    <div class="ld serif">comment</div><div class="ky">AUDIT</div>
-    <div class="sub mono">I'll look at your ads. Free.</div><div class="ln"></div><div class="tg mono">Southline · Meta ads for clothing brands</div>
+    <img class="badge" src="assets/img/southline_logo_badge.png" alt="Southline"><div class="brand mono">Southline</div>
+    <div class="bf lg">Black Friday deal</div>
+    <div class="pct lg">50% off</div>
+    <div class="band"><div class="tk lg">Black Friday · 50% off · Black Friday · 50% off · Black Friday · 50% off · Black Friday · 50% off · Black Friday · 50% off ·</div></div>
+    <div class="cm mono">comment</div><div class="ky lg">SALES</div>
+    <div class="ln"></div><div class="tg mono">to learn more</div>
   </div>
   <div id="flash" class="full" data-layout-ignore></div>
   <div id="vig" class="full" data-layout-ignore></div>
   <div id="grain" class="full" data-layout-ignore></div>
   <div id="barbg" data-layout-ignore></div><div id="bar" data-layout-ignore></div>
-  <audio id="score" src="assets/audio.wav" data-start="0" data-duration="28.64" data-track-index="10" data-volume="1"></audio>
+  <audio id="score" src="assets/audio.wav" data-start="0" data-duration="26.74" data-track-index="10" data-volume="1"></audio>
 </div>
 
 <script>
@@ -127,50 +138,66 @@
   const st = (id) => S[id].start, en = (id) => S[id].start + S[id].vdur;
   const wd = (id) => T.words.filter((w) => w.seg === id);
   const W = (id, k) => { const a = wd(id); return a[Math.max(0, Math.min(k < 0 ? a.length + k : k, a.length - 1))].start; };
-  const E = { in: "expo.out", ui: "back.out(1.5)" };
+  const E = { in: "expo.out", ui: "back.out(1.6)" };
+  const RED = "#ff3d2e", BONE = "#f3efe6";
   const gfx = document.getElementById("gfx");
   const el = (html, parent = gfx) => { const d = document.createElement("div"); d.innerHTML = html.trim(); const n = d.firstChild; parent.appendChild(n); return n; };
   const show = (n, a, b) => { tl.set(n, { opacity: 0 }, 0); tl.set(n, { opacity: 1 }, a); if (b !== undefined) tl.set(n, { opacity: 0 }, b); };
   const pop = (n, at, from = {}) => tl.fromTo(n, Object.assign({ opacity: 0, y: 60, scale: 0.86 }, from), { opacity: 1, y: 0, x: 0, scale: 1, rotation: 0, duration: 0.42, ease: E.ui, immediateRender: false }, at);
 
-  // progress bar
   tl.fromTo("#bar", { scaleX: 0 }, { scaleX: 1, duration: DUR, ease: "none" }, 0);
 
-  // footage: each video segment enters with a zoom-blur and drifts; graphics segments hide it
+  // footage + its cut-out move together: zoom-blur entry on every shot, then a slow drift
   tl.set("#vw", { opacity: 0 }, 0);
   T.segments.forEach((s) => {
     if (s.vis[0] !== "vid") { tl.set("#vw", { opacity: 0 }, s.start); return; }
     tl.set("#vw", { opacity: 1 }, s.start);
-    tl.fromTo("#vcam", { scale: 1.14, filter: "blur(12px) saturate(.9) contrast(1.08)" }, { scale: 1.02, filter: "blur(0px) saturate(.9) contrast(1.08)", duration: 0.24, ease: E.in, immediateRender: false }, s.start);
-    tl.to("#vcam", { scale: 1.07, duration: Math.max(0.1, s.vdur - 0.24), ease: "none" }, s.start + 0.24);
+    tl.fromTo(".cam", { scale: 1.14, filter: "blur(12px) saturate(.82) contrast(1.12) brightness(.92)" }, { scale: 1.02, filter: "blur(0px) saturate(.82) contrast(1.12) brightness(.92)", duration: 0.24, ease: E.in, immediateRender: false }, s.start);
+    tl.to(".cam", { scale: 1.07, duration: Math.max(0.1, s.vdur - 0.24), ease: "none" }, s.start + 0.24);
   });
-  // punch-in on a word (the whole footage window)
   const punch = (at, k = 1.12) => { tl.fromTo("#vw", { scale: 1 }, { scale: k, duration: 0.14, ease: E.in, immediateRender: false }, at); tl.to("#vw", { scale: 1, duration: 0.5, ease: "power2.inOut" }, at + 0.32); };
-  const flash = (at) => { tl.fromTo("#flash", { opacity: 0.55 }, { opacity: 0, duration: 0.22, ease: "power2.out", immediateRender: false }, at); };
+  const flash = (at) => { tl.fromTo("#flash", { opacity: 0.6 }, { opacity: 0, duration: 0.22, ease: "power2.out", immediateRender: false }, at); };
 
-  // hook: on screen from frame 1 (no fade-in), settles, exits on cue
+  // hook: behind the head from frame 1, settles, exits on cue
   const hookOut = (at) => {
-    tl.fromTo("#hook", { scale: 1.06, y: -10 }, { scale: 1, y: 0, duration: 0.5, ease: E.in }, 0);
-    tl.fromTo("#hook .h b", { color: "#eceeed" }, { color: "#f0b455", duration: 0.1 }, 0.35);
+    const s0 = T.segments[0], h0 = s0.head && s0.head.filter((v) => v !== null);
+    const hh = document.querySelector("#hook .h"); hh.style.whiteSpace = "nowrap";
+    if (hh.scrollWidth > 1000) hh.style.fontSize = Math.floor(236 * 1000 / hh.scrollWidth) + "px";
+    const hk = document.getElementById("hook"), lineH = parseFloat(hh.style.fontSize || 236) * 0.86;
+    // the head covers about the lower third of the last line, never the first
+    if (h0 && h0.length) hk.style.top = Math.max(110, Math.min(...h0.slice(0, 8)) - hk.offsetHeight + lineH * 0.35) + "px";
+    tl.fromTo("#hook", { scale: 1.08 }, { scale: 1, duration: 0.6, ease: E.in }, 0);
+    tl.fromTo("#hook .h b", { color: BONE }, { color: RED, duration: 0.1 }, 0.35);
     tl.to("#hook", { opacity: 0, y: -40, duration: 0.2, ease: "power2.in" }, at);
   };
 
-  // captions: pages of up to 3 words (break on punctuation); the word being said is gold
-  const FIX = { meta: "Meta", Brand: "brand", Owners: "owners.", Audit: "AUDIT", ads: "ads", "One,": "one,", "Two,": "two,", Add: "Ad" };
+  // captions: pages of up to 3 words. Over a person they sit behind the head (top of the text box just above the
+  // highest point the head reaches during the page, so the head covers roughly the lower 40%). Otherwise mid-frame.
+  const FIX = { meta: "Meta", Brand: "brand", Owners: "owners.", Add: "Ad" };
+  const headTop = (s, a, b) => { if (!s.head) return null; const ys = [];
+    for (let k = Math.max(0, Math.floor((a - s.start) * 10)); k <= Math.min(s.head.length - 1, Math.ceil((b - s.start) * 10)); k++) if (s.head[k] !== null) ys.push(s.head[k]);
+    return ys.length ? Math.min(...ys) : null; };
   const caps = (skip = []) => {
-    const root = document.getElementById("caps"), pages = [];
+    const pages = [];
     T.segments.forEach((s) => { if (skip.includes(s.id)) return;
       let cur = []; const ws = wd(s.id);
       ws.forEach((w, j) => { cur.push(w); if (cur.length >= 3 || /[.,?:!…]$/.test(w.text) || j === ws.length - 1) { pages.push({ s, w: cur }); cur = []; } }); });
+    const nx0 = (n) => pages[n + 1] ? Math.min(pages[n + 1].w[0].start - 0.03, pages[n].s.start + pages[n].s.vdur) : pages[n].s.start + pages[n].s.vdur;
     pages.forEach((p, n) => {
-      const c = el('<div class="cap"></div>', root);
-      const spans = p.w.map((w) => { const sp = document.createElement("span"); sp.className = "w"; sp.textContent = (s => (p.s.id === "cta" && s.replace(/[^a-z]/gi, "").toLowerCase() === KW.toLowerCase()) ? s.toUpperCase() : s)(FIX[w.text] || w.text); c.appendChild(sp); return sp; });
+      const ht0 = p.s.vis[0] === "vid" ? headTop(p.s, p.w[0].start, nx0(n)) : null;
+      const vid = p.s.vis[0] === "vid" && !(ht0 !== null && ht0 < 260);          // close-up: no room above the head, caption goes in front, low
+      const c = el('<div class="cap lg' + (vid ? "" : " top") + '"></div>', document.getElementById(vid ? "capsB" : "capsT"));
+      const spans = p.w.map((w) => { const sp = document.createElement("span"); sp.className = "w"; sp.textContent = (FIX[w.text] || w.text).replace(/[,:]$/, ""); c.appendChild(sp); return sp; });
       const nx = pages[n + 1], end = nx ? Math.min(nx.w[0].start - 0.03, p.s.start + p.s.vdur) : p.s.start + p.s.vdur;
+      // fit to one line, 990 px wide, at most 300 px tall type
+      let fs = 300; c.style.fontSize = fs + "px"; const wpx = c.scrollWidth; if (wpx > 990) { fs = Math.floor(fs * 990 / wpx); c.style.fontSize = fs + "px"; }
+      const h = fs * 0.86, ht = vid ? headTop(p.s, p.w[0].start, end) : null;
+      c.style.top = (ht !== null ? Math.max(150, ht - h * 0.6) : vid ? 700 : 1190) + "px";
       tl.set(c, { opacity: 0 }, 0); tl.set(c, { opacity: 1 }, p.w[0].start - 0.02); tl.set(c, { opacity: 0 }, end);
       p.w.forEach((w, j) => {
-        tl.fromTo(spans[j], { opacity: 0, y: 22, scale: 0.8 }, { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: E.ui, immediateRender: false }, w.start);
-        tl.set(spans[j], { color: "#f0b455" }, w.start);
-        tl.set(spans[j], { color: "#eceeed" }, j + 1 < p.w.length ? p.w[j + 1].start : end);
+        tl.fromTo(spans[j], { opacity: 0, y: 40, scale: 0.7 }, { opacity: 1, y: 0, scale: 1, duration: 0.18, ease: E.ui, immediateRender: false }, w.start);
+        tl.set(spans[j], { color: RED }, w.start);
+        tl.set(spans[j], { color: BONE }, j + 1 < p.w.length ? p.w[j + 1].start : end);
       });
     });
   };
@@ -182,6 +209,7 @@
     tl.to([n[0], n[2]], { opacity: 0.3, scale: 0.93, filter: "grayscale(1)", duration: 0.3 }, win);
     tl.to(n[1], { scale: 1.1, y: -24, duration: 0.3, ease: E.ui }, win);
     tl.to(n[1].querySelector(".gb"), { opacity: 1, duration: 0.2 }, win);
+    tl.set(n[1].querySelector(".st"), { backgroundColor: RED, color: "#0b0b0b" }, win);
   };
   const IMGS = ["ring", "coat", "woman", "sweater", "wall", "face1", "face2", "face3", "sellers", "rail", "fold", "face4", "notes", "chart", "boxes"];
   const grid = (a, fillTo10, fill15, out) => {
@@ -207,36 +235,43 @@
       tl.fromTo(t, { opacity: 0, scale: 0.5, filter: "grayscale(0)" }, { opacity: 1, scale: 1, duration: 0.3, ease: E.ui, immediateRender: false }, at); });
   };
   const chip = (txt, x, y, a, out) => { const c = el('<div class="chip mono" style="left:' + x + 'px; top:' + y + 'px;">' + txt + '</div>'); show(c, a, out); pop(c, a, { y: 20, scale: 0.7 }); return c; };
-  const rows = (items, out) => items.map(([txt, at], i) => { const r = el('<div class="row card" style="top:' + (560 + i * 172) + 'px;"><span class="ck">✓</span><span class="t">' + txt + '</span></div>'); show(r, at, out); pop(r, at, { x: 120, y: 0 }); return r; });
-  const big = (lead, key, a, out, uAt) => { const b = el('<div class="big"><div class="l">' + lead + '</div><div class="k">' + key + '</div><span class="u"></span></div>');
+  const big = (lead, key, a, out, uAt) => { const b = el('<div class="big lg"><div class="l">' + lead + '</div><div class="k">' + key + '</div><span class="u"></span></div>');
     show(b, a, out); pop(b.querySelector(".l"), a, { y: 30 }); pop(b.querySelector(".k"), a + 0.12, { y: 50 }); if (uAt) tl.to(b.querySelector(".u"), { scaleX: 1, duration: 0.3, ease: "power2.out" }, uAt); return b; };
   const card = (html, x, y, w, a, out) => { const c = el('<div class="card" style="left:' + x + 'px; top:' + y + 'px; width:' + w + 'px; padding:34px 40px; box-sizing:border-box;">' + html + '</div>'); show(c, a, out); pop(c, a, { rotation: -3 }); return c; };
+  // Black Friday end card: "BLACK FRIDAY DEAL" drops, "50% OFF" slams with a shake, the red ticker band runs, then "comment SALES"
   const endCard = (a, kwAt) => {
+    [".bf", ".pct", ".ky"].forEach((q) => { const n = document.querySelector("#end " + q); n.style.whiteSpace = "nowrap"; const fs = parseFloat(getComputedStyle(n).fontSize); if (n.scrollWidth > 960) n.style.fontSize = Math.floor(fs * 960 / n.scrollWidth) + "px"; });
     tl.set("#end", { opacity: 0 }, 0); tl.set("#end", { opacity: 1 }, a); flash(a);
-    tl.set(["#end .badge", "#end .ld", "#end .ky", "#end .sub", "#end .tg"], { opacity: 0 }, 0); tl.set("#end .ln", { scaleX: 0 }, 0);
-    pop("#end .badge", a + 0.05, { scale: 0.4, y: 0 }); pop("#end .ld", a + 0.1, { y: 30 }); pop("#end .ky", kwAt, { y: 60, scale: 0.8 });
-    pop("#end .sub", kwAt + 0.35, { y: 20 }); tl.fromTo("#end .ln", { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "power2.out", immediateRender: false }, kwAt + 0.4); pop("#end .tg", kwAt + 0.6, { y: 20 });
+    tl.set(["#end .badge", "#end .brand", "#end .bf", "#end .pct", "#end .band", "#end .cm", "#end .ky", "#end .tg"], { opacity: 0 }, 0); tl.set("#end .ln", { scaleX: 0 }, 0);
+    pop("#end .badge", a + 0.02, { scale: 0.4, y: 0 }); pop("#end .brand", a + 0.08, { x: -40, y: 0 });
+    pop("#end .bf", a + 0.05, { y: -80, scale: 1 });
+    tl.fromTo("#end .pct", { opacity: 0, scale: 2.4 }, { opacity: 1, scale: 1, duration: 0.22, ease: "power4.in", immediateRender: false }, a + 0.3);
+    tl.fromTo("#end", { x: 0 }, { keyframes: [{ x: -18, duration: 0.04 }, { x: 14, duration: 0.04 }, { x: -8, duration: 0.04 }, { x: 0, duration: 0.05 }], immediateRender: false }, a + 0.52);
+    tl.fromTo("#end .band", { opacity: 0, x: 400 }, { opacity: 1, x: 0, duration: 0.35, ease: E.in, immediateRender: false }, a + 0.6);
+    tl.fromTo("#end .band .tk", { x: 0 }, { x: -900, duration: DUR - a, ease: "none", immediateRender: false }, a + 0.6);
+    pop("#end .cm", kwAt - 0.25, { y: 20 }); pop("#end .ky", kwAt, { y: 60, scale: 0.7 });
+    tl.fromTo("#end .ln", { scaleX: 0 }, { scaleX: 1, duration: 0.35, ease: "power2.out", immediateRender: false }, kwAt + 0.25); pop("#end .tg", kwAt + 0.4, { x: 30, y: 0 });
+    tl.fromTo("#end .pct", { scale: 1 }, { scale: 1.04, duration: 0.3, yoyo: true, repeat: 3, ease: "sine.inOut", immediateRender: false }, kwAt + 0.6);
   };
 
   // ===================== this reel =====================
-  const KW = "AUDIT";
-  caps([]);
+  caps(["hook1", "hook2", "hook3", "bf", "cta", "cta2"]);
   hookOut(st("only"));
   // the three ads land on "ad one / two / three"
-  ["hook1", "hook2", "hook3"].forEach((id, i) => chip("AD 0" + (i + 1), 70, 1560, st(id) + 0.05, en(id)));
+  ["hook1", "hook2", "hook3"].forEach((id, i) => chip("AD 0" + (i + 1), 70, 1470, st(id) + 0.05, en(id)));
   ["hook1", "hook2", "hook3"].forEach((id) => punch(W(id, -1), 1.08));
   threeUp(st("only"), W("only", -1), en("only"));
   punch(W("how", 0), 1.1);
   // research: the angles
-  ["ANGLE 01", "ANGLE 02", "ANGLE 03"].forEach((t, i) => chip(t, 70 + i * 320, 330, W("angles", 2) + i * 0.12, en("angles2")));
+  ["ANGLE 01", "ANGLE 02", "ANGLE 03"].forEach((t, i) => chip(t, 70 + i * 320, 1470, W("angles", 2) + i * 0.12, en("angles2")));
   punch(W("sellers", 4), 1.1);
   const g = grid(st("make"), W("make", 4), W("make", 5), en("make"));
-  ["faces", "hooks", "settings"].forEach((id, i) => chip(["NEW FACE", "NEW HOOK", "NEW SETTING"][i], 70, 330, st(id) + 0.03, en(id)));
+  ["faces", "hooks", "settings"].forEach((id, i) => chip(["NEW FACE", "NEW HOOK", "NEW SETTING"][i], 70, 1470, st(id) + 0.03, en(id)));
   punch(W("test", 4), 1.14); flash(W("test", 4));
-  const d = chip("DAY 1", 70, 330, st("meta") + 0.05, en("meta"));
+  const d = chip("DAY 1", 70, 1470, st("meta") + 0.05, en("meta"));
   tl.set(d, { textContent: "DAY 2" }, W("meta", 3)); tl.set(d, { textContent: "DAY 3 · WINNER FOUND" }, W("meta", 5));
   punch(W("meta", 5), 1.1);
-  endCard(st("cta"), W("cta", 1));
+  endCard(st("bf"), st("cta2"));
 
   window.__timelines = window.__timelines || {};
   window.__timelines["main"] = tl;

@@ -29,8 +29,8 @@ for k in ("adam", "hook", "talk"):
 # join=True: no breath before it (same sentence continues over a new shot)
 REELS = {
  "v1": dict(
-  title="Southline - Only one sells", kicker="For clothing brands", headline="Only one of these <b>sells.</b>",
-  keyword="AUDIT", sub="I'll look at your ads. Free.",
+  title="Southline - Only one sells", kicker="For clothing brands", headline="Only one of these<br><b>sells.</b>",
+  keyword="SALES",
   segs=[
    ("hook1", "hook", 0.00, 1.75, ("vid", "hook", 0.00), False),     # the hook presenter reads ad one / two / three on camera
    ("hook2", "hook", 1.95, 3.45, ("vid", "hook", 1.95), False),
@@ -46,34 +46,36 @@ REELS = {
    ("settings", "adam", 20.24, 21.20, ("vid", "creatives", 3.12), True),
    ("test", "adam", 21.25, 23.55, ("vid", "creatives", 4.66), False),
    ("meta", "adam", 23.80, 26.10, ("vid", "sales", 0.00), False),
-   ("cta", "adam", 35.70, 39.60, ("gfx",), False),
+   ("bf", None, 0.0, 0.85, ("gfx",), False),                         # end card: BLACK FRIDAY / 50% OFF lands
+   ("cta", "adam", 35.80, 36.17, ("gfx",), False),                    # "Comment ..."
+   ("cta2", "adam", 34.85, 35.40, ("gfx",), False),                   # "... sales."  (spliced from the same take)
   ],
-  hook_out="only",
+  skip_caps=["hook1", "hook2", "hook3", "bf", "cta", "cta2"],
   beats="""
   hookOut(st("only"));
   // the three ads land on "ad one / two / three"
-  ["hook1", "hook2", "hook3"].forEach((id, i) => chip("AD 0" + (i + 1), 70, 1560, st(id) + 0.05, en(id)));
+  ["hook1", "hook2", "hook3"].forEach((id, i) => chip("AD 0" + (i + 1), 70, 1470, st(id) + 0.05, en(id)));
   ["hook1", "hook2", "hook3"].forEach((id) => punch(W(id, -1), 1.08));
   threeUp(st("only"), W("only", -1), en("only"));
   punch(W("how", 0), 1.1);
   // research: the angles
-  ["ANGLE 01", "ANGLE 02", "ANGLE 03"].forEach((t, i) => chip(t, 70 + i * 320, 330, W("angles", 2) + i * 0.12, en("angles2")));
+  ["ANGLE 01", "ANGLE 02", "ANGLE 03"].forEach((t, i) => chip(t, 70 + i * 320, 1470, W("angles", 2) + i * 0.12, en("angles2")));
   punch(W("sellers", 4), 1.1);
   const g = grid(st("make"), W("make", 4), W("make", 5), en("make"));
-  ["faces", "hooks", "settings"].forEach((id, i) => chip(["NEW FACE", "NEW HOOK", "NEW SETTING"][i], 70, 330, st(id) + 0.03, en(id)));
+  ["faces", "hooks", "settings"].forEach((id, i) => chip(["NEW FACE", "NEW HOOK", "NEW SETTING"][i], 70, 1470, st(id) + 0.03, en(id)));
   punch(W("test", 4), 1.14); flash(W("test", 4));
-  const d = chip("DAY 1", 70, 330, st("meta") + 0.05, en("meta"));
+  const d = chip("DAY 1", 70, 1470, st("meta") + 0.05, en("meta"));
   tl.set(d, { textContent: "DAY 2" }, W("meta", 3)); tl.set(d, { textContent: "DAY 3 · WINNER FOUND" }, W("meta", 5));
   punch(W("meta", 5), 1.1);
-  endCard(st("cta"), W("cta", 1));
+  endCard(st("bf"), st("cta2"));
 """,
   sfx=lambda S, W: [*[(W("hook" + k, -1), "hit", 0.5) for k in "123"], (W("only", -1), "hit", 0.8), (W("only", -1) + 0.02, "shimmer", 0.5),
                     *[(S["make"]["start"] + 0.05 + i * 0.09, "pop", 0.16) for i in range(10)], *[(W("make", 5) + i * 0.06, "pop", 0.18) for i in range(5)],
                     (W("test", 4), "hit", 0.7), (W("meta", 5), "coin", 0.45), *[(W("angles", 2) + i * 0.12, "pop", 0.3) for i in range(3)]],
  ),
  "v2": dict(
-  title="Southline - Still paying a retainer", kicker="For clothing brands", headline="Still paying an agency <b>retainer?</b>",
-  keyword="ADS", sub="We'll send you how it works",
+  title="Southline - Still paying a retainer", kicker="For clothing brands", headline="Still paying an<br>agency <b>retainer?</b>",
+  keyword="SALES",
   segs=[
    ("own", "talk", 0.15, 1.70, ("vid", "talk", 0.15), False),       # lip-synced presenter
    ("retainer", "talk", 7.75, 11.40, ("vid", "talk", 7.75), False),
@@ -81,32 +83,35 @@ REELS = {
    ("cr2", "talk", 12.30, 13.05, ("vid", "creatives", 3.12), True),
    ("meta", "talk", 13.05, 14.30, ("vid", "talk", 13.05), False),
    ("cut", "talk", 14.30, 16.85, ("vid", "phone_sales_alerts", 0.00), True),
-   ("cta", "talk", 19.35, 22.05, ("vid", "talk", 19.35), False),
+   ("bf", None, 0.0, 0.85, ("gfx",), False),                         # end card: BLACK FRIDAY / 50% OFF lands
+   ("cta", "adam", 35.80, 36.17, ("gfx",), False),                    # "Comment ..."
+   ("cta2", "adam", 34.85, 35.40, ("gfx",), False),                   # "... sales."  (spliced from the same take)
   ],
+  skip_caps=["own", "bf", "cta", "cta2"],
   beats="""
   hookOut(st("retainer"));
   punch(W("own", 2), 1.1);
   // the retainer card: paid every month, sales or not
-  const rc = card('<div class="mono" style="font-size:24px;color:#c6ccc8;">Typical agency retainer</div>' +
+  const rc = card('<div class="mono" style="font-size:24px;color:#8c8a85;">Typical agency retainer</div>' +
     '<div class="rr" style="font-size:38px;font-weight:700;margin-top:10px;">Month 1 <span class="pd">paid</span></div>' +
     '<div class="rr" style="font-size:38px;font-weight:700;margin-top:4px;">Month 2 <span class="pd">paid</span></div>' +
     '<div class="rr" style="font-size:38px;font-weight:700;margin-top:4px;">Month 3 <span class="pd">paid</span></div>', 110, 1300, 860, W("retainer", 2), en("retainer"));
   rc.querySelectorAll(".rr").forEach((r, i) => { tl.set(r, { opacity: 0 }, 0); pop(r, W("retainer", 3) + i * 0.18, { x: 80, y: 0 }); });
   const stamp = el('<div class="stamp mono">win or lose</div>'); show(stamp, W("retainer", 5), en("retainer")); pop(stamp, W("retainer", 5), { scale: 2.2, rotation: -20, y: 0 });
-  ["NEW FACE", "NEW SETTING"].forEach((t, i) => chip(t, 70, 330, st(["cr1", "cr2"][i]) + 0.03, en(["cr1", "cr2"][i])));
+  ["NEW FACE", "NEW SETTING"].forEach((t, i) => chip(t, 70, 1470, st(["cr1", "cr2"][i]) + 0.03, en(["cr1", "cr2"][i])));
   punch(W("meta", 2), 1.1);
   // a sale lands
   const toast = el('<div class="toast card"><span class="ic">✓</span><span class="tt">New order</span><span class="ts mono">Just now · 1 item</span></div>');
   show(toast, W("cut", -1) - 0.05, en("cut")); pop(toast, W("cut", -1) - 0.05, { y: -120, scale: 0.9 });
-  chip("OUR FEE: TIED TO YOUR SALES", 70, 1560, W("cut", 2), en("cut"));
-  endCard(W("cta", 2), W("cta", 2) + 0.08);
+  chip("OUR FEE: TIED TO YOUR SALES", 70, 1470, W("cut", 2), en("cut"));
+  endCard(st("bf"), st("cta2"));
 """,
   sfx=lambda S, W: [(W("own", 2), "hit", 0.6), *[(W("retainer", 3) + i * 0.18, "pop", 0.3) for i in range(3)], (W("retainer", 5), "hit", 0.7),
                     (W("meta", 2), "hit", 0.4), (W("cut", -1) - 0.05, "ping", 0.6), (W("cut", -1) + 0.1, "coin", 0.4)],
  ),
  "v3": dict(
-  title="Southline - Not one pretty ad", kicker="For clothing brands", headline="Stop betting on <b>one ad.</b>",
-  keyword="AUDIT", sub="I'll look at your ads. Free.",
+  title="Southline - Not one pretty ad", kicker="For clothing brands", headline="Stop betting on<br><b>one ad.</b>",
+  keyword="SALES",
   segs=[
    ("test", "adam", 21.25, 23.55, ("vid", "creatives", 5.30), False),   # opens on the polaroid wall, already in frame
    ("faces", "adam", 18.55, 19.44, ("vid", "creatives", 0.05), False),
@@ -116,27 +121,43 @@ REELS = {
    ("kill", "adam", 26.30, 30.30, ("gfx",), False),
    ("week", "adam", 30.40, 31.20, ("vid", "sales", 4.87), False),
    ("exp", "adam", 31.45, 33.05, ("gfx",), False),
-   ("cta", "adam", 35.70, 39.60, ("gfx",), False),
+   ("bf", None, 0.0, 0.85, ("gfx",), False),                         # end card: BLACK FRIDAY / 50% OFF lands
+   ("cta", "adam", 35.80, 36.17, ("gfx",), False),                    # "Comment ..."
+   ("cta2", "adam", 34.85, 35.40, ("gfx",), False),                   # "... sales."  (spliced from the same take)
   ],
-  skip_caps=["exp"],
+  skip_caps=["test", "exp", "bf", "cta", "cta2"],
   beats="""
   hookOut(st("faces"));
   punch(W("test", 4), 1.14); flash(W("test", 4));
-  ["faces", "hooks", "settings"].forEach((id, i) => chip(["NEW FACE", "NEW HOOK", "NEW SETTING"][i], 70, 330, st(id) + 0.03, en(id)));
-  const d = chip("DAY 1", 70, 330, st("meta") + 0.05, en("meta"));
+  ["faces", "hooks", "settings"].forEach((id, i) => chip(["NEW FACE", "NEW HOOK", "NEW SETTING"][i], 70, 1470, st(id) + 0.03, en(id)));
+  const d = chip("DAY 1", 70, 1470, st("meta") + 0.05, en("meta"));
   tl.set(d, { textContent: "DAY 2" }, W("meta", 3)); tl.set(d, { textContent: "DAY 3" }, W("meta", 5));
   punch(W("meta", 5), 1.1);
   const g = grid(st("kill"), st("kill") + 0.5, st("kill") + 0.5, en("kill"));
   killScale(g, W("kill", 1), W("kill", 4), W("kill", 9));
   punch(W("week", 1), 1.12);
   big("And you're not paying us to", "<b>experiment.</b>", st("exp"), en("exp"), W("exp", -1) + 0.3);
-  endCard(st("cta"), W("cta", 1));
+  endCard(st("bf"), st("cta2"));
 """,
   sfx=lambda S, W: [(W("test", 4), "hit", 0.7), (W("meta", 5), "coin", 0.45), *[(S["kill"]["start"] + i * 0.03, "pop", 0.1) for i in range(15)],
                     (W("kill", 1), "glitch", 0.35), (W("kill", 4), "shimmer", 0.6), *[(W("kill", 9) + n * 0.08, "pop", 0.2) for n in range(6)],
                     (W("exp", -1), "hit", 0.6)],
  ),
 }
+
+
+CUTOUTS = ("talk", "hook", "creatives")     # clips with a person: cut out with `npx hyperframes remove-background`
+_MATTE = {}
+def head_top(clip, t):
+    """y (px, 1920 frame) of the top of the person at media time t, from the cut-out's alpha; None if no person in shot"""
+    if clip not in _MATTE:
+        raw = subprocess.run(["ffmpeg", "-loglevel", "error", "-c:v", "libvpx-vp9", "-i", f"{HERE}/cutouts/{clip}.webm", "-vf", "alphaextract,scale=108:192",
+                              "-f", "rawvideo", "-pix_fmt", "gray", "-"], capture_output=True, check=True).stdout
+        _MATTE[clip] = np.frombuffer(raw, np.uint8).reshape(-1, 192, 108)
+    m = _MATTE[clip][min(len(_MATTE[clip]) - 1, max(0, round(t * 30)))] > 128
+    if m.mean() < 0.04: return None                     # hands or nothing: no head to hide behind
+    rows = np.where(m[:, 16:92].sum(1) >= 4)[0]
+    return int(rows[0] * 10) if len(rows) else None
 
 
 def quiet(x, t, w=0.08):
@@ -151,12 +172,13 @@ def build(name):
     os.makedirs(f"{hf}/assets/js", exist_ok=True)
     fade = int(0.012 * SR); out, t, segs, words = [], 0.0, [], []
     for sid, src, ain, aout, vis, join in R["segs"]:
-        x = VOX[src]; a2, b2 = quiet(x, ain), quiet(x, aout)
+        if src is None: x = np.zeros(int((aout + 0.1) * SR), np.float32); a2, b2 = ain, aout   # a beat with no voice
+        else: x = VOX[src]; a2, b2 = quiet(x, ain), quiet(x, aout)
         clip = x[int(a2 * SR):int(b2 * SR)].copy()
         clip[:fade] *= np.linspace(0, 1, fade); clip[-fade:] *= np.linspace(1, 0, fade)
         if out and not join: out.append(np.zeros(int(GAP * SR), np.float32)); t += GAP
         start = t; out.append(clip); t += len(clip) / SR
-        for w in WORDS[src]:
+        for w in WORDS.get(src, []):
             if a2 - 0.13 <= w["start"] < b2 - 0.06: words.append({"seg": sid, "text": w["text"], "start": round(start + max(0, w["start"] - a2), 3)})
         segs.append({"id": sid, "src": src, "ain": round(a2, 3), "start": round(start, 3), "dur": round(b2 - a2, 3), "vis": list(vis)})
     for i, s in enumerate(segs):                 # each shot runs until the next one starts (covers the breath)
@@ -164,12 +186,9 @@ def build(name):
         s["vdur"] = round(nxt - s["start"], 3)
     total = round(segs[-1]["start"] + segs[-1]["vdur"], 2)
     sf.write(f"{out_dir}/vo.wav", np.concatenate(out + [np.zeros(int((total - t + 0.1) * SR), np.float32)]), SR)
-    T = {"duration": total, "segments": segs, "words": words}
-    json.dump(T, open(f"{out_dir}/timing.json", "w"), indent=1)
-    open(f"{hf}/assets/js/timing.js", "w").write("window.TIMING = " + json.dumps(T) + ";\n")
 
     # <video> tags: lip-synced presenter shots start where their audio starts; b-roll may be slowed to fill its line
-    tags = []
+    tags, cuts = [], []
     for i, s in enumerate(segs):
         v = s["vis"]
         if v[0] != "vid": continue
@@ -181,10 +200,19 @@ def build(name):
         r = f' data-playback-rate="{rate}"' if rate != 1.0 else ""
         tags.append(f'      <video id="v{i}" class="clip" src="assets/media/{clip}.mp4" muted playsinline data-start="{s["start"]}" data-duration="{s["vdur"]}" '
                     f'data-media-start="{m0}"{r} data-track-index="1" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>')
+        s["head"] = None
+        hd = [head_top(clip, m0 + k * 0.1 * rate) for k in range(int(s["vdur"] * 10) + 1)] if clip in CUTOUTS else []
+        if any(y is not None for y in hd):        # the same shot, person only, layered over the captions (only when a head is in shot)
+            cuts.append(f'      <video id="c{i}" class="clip" src="assets/cutouts/{clip}.webm" muted playsinline data-start="{s["start"]}" data-duration="{s["vdur"]}" '
+                        f'data-media-start="{m0}"{r} data-track-index="2" data-layout-allow-occlusion style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>')
+            s["head"] = hd
+    T = {"duration": total, "segments": segs, "words": words}
+    json.dump(T, open(f"{out_dir}/timing.json", "w"))
+    open(f"{hf}/assets/js/timing.js", "w").write("window.TIMING = " + json.dumps(T) + ";\n")
     h = open(f"{HERE}/template.html").read()
-    rep = {"__TITLE__": R["title"], "__DUR__": str(total), "__VIDEOS__": "\n".join(tags), "__KICKER__": R["kicker"], "__HEADLINE__": R["headline"],
-           "__KEYWORD__": R["keyword"], "__SUB__": R["sub"],
-           "__BEATS__": f'  const KW = "{R["keyword"]}";\n  caps({json.dumps(R.get("skip_caps", []))});\n' + R["beats"].strip("\n")}
+    rep = {"__TITLE__": R["title"], "__DUR__": str(total), "__VIDEOS__": "\n".join(tags), "__CUTOUTS__": "\n".join(cuts), "__KICKER__": R["kicker"], "__HEADLINE__": R["headline"],
+           "__KEYWORD__": R["keyword"],
+           "__BEATS__": f'  caps({json.dumps(R.get("skip_caps", []))});\n' + R["beats"].strip("\n")}
     for k, v in rep.items(): h = h.replace(k, v)
     open(f"{hf}/index.html", "w").write(h)
 
@@ -195,6 +223,10 @@ def build(name):
     for clip in {s["vis"][1] for s in segs if s["vis"][0] == "vid"}:
         dst = f"{hf}/assets/media/{clip}.mp4"
         if not os.path.exists(dst): os.link(f"{HERE}/media/{clip}.mp4", dst)
+        if clip in CUTOUTS:
+            os.makedirs(f"{hf}/assets/cutouts", exist_ok=True); dst = f"{hf}/assets/cutouts/{clip}.webm"
+            if os.path.exists(dst): os.remove(dst)
+            os.link(f"{HERE}/cutouts/{clip}.webm", dst)
 
     # soundtrack cues: whoosh into every new shot, ticks under the words, riser + drop-out into the end card
     S = {s["id"]: s for s in segs}
@@ -203,8 +235,8 @@ def build(name):
     for s in segs[1:]: ev.append([round(s["start"] - 0.1, 3), "whoosh", 0.4])
     for w in words: ev.append([w["start"], "tick", 0.05])
     for at, n, g in R["sfx"](S, W): ev.append([round(at, 3), n, g])
-    endc = S["cta"]["start"] if name != "v2" else W("cta", 2)
-    ev += [[round(endc - 0.7, 3), "riser", 0.6], [round(endc, 3), "hit", 0.9], [round(total - 0.6, 3), "coin", 0.35]]
+    endc = S["bf"]["start"]
+    ev += [[round(endc - 0.7, 3), "riser", 0.6], [round(endc, 3), "hit", 0.9], [round(endc + 0.52, 3), "hit", 1.0], [round(endc + 0.6, 3), "whoosh", 0.5], [round(S["cta2"]["start"], 3), "hit", 0.7], [round(total - 0.6, 3), "coin", 0.35]]
     ev.sort(key=lambda e: e[0])
     json.dump({"duration": total, "bpm": 123, "events": ev, "dropouts": [[round(endc - 0.27, 3), round(endc - 0.02, 3)]]}, open(f"{out_dir}/cues.json", "w"), indent=0)
 
