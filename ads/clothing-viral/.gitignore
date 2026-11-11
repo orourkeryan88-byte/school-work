@@ -1,0 +1,12 @@
+# copies made by build.py / mkaudio.py (rebuild with: python3 build.py && python3 mkaudio.py)
+v*/hyperframes/assets/media/
+v*/hyperframes/assets/fonts/
+v*/hyperframes/assets/vendor/
+v*/hyperframes/assets/img/
+v*/hyperframes/assets/audio.wav
+v*/hyperframes/.hyperframes/
+v*/vo_lev.wav
+v*/render.log
+voice/lev/
+work-*/
+.*.hf-transaction-*/

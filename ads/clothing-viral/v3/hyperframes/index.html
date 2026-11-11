@@ -1,0 +1,234 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=1080, height=1920" />
+<title>Southline - Not one pretty ad</title>
+<script src="assets/vendor/gsap.min.js"></script>
+<script src="assets/js/timing.js"></script>
+<style>
+  /* "Southline Clean Cut": one style for the three clothing-brand reels.
+     Full-bleed footage graded toward Pine, a claim on screen in frame 1, big word-by-word captions (active word gold),
+     a cut or visual change every ~2 s with zoom-blur entries and punch-ins, Pine glass cards for the graphics,
+     a gold progress bar, and an end card that loops. Palette: Pine #0C2A22, Cloud #ECEEED, Ink #0E1412, Gold #F0B455. */
+  @font-face { font-family: "Instrument Sans"; src: url(assets/fonts/is-500.woff2) format("woff2"); font-weight: 500; }
+  @font-face { font-family: "Instrument Sans"; src: url(assets/fonts/is-700.woff2) format("woff2"); font-weight: 700; }
+  @font-face { font-family: "Instrument Serif"; src: url(assets/fonts/iserif-italic.woff2) format("woff2"); font-style: italic; font-weight: 400; }
+  @font-face { font-family: "IBM Plex Mono"; src: url(assets/fonts/plex-500.woff2) format("woff2"); font-weight: 500; }
+  :root { --pine: #0c2a22; --pine2: #123a2f; --cloud: #eceeed; --ink: #0e1412; --fog: #c6ccc8; --gold: #f0b455; --goldd: #c9821f; }
+  html, body { margin: 0; background: var(--pine); }
+  body { font-family: "Instrument Sans", sans-serif; -webkit-font-smoothing: antialiased; color: var(--cloud); }
+  #root { position: relative; width: 1080px; height: 1920px; overflow: hidden; background: var(--pine); }
+  .full { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; }
+  .mono { font-family: "IBM Plex Mono", monospace; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; }
+  .serif { font-family: "Instrument Serif", serif; font-style: italic; font-weight: 400; }
+
+  #bg { background: radial-gradient(80% 55% at 50% 35%, #1a4537, var(--pine) 70%); }
+  #vw { overflow: hidden; transform-origin: 50% 42%; opacity: 0; }
+  #vcam { position: absolute; left: 0; top: 0; width: 1080px; height: 1920px; transform-origin: 50% 42%; filter: saturate(.9) contrast(1.08); }
+  #tint { background: linear-gradient(rgba(12,42,34,.55), rgba(12,42,34,0) 28%, rgba(12,42,34,0) 52%, rgba(12,42,34,.72) 82%, rgba(12,42,34,.85)); }
+  #grain { opacity: .07; mix-blend-mode: overlay; pointer-events: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='300' height='300'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='300' height='300' filter='url(%23n)'/></svg>"); }
+  #vig { pointer-events: none; background: radial-gradient(120% 85% at 50% 45%, transparent 62%, rgba(4,14,11,.5)); }
+  #flash { background: var(--cloud); opacity: 0; }
+  #bar { position: absolute; left: 0; top: 0; height: 9px; width: 1080px; background: var(--gold); transform-origin: 0 50%; transform: scaleX(0); }
+  #barbg { position: absolute; left: 0; top: 0; height: 9px; width: 1080px; background: rgba(236,238,237,.18); }
+
+  /* hook: the claim, readable in frame 1 */
+  #hook { position: absolute; left: 60px; right: 60px; top: 300px; text-align: left; }
+  #hook .k { display: inline-block; font-size: 26px; color: var(--ink); background: var(--gold); padding: 8px 16px 6px; border-radius: 8px; margin-bottom: 22px; }
+  #hook .h { font-weight: 700; font-size: 118px; line-height: .94; letter-spacing: -.045em; text-shadow: 0 6px 30px rgba(4,14,11,.55); }
+  #hook .h b { color: var(--gold); font-weight: 700; }
+
+  /* captions: big, centred, 1-3 words a page, the word being said turns gold */
+  .cap { position: absolute; left: 50px; right: 50px; top: 1180px; text-align: center; font-weight: 700; font-size: 92px; line-height: 1.02; letter-spacing: -.035em; opacity: 0;
+    text-shadow: 0 5px 0 rgba(4,14,11,.55), 0 0 34px rgba(4,14,11,.8); }
+  .cap .w { display: inline-block; margin: 0 .13em; transform-origin: 50% 80%; }
+
+  /* Pine glass cards (all graphics) */
+  .card { position: absolute; background: rgba(12,42,34,.88); border: 2px solid rgba(198,204,200,.18); border-radius: 32px; box-shadow: 0 30px 70px rgba(0,0,0,.45);
+    backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); color: var(--cloud); }
+  .tile { position: absolute; width: 180px; height: 240px; border-radius: 16px; overflow: hidden; background: #1a3a31; box-shadow: 0 14px 30px rgba(0,0,0,.4); }
+  .tile img { width: 100%; height: 100%; object-fit: cover; display: block; }
+  .tile .lb { position: absolute; left: 9px; top: 8px; font-size: 15px; color: var(--cloud); background: rgba(12,42,34,.8); padding: 3px 8px; border-radius: 6px; }
+  .tile .x { position: absolute; left: -10%; top: 50%; width: 120%; height: 7px; background: var(--cloud); transform: rotate(-38deg) scaleX(0); }
+  .tile .gb { position: absolute; inset: 0; border: 7px solid var(--gold); border-radius: 16px; opacity: 0; }
+  .big3 { position: absolute; top: 600px; width: 300px; height: 400px; border-radius: 24px; overflow: hidden; box-shadow: 0 24px 50px rgba(0,0,0,.45); }
+  .big3 img { width: 100%; height: 100%; object-fit: cover; }
+  .big3 .lb { position: absolute; left: 14px; top: 12px; font-size: 22px; background: rgba(12,42,34,.85); padding: 4px 10px; border-radius: 8px; }
+  .big3 .st { position: absolute; left: 0; right: 0; bottom: 0; padding: 14px; font-size: 24px; text-align: center; background: rgba(12,42,34,.88); }
+  .big3 .gb { position: absolute; inset: 0; border: 9px solid var(--gold); border-radius: 24px; opacity: 0; }
+  .chip { position: absolute; padding: 12px 22px 10px; border-radius: 12px; font-size: 26px; background: rgba(12,42,34,.9); border: 2px solid rgba(240,180,85,.6); color: var(--gold); }
+  .row { position: absolute; left: 70px; width: 940px; height: 140px; border-radius: 30px; }
+  .row .ck { position: absolute; left: 34px; top: 38px; width: 64px; height: 64px; border-radius: 18px; background: var(--gold); color: var(--ink); font-size: 40px; font-weight: 700; text-align: center; line-height: 64px; }
+  .row .t { position: absolute; left: 128px; top: 40px; font-size: 52px; font-weight: 700; letter-spacing: -.03em; }
+  .big { position: absolute; left: 60px; right: 60px; top: 560px; }
+  .big .l { font-family: "Instrument Serif", serif; font-style: italic; font-size: 96px; line-height: 1.02; opacity: .9; }
+  .big .k { font-weight: 700; font-size: 150px; line-height: .92; letter-spacing: -.05em; }
+  .big .k b { color: var(--gold); font-weight: 700; }
+  .big .u { display: block; width: 560px; height: 14px; border-radius: 6px; background: var(--gold); margin-top: 22px; transform: scaleX(0); transform-origin: 0 50%; }
+
+  .stamp { position: absolute; left: 430px; top: 1410px; padding: 14px 26px 10px; font-size: 40px; color: var(--gold); border: 6px solid var(--gold); border-radius: 14px; transform: rotate(-8deg); background: rgba(12,42,34,.6); }
+  .rr { display: flex; justify-content: space-between; align-items: center; }
+  .pd { font-family: "IBM Plex Mono", monospace; font-weight: 500; font-size: 26px; letter-spacing: .14em; text-transform: uppercase; color: var(--ink); background: var(--fog); padding: 8px 14px 6px; border-radius: 8px; }
+  .toast { left: 90px; top: 300px; width: 900px; height: 150px; box-sizing: border-box; border-radius: 34px; background: rgba(236,238,237,.96); color: var(--ink); }
+  .toast .ic { position: absolute; left: 30px; top: 35px; width: 80px; height: 80px; border-radius: 22px; background: var(--pine); color: var(--gold); font-size: 46px; font-weight: 700; text-align: center; line-height: 80px; }
+  .toast .tt { position: absolute; left: 136px; top: 30px; font-size: 50px; font-weight: 700; letter-spacing: -.03em; }
+  .toast .ts { position: absolute; left: 138px; top: 94px; font-size: 22px; color: #55605b; }
+  /* end card */
+  #end { opacity: 0; background: radial-gradient(80% 55% at 50% 35%, #1a4537, var(--pine) 70%); }
+  #end .badge { position: absolute; left: 70px; top: 330px; width: 140px; height: 140px; border-radius: 50%; }
+  #end .ld { position: absolute; left: 70px; top: 560px; font-size: 110px; }
+  #end .ky { position: absolute; left: 62px; top: 680px; font-weight: 700; font-size: 270px; line-height: .9; letter-spacing: -.055em; color: var(--gold); }
+  #end .sub { position: absolute; left: 74px; top: 980px; font-size: 30px; color: var(--fog); }
+  #end .ln { position: absolute; left: 74px; top: 1046px; width: 560px; height: 3px; background: var(--fog); transform-origin: 0 50%; }
+  #end .tg { position: absolute; left: 74px; top: 1084px; font-size: 26px; color: var(--fog); }
+</style>
+</head>
+<body>
+<div id="root" data-composition-id="main" data-width="1080" data-height="1920" data-duration="18.96">
+  <div id="bg" class="full" data-layout-ignore></div>
+  <div id="vw" class="full" data-layout-ignore>
+    <div id="vcam">
+      <video id="v0" class="clip" src="assets/media/creatives.mp4" muted playsinline data-start="0.0" data-duration="2.216" data-media-start="5.3" data-playback-rate="0.758" data-track-index="1" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <video id="v1" class="clip" src="assets/media/creatives.mp4" muted playsinline data-start="2.216" data-duration="0.89" data-media-start="0.05" data-track-index="1" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <video id="v2" class="clip" src="assets/media/creatives.mp4" muted playsinline data-start="3.106" data-duration="0.76" data-media-start="1.66" data-track-index="1" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <video id="v3" class="clip" src="assets/media/creatives.mp4" muted playsinline data-start="3.866" data-duration="0.9" data-media-start="3.12" data-track-index="1" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <video id="v4" class="clip" src="assets/media/sales.mp4" muted playsinline data-start="4.766" data-duration="2.284" data-media-start="0.0" data-track-index="1" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+      <video id="v6" class="clip" src="assets/media/sales.mp4" muted playsinline data-start="11.11" data-duration="0.86" data-media-start="4.87" data-track-index="1" style="position:absolute; left:0; top:0; width:1080px; height:1920px; object-fit:cover;"></video>
+    </div>
+    <div id="tint" class="full" data-layout-ignore></div>
+  </div>
+  <div id="gfx" class="full" data-layout-ignore></div>
+  <div id="hook" data-layout-ignore><div class="k mono">For clothing brands</div><div class="h">Stop betting on <b>one ad.</b></div></div>
+  <div id="caps" class="full" data-layout-ignore></div>
+  <div id="end" class="full" data-layout-ignore>
+    <img class="badge" src="assets/img/southline_logo_badge.png" alt="Southline">
+    <div class="ld serif">comment</div><div class="ky">AUDIT</div>
+    <div class="sub mono">I'll look at your ads. Free.</div><div class="ln"></div><div class="tg mono">Southline · Meta ads for clothing brands</div>
+  </div>
+  <div id="flash" class="full" data-layout-ignore></div>
+  <div id="vig" class="full" data-layout-ignore></div>
+  <div id="grain" class="full" data-layout-ignore></div>
+  <div id="barbg" data-layout-ignore></div><div id="bar" data-layout-ignore></div>
+  <audio id="score" src="assets/audio.wav" data-start="0" data-duration="18.96" data-track-index="10" data-volume="1"></audio>
+</div>
+
+<script>
+  // ===================== engine (same for all three reels) =====================
+  const T = window.TIMING, S = {}, tl = gsap.timeline({ paused: true }), DUR = T.duration;
+  T.segments.forEach((s) => (S[s.id] = s));
+  const st = (id) => S[id].start, en = (id) => S[id].start + S[id].vdur;
+  const wd = (id) => T.words.filter((w) => w.seg === id);
+  const W = (id, k) => { const a = wd(id); return a[Math.max(0, Math.min(k < 0 ? a.length + k : k, a.length - 1))].start; };
+  const E = { in: "expo.out", ui: "back.out(1.5)" };
+  const gfx = document.getElementById("gfx");
+  const el = (html, parent = gfx) => { const d = document.createElement("div"); d.innerHTML = html.trim(); const n = d.firstChild; parent.appendChild(n); return n; };
+  const show = (n, a, b) => { tl.set(n, { opacity: 0 }, 0); tl.set(n, { opacity: 1 }, a); if (b !== undefined) tl.set(n, { opacity: 0 }, b); };
+  const pop = (n, at, from = {}) => tl.fromTo(n, Object.assign({ opacity: 0, y: 60, scale: 0.86 }, from), { opacity: 1, y: 0, x: 0, scale: 1, rotation: 0, duration: 0.42, ease: E.ui, immediateRender: false }, at);
+
+  // progress bar
+  tl.fromTo("#bar", { scaleX: 0 }, { scaleX: 1, duration: DUR, ease: "none" }, 0);
+
+  // footage: each video segment enters with a zoom-blur and drifts; graphics segments hide it
+  tl.set("#vw", { opacity: 0 }, 0);
+  T.segments.forEach((s) => {
+    if (s.vis[0] !== "vid") { tl.set("#vw", { opacity: 0 }, s.start); return; }
+    tl.set("#vw", { opacity: 1 }, s.start);
+    tl.fromTo("#vcam", { scale: 1.14, filter: "blur(12px) saturate(.9) contrast(1.08)" }, { scale: 1.02, filter: "blur(0px) saturate(.9) contrast(1.08)", duration: 0.24, ease: E.in, immediateRender: false }, s.start);
+    tl.to("#vcam", { scale: 1.07, duration: Math.max(0.1, s.vdur - 0.24), ease: "none" }, s.start + 0.24);
+  });
+  // punch-in on a word (the whole footage window)
+  const punch = (at, k = 1.12) => { tl.fromTo("#vw", { scale: 1 }, { scale: k, duration: 0.14, ease: E.in, immediateRender: false }, at); tl.to("#vw", { scale: 1, duration: 0.5, ease: "power2.inOut" }, at + 0.32); };
+  const flash = (at) => { tl.fromTo("#flash", { opacity: 0.55 }, { opacity: 0, duration: 0.22, ease: "power2.out", immediateRender: false }, at); };
+
+  // hook: on screen from frame 1 (no fade-in), settles, exits on cue
+  const hookOut = (at) => {
+    tl.fromTo("#hook", { scale: 1.06, y: -10 }, { scale: 1, y: 0, duration: 0.5, ease: E.in }, 0);
+    tl.fromTo("#hook .h b", { color: "#eceeed" }, { color: "#f0b455", duration: 0.1 }, 0.35);
+    tl.to("#hook", { opacity: 0, y: -40, duration: 0.2, ease: "power2.in" }, at);
+  };
+
+  // captions: pages of up to 3 words (break on punctuation); the word being said is gold
+  const FIX = { meta: "Meta", Brand: "brand", Owners: "owners.", Audit: "AUDIT", ads: "ads", "One,": "one,", "Two,": "two,", Add: "Ad" };
+  const caps = (skip = []) => {
+    const root = document.getElementById("caps"), pages = [];
+    T.segments.forEach((s) => { if (skip.includes(s.id)) return;
+      let cur = []; const ws = wd(s.id);
+      ws.forEach((w, j) => { cur.push(w); if (cur.length >= 3 || /[.,?:!…]$/.test(w.text) || j === ws.length - 1) { pages.push({ s, w: cur }); cur = []; } }); });
+    pages.forEach((p, n) => {
+      const c = el('<div class="cap"></div>', root);
+      const spans = p.w.map((w) => { const sp = document.createElement("span"); sp.className = "w"; sp.textContent = (s => (p.s.id === "cta" && s.replace(/[^a-z]/gi, "").toLowerCase() === KW.toLowerCase()) ? s.toUpperCase() : s)(FIX[w.text] || w.text); c.appendChild(sp); return sp; });
+      const nx = pages[n + 1], end = nx ? Math.min(nx.w[0].start - 0.03, p.s.start + p.s.vdur) : p.s.start + p.s.vdur;
+      tl.set(c, { opacity: 0 }, 0); tl.set(c, { opacity: 1 }, p.w[0].start - 0.02); tl.set(c, { opacity: 0 }, end);
+      p.w.forEach((w, j) => {
+        tl.fromTo(spans[j], { opacity: 0, y: 22, scale: 0.8 }, { opacity: 1, y: 0, scale: 1, duration: 0.16, ease: E.ui, immediateRender: false }, w.start);
+        tl.set(spans[j], { color: "#f0b455" }, w.start);
+        tl.set(spans[j], { color: "#eceeed" }, j + 1 < p.w.length ? p.w[j + 1].start : end);
+      });
+    });
+  };
+
+  // ===================== graphics modules =====================
+  const threeUp = (a, win, out, imgs = ["face1", "face2", "face3"]) => {
+    const n = imgs.map((im, i) => el('<div class="big3" style="left:' + (60 + i * 330) + 'px;"><img src="assets/img/' + im + '.jpg" alt=""><span class="lb mono">Ad 0' + (i + 1) + '</span><span class="st mono">' + (i === 1 ? "sells" : "no sales") + '</span><span class="gb"></span></div>'));
+    n.forEach((x, i) => { show(x, a, out); pop(x, a + i * 0.08, { rotation: (i - 1) * 6, y: 140 }); });
+    tl.to([n[0], n[2]], { opacity: 0.3, scale: 0.93, filter: "grayscale(1)", duration: 0.3 }, win);
+    tl.to(n[1], { scale: 1.1, y: -24, duration: 0.3, ease: E.ui }, win);
+    tl.to(n[1].querySelector(".gb"), { opacity: 1, duration: 0.2 }, win);
+  };
+  const IMGS = ["ring", "coat", "woman", "sweater", "wall", "face1", "face2", "face3", "sellers", "rail", "fold", "face4", "notes", "chart", "boxes"];
+  const grid = (a, fillTo10, fill15, out) => {
+    const box = el('<div class="full"></div>'), tiles = [];
+    for (let i = 0; i < 15; i++) {
+      const t = el('<div class="tile" style="left:' + (60 + (i % 5) * 198) + 'px; top:' + (380 + Math.floor(i / 5) * 262) + 'px;"><img src="assets/img/' + IMGS[i] + '.jpg" alt=""><span class="lb mono">Ad ' + String(i + 1).padStart(2, "0") + '</span><span class="x"></span><span class="gb"></span></div>', box);
+      tiles.push(t);
+      const at = i < 10 ? a + (fillTo10 - a) * (i / 10) : fill15 + (i - 10) * 0.06;
+      tl.set(t, { opacity: 0 }, 0); pop(t, at, { y: 40, scale: 0.3 });
+    }
+    show(box, a, out); return tiles;
+  };
+  const killScale = (tiles, kill, scale, versions, win = [2, 7, 11]) => {
+    tiles.forEach((t, i) => { if (win.includes(i)) return;
+      tl.to(t, { opacity: 0.25, filter: "grayscale(1)", duration: 0.25 }, kill + (i % 5) * 0.03);
+      tl.to(t.querySelector(".x"), { scaleX: 1, duration: 0.2 }, kill + (i % 5) * 0.03); });
+    win.forEach((i, n) => { tl.to(tiles[i].querySelector(".gb"), { opacity: 1, duration: 0.2 }, scale); tl.to(tiles[i], { scale: 1.18, zIndex: 5, duration: 0.3, ease: E.ui }, scale + n * 0.06); });
+    if (versions === undefined) return;
+    [0, 4, 5, 9, 10, 14].forEach((slot, n) => { const t = tiles[slot], src = win[n % 3], at = versions + n * 0.08;
+      tl.set(t.querySelector("img"), { attr: { src: "assets/img/" + IMGS[src] + ".jpg" } }, at);
+      tl.set(t.querySelector(".lb"), { textContent: "Ad " + String(src + 1).padStart(2, "0") + " · v" + (2 + Math.floor(n / 3)) }, at);
+      tl.set(t.querySelector(".x"), { scaleX: 0 }, at);
+      tl.fromTo(t, { opacity: 0, scale: 0.5, filter: "grayscale(0)" }, { opacity: 1, scale: 1, duration: 0.3, ease: E.ui, immediateRender: false }, at); });
+  };
+  const chip = (txt, x, y, a, out) => { const c = el('<div class="chip mono" style="left:' + x + 'px; top:' + y + 'px;">' + txt + '</div>'); show(c, a, out); pop(c, a, { y: 20, scale: 0.7 }); return c; };
+  const rows = (items, out) => items.map(([txt, at], i) => { const r = el('<div class="row card" style="top:' + (560 + i * 172) + 'px;"><span class="ck">✓</span><span class="t">' + txt + '</span></div>'); show(r, at, out); pop(r, at, { x: 120, y: 0 }); return r; });
+  const big = (lead, key, a, out, uAt) => { const b = el('<div class="big"><div class="l">' + lead + '</div><div class="k">' + key + '</div><span class="u"></span></div>');
+    show(b, a, out); pop(b.querySelector(".l"), a, { y: 30 }); pop(b.querySelector(".k"), a + 0.12, { y: 50 }); if (uAt) tl.to(b.querySelector(".u"), { scaleX: 1, duration: 0.3, ease: "power2.out" }, uAt); return b; };
+  const card = (html, x, y, w, a, out) => { const c = el('<div class="card" style="left:' + x + 'px; top:' + y + 'px; width:' + w + 'px; padding:34px 40px; box-sizing:border-box;">' + html + '</div>'); show(c, a, out); pop(c, a, { rotation: -3 }); return c; };
+  const endCard = (a, kwAt) => {
+    tl.set("#end", { opacity: 0 }, 0); tl.set("#end", { opacity: 1 }, a); flash(a);
+    tl.set(["#end .badge", "#end .ld", "#end .ky", "#end .sub", "#end .tg"], { opacity: 0 }, 0); tl.set("#end .ln", { scaleX: 0 }, 0);
+    pop("#end .badge", a + 0.05, { scale: 0.4, y: 0 }); pop("#end .ld", a + 0.1, { y: 30 }); pop("#end .ky", kwAt, { y: 60, scale: 0.8 });
+    pop("#end .sub", kwAt + 0.35, { y: 20 }); tl.fromTo("#end .ln", { scaleX: 0 }, { scaleX: 1, duration: 0.4, ease: "power2.out", immediateRender: false }, kwAt + 0.4); pop("#end .tg", kwAt + 0.6, { y: 20 });
+  };
+
+  // ===================== this reel =====================
+  const KW = "AUDIT";
+  caps(["exp"]);
+  hookOut(st("faces"));
+  punch(W("test", 4), 1.14); flash(W("test", 4));
+  ["faces", "hooks", "settings"].forEach((id, i) => chip(["NEW FACE", "NEW HOOK", "NEW SETTING"][i], 70, 330, st(id) + 0.03, en(id)));
+  const d = chip("DAY 1", 70, 330, st("meta") + 0.05, en("meta"));
+  tl.set(d, { textContent: "DAY 2" }, W("meta", 3)); tl.set(d, { textContent: "DAY 3" }, W("meta", 5));
+  punch(W("meta", 5), 1.1);
+  const g = grid(st("kill"), st("kill") + 0.5, st("kill") + 0.5, en("kill"));
+  killScale(g, W("kill", 1), W("kill", 4), W("kill", 9));
+  punch(W("week", 1), 1.12);
+  big("And you're not paying us to", "<b>experiment.</b>", st("exp"), en("exp"), W("exp", -1) + 0.3);
+  endCard(st("cta"), W("cta", 1));
+
+  window.__timelines = window.__timelines || {};
+  window.__timelines["main"] = tl;
+</script>
+</body>
+</html>
