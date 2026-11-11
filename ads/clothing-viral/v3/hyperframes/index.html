@@ -150,12 +150,12 @@
 
   // hook: behind the head from frame 1, settles, exits on cue
   const hookOut = (at) => {
-    const s0 = T.segments[0], h0 = s0.head && s0.head.filter((v) => v !== null);
+    const h0 = [].concat(...T.segments.filter((s) => s.start < at && s.head).map((s) => s.head.filter((v) => v !== null)));
     const hh = document.querySelector("#hook .h"); hh.style.whiteSpace = "nowrap";
     if (hh.scrollWidth > 1000) hh.style.fontSize = Math.floor(236 * 1000 / hh.scrollWidth) + "px";
     const hk = document.getElementById("hook"), lineH = parseFloat(hh.style.fontSize || 236) * 0.86;
     // the head covers about the lower third of the last line, never the first
-    if (h0 && h0.length) hk.style.top = Math.max(110, Math.min(...h0.slice(0, 8)) - hk.offsetHeight + lineH * 0.35) + "px";
+    if (h0 && h0.length) hk.style.top = Math.max(110, Math.min(...h0) - hk.offsetHeight + lineH * 0.35) + "px";
     tl.fromTo("#hook", { scale: 1.08 }, { scale: 1, duration: 0.6, ease: E.in }, 0);
     tl.fromTo("#hook .h b", { color: BONE }, { color: RED, duration: 0.1 }, 0.35);
     tl.to("#hook", { opacity: 0, y: -40, duration: 0.2, ease: "power2.in" }, at);
@@ -226,6 +226,7 @@
   };
   const chip = (txt, x, y, a, out) => { const c = el('<div class="chip mono" style="left:' + x + 'px; top:' + y + 'px;">' + txt + '</div>'); show(c, a, out); pop(c, a, { y: 20, scale: 0.7 }); return c; };
   const big = (lead, key, a, out, uAt) => { const b = el('<div class="big lg"><div class="l">' + lead + '</div><div class="k">' + key + '</div><span class="u"></span></div>');
+    [".l", ".k"].forEach((q) => { const n = b.querySelector(q); n.style.whiteSpace = "nowrap"; const fs = parseFloat(getComputedStyle(n).fontSize); if (n.scrollWidth > 960) n.style.fontSize = Math.floor(fs * 960 / n.scrollWidth) + "px"; });
     show(b, a, out); pop(b.querySelector(".l"), a, { y: 30 }); pop(b.querySelector(".k"), a + 0.12, { y: 50 }); if (uAt) tl.to(b.querySelector(".u"), { scaleX: 1, duration: 0.3, ease: "power2.out" }, uAt); return b; };
   const card = (html, x, y, w, a, out) => { const c = el('<div class="card" style="left:' + x + 'px; top:' + y + 'px; width:' + w + 'px; padding:34px 40px; box-sizing:border-box;">' + html + '</div>'); show(c, a, out); pop(c, a, { rotation: -3 }); return c; };
   // Black Friday end card: "BLACK FRIDAY DEAL" drops, "50% OFF" slams with a shake, the red ticker band runs, then "comment SALES"
