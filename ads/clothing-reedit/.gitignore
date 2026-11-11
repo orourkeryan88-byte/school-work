@@ -3,3 +3,5 @@ hyperframes/assets/footage/
 hyperframes/.hyperframes/
 vo_lev.wav
 render.log
+work-*/
+.*.hf-transaction-*/
